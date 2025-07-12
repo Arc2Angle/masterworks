@@ -1,0 +1,13 @@
+{
+  "itemGroup.masterarms": "Example Mod Tab",
+  "block.masterarms.example_block": "Example Block",
+  "item.masterarms.example_item": "Example Item",
+
+  "masterarms.configuration.title": "masterarms Configs",
+  "masterarms.configuration.section.masterarms.common.toml": "masterarms Configs",
+  "masterarms.configuration.section.masterarms.common.toml.title": "masterarms Configs",
+  "masterarms.configuration.items": "Item List",
+  "masterarms.configuration.logDirtBlock": "Log Dirt Block",
+  "masterarms.configuration.magicNumberIntroduction": "Magic Number Text",
+  "masterarms.configuration.magicNumber": "Magic Number"
+}
