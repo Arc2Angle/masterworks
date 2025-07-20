@@ -3,7 +3,7 @@ package com.masterarms.masterarms;
 import org.slf4j.Logger;
 
 import com.masterarms.masterarms.material.Material;
-import com.masterarms.masterarms.part.component.MaterialComponent;
+import com.masterarms.masterarms.part.type.PartType;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.Registry;
@@ -29,12 +29,16 @@ public class Masterarms {
 
         public static final ResourceKey<Registry<Material>> MATERIALS_REGISTRY_KEY = ResourceKey
                         .createRegistryKey(ResourceLocation.fromNamespaceAndPath(MODID, "materials"));
+        public static final ResourceKey<Registry<PartType>> PART_TYPES_REGISTRY_KEY = ResourceKey
+                        .createRegistryKey(ResourceLocation.fromNamespaceAndPath(MODID, "part_types"));
 
         public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
         public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
         public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister
                         .create(Registries.CREATIVE_MODE_TAB, MODID);
         public static final DeferredRegister<Material> MATERIALS = DeferredRegister.create(MATERIALS_REGISTRY_KEY,
+                        MODID);
+        public static final DeferredRegister<PartType> PART_TYPES = DeferredRegister.create(PART_TYPES_REGISTRY_KEY,
                         MODID);
 
         public Masterarms(IEventBus modEventBus, ModContainer modContainer) {
