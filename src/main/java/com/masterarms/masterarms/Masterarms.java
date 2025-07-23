@@ -27,19 +27,21 @@ public class Masterarms {
         public static final String MOD_ID = "masterarms";
         public static final Logger LOGGER = LogUtils.getLogger();
 
-        public static final ResourceKey<Registry<Material>> MATERIALS_REGISTRY_KEY = ResourceKey
-                        .createRegistryKey(ResourceLocation.fromNamespaceAndPath(MOD_ID, "materials"));
-        public static final ResourceKey<Registry<PartType>> PART_TYPES_REGISTRY_KEY = ResourceKey
-                        .createRegistryKey(ResourceLocation.fromNamespaceAndPath(MOD_ID, "part_types"));
+        public static final ResourceKey<Registry<Material>> MATERIALS_REGISTRY_KEY =
+                        ResourceKey.createRegistryKey(
+                                        ResourceLocation.fromNamespaceAndPath(MOD_ID, "materials"));
+        public static final ResourceKey<Registry<PartType>> PART_TYPES_REGISTRY_KEY =
+                        ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MOD_ID,
+                                        "part_types"));
 
         public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
         public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
-        public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister
-                        .create(Registries.CREATIVE_MODE_TAB, MOD_ID);
-        public static final DeferredRegister<Material> MATERIALS = DeferredRegister.create(MATERIALS_REGISTRY_KEY,
-                        MOD_ID);
-        public static final DeferredRegister<PartType> PART_TYPES = DeferredRegister.create(PART_TYPES_REGISTRY_KEY,
-                        MOD_ID);
+        public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
+                        DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
+        public static final DeferredRegister<Material> MATERIALS =
+                        DeferredRegister.create(MATERIALS_REGISTRY_KEY, MOD_ID);
+        public static final DeferredRegister<PartType> PART_TYPES =
+                        DeferredRegister.create(PART_TYPES_REGISTRY_KEY, MOD_ID);
 
         public Masterarms(IEventBus modEventBus, ModContainer modContainer) {
                 BLOCKS.register(modEventBus);
@@ -63,7 +65,9 @@ public class Masterarms {
 
         @SubscribeEvent
         public void registerRegistries(NewRegistryEvent event) {
-                MATERIALS_REGISTRY = event.create(new RegistryBuilder<>(MATERIALS_REGISTRY_KEY).sync(true));
-                PART_TYPES_REGISTRY = event.create(new RegistryBuilder<>(PART_TYPES_REGISTRY_KEY).sync(true));
+                MATERIALS_REGISTRY = event
+                                .create(new RegistryBuilder<>(MATERIALS_REGISTRY_KEY).sync(true));
+                PART_TYPES_REGISTRY = event
+                                .create(new RegistryBuilder<>(PART_TYPES_REGISTRY_KEY).sync(true));
         }
 }
