@@ -5,6 +5,8 @@ import com.masterarms.masterarms.Masterarms;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class PartTypes {
+        public static void init() {}
+
         public static final DeferredHolder<PartType, PartType> BLADE = Masterarms.PART_TYPES
                         .register("blade", () -> new PartType("Blade", 0.6f, 1.0f, 0.2f));
 

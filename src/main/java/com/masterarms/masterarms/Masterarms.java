@@ -63,6 +63,11 @@ public class Masterarms {
                                         }).build());
 
         public Masterarms(IEventBus modEventBus, ModContainer modContainer) {
+                // force class loading to ensure registrations happen
+                com.masterarms.masterarms.material.Materials.init();
+                com.masterarms.masterarms.part.type.PartTypes.init();
+                com.masterarms.masterarms.item.Items.init();
+
                 BLOCKS.register(modEventBus);
                 ITEMS.register(modEventBus);
                 CREATIVE_MODE_TABS.register(modEventBus);

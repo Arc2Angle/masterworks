@@ -5,6 +5,8 @@ import com.masterarms.masterarms.Masterarms;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class Materials {
+        public static void init() {}
+
         public static final DeferredHolder<Material, Material> IRON = Masterarms.MATERIALS.register(
                         "iron", () -> new Material("Iron", 250, 6.0f, 2.0f, 14.0f, 0.0f, 1));
 

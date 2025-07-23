@@ -11,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class Items {
 
+        public static void init() {}
+
         public static final DeferredHolder<Item, PartItem> PART =
                         Masterarms.ITEMS.register("part", () -> new PartItem());
 
