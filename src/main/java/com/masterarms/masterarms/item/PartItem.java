@@ -20,6 +20,11 @@ public class PartItem extends Item {
         super(new Item.Properties());
     }
 
+    // Constructor that accepts Item.Properties (for registration)
+    public PartItem(Item.Properties properties) {
+        super(properties);
+    }
+
     /**
      * Creates a configured PartItem stack with the specified material and part type. This is the
      * main way to create functional parts from the broken template.

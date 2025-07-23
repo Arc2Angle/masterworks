@@ -14,7 +14,7 @@ public class Items {
         public static void init() {}
 
         public static final DeferredHolder<Item, PartItem> PART =
-                        Masterarms.ITEMS.register("part", () -> new PartItem());
+                        Masterarms.ITEMS.registerItem("part", PartItem::new);
 
         public static void addAllParts(java.util.function.Consumer<ItemStack> output) {
                 Material[] materials =
