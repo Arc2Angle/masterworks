@@ -7,6 +7,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 public class Materials {
         public static final DeferredHolder<Material, Material> IRON = Masterarms.MATERIALS
                         .register("iron", () -> new Material(
+                                        "Iron",
                                         250,
                                         6.0f,
                                         2.0f,
@@ -16,6 +17,7 @@ public class Materials {
 
         public static final DeferredHolder<Material, Material> DIAMOND = Masterarms.MATERIALS
                         .register("diamond", () -> new Material(
+                                        "Diamond",
                                         1561,
                                         8.0f,
                                         3.0f,
@@ -25,6 +27,7 @@ public class Materials {
 
         public static final DeferredHolder<Material, Material> NETHERITE = Masterarms.MATERIALS
                         .register("netherite", () -> new Material(
+                                        "Netherite",
                                         2031,
                                         9.0f,
                                         4.0f,
@@ -34,6 +37,7 @@ public class Materials {
 
         public static final DeferredHolder<Material, Material> MYTHRIL = Masterarms.MATERIALS
                         .register("mythril", () -> new Material(
+                                        "Mythril",
                                         1800,
                                         12.0f,
                                         3.5f,
