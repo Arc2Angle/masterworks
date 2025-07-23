@@ -1,8 +1,7 @@
 {
-  "itemGroup.masterarms": "Example Mod Tab",
+  "itemGroup.masterarms.parts": "Parts",
   "block.masterarms.example_block": "Example Block",
   "item.masterarms.example_item": "Example Item",
-
   "masterarms.configuration.title": "masterarms Configs",
   "masterarms.configuration.section.masterarms.common.toml": "masterarms Configs",
   "masterarms.configuration.section.masterarms.common.toml.title": "masterarms Configs",

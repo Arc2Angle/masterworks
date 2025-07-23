@@ -46,9 +46,9 @@ public class Masterarms {
         public static final DeferredRegister<PartType> PART_TYPES =
                         DeferredRegister.create(PART_TYPES_REGISTRY_KEY, MOD_ID);
 
-        public static final Supplier<CreativeModeTab> PARTS_TAB =
-                        CREATIVE_MODE_TABS.register("parts", () -> CreativeModeTab.builder()
-                                        // TODO: add a translation
+        public static final Supplier<CreativeModeTab> PARTS_TAB = CREATIVE_MODE_TABS.register(
+                        "parts",
+                        () -> CreativeModeTab.builder()
                                         .title(Component.translatable(
                                                         "itemGroup." + MOD_ID + ".parts"))
                                         .icon(() -> new ItemStack(
