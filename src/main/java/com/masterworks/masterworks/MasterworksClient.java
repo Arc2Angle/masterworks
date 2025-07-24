@@ -1,6 +1,5 @@
 package com.masterworks.masterworks;
 
-import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -26,10 +25,5 @@ public class MasterworksClient {
     }
 
     @SubscribeEvent
-    static void onClientSetup(FMLClientSetupEvent event) {
-        // Some client setup code
-        Masterworks.LOGGER.info("HELLO FROM CLIENT SETUP");
-        Masterworks.LOGGER.info("MINECRAFT NAME >> {}",
-                Minecraft.getInstance().getUser().getName());
-    }
+    static void onClientSetup(FMLClientSetupEvent event) {}
 }

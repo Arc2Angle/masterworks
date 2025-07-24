@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import net.minecraft.network.chat.Component;
 import com.mojang.logging.LogUtils;
 import java.util.function.Supplier;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
@@ -17,8 +14,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryBuilder;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import com.masterworks.masterworks.component.*;
 import com.masterworks.masterworks.item.*;
@@ -57,7 +52,6 @@ public class Masterworks {
         CREATIVE_MODE_TABS.register(modEventBus);
         DataComponents.register(modEventBus);
 
-        // Register data map types
         modEventBus.addListener(this::registerDataMapTypes);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);

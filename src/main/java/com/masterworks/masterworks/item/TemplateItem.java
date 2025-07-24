@@ -12,7 +12,7 @@ public class TemplateItem extends Item {
 
     public static void init() {}
 
-    public TemplateItem(Item.Properties properties) {
+    private TemplateItem(Item.Properties properties) {
         super(properties);
     }
 
