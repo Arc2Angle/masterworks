@@ -1,0 +1,53 @@
+{
+    "model": {
+        "type": "minecraft:select",
+        "property": "masterworks:part_type",
+        "fallback": {
+            "type": "minecraft:model",
+            "model": "masterworks:item/parts/default",
+            "tints": [
+                {
+                    "type": "masterworks:material"
+                }
+            ]
+        },
+        "cases": [
+            {
+                "when": "masterworks:blade_template",
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "masterworks:item/parts/blade",
+                    "tints": [
+                        {
+                            "type": "masterworks:material"
+                        }
+                    ]
+                }
+            },
+            {
+                "when": "masterworks:handle_template",
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "masterworks:item/parts/handle",
+                    "tints": [
+                        {
+                            "type": "masterworks:material"
+                        }
+                    ]
+                }
+            },
+            {
+                "when": "masterworks:binding_template",
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "masterworks:item/parts/binding",
+                    "tints": [
+                        {
+                            "type": "masterworks:material"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
