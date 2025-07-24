@@ -1,8 +1,5 @@
-package com.masterarms.masterarms.item;
+package com.masterworks.masterworks.item;
 
-import com.masterarms.masterarms.component.DataComponents;
-import com.masterarms.masterarms.material.Material;
-import com.masterarms.masterarms.part.type.PartType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -11,6 +8,9 @@ import net.minecraft.world.item.component.TooltipDisplay;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.masterworks.masterworks.component.DataComponents;
+import com.masterworks.masterworks.material.Material;
+import com.masterworks.masterworks.part.type.PartType;
 import java.util.function.Consumer;
 
 public class PartItem extends Item {

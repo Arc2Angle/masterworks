@@ -1,0 +1,12 @@
+{
+  "itemGroup.masterworks.parts": "Parts",
+  "block.masterworks.example_block": "Example Block",
+  "item.masterworks.example_item": "Example Item",
+  "masterworks.configuration.title": "Masterworks Configs",
+  "masterworks.configuration.section.masterworks.common.toml": "Masterworks Configs",
+  "masterworks.configuration.section.masterworks.common.toml.title": "Masterworks Configs",
+  "masterworks.configuration.items": "Item List",
+  "masterworks.configuration.logDirtBlock": "Log Dirt Block",
+  "masterworks.configuration.magicNumberIntroduction": "Magic Number Text",
+  "masterworks.configuration.magicNumber": "Magic Number"
+}

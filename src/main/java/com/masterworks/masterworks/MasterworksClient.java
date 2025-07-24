@@ -1,4 +1,4 @@
-package com.masterarms.masterarms;
+package com.masterworks.masterworks;
 
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -11,12 +11,12 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
-@Mod(value = Masterarms.MOD_ID, dist = Dist.CLIENT)
+@Mod(value = Masterworks.MOD_ID, dist = Dist.CLIENT)
 // You can use EventBusSubscriber to automatically register all static methods
 // in the class annotated with @SubscribeEvent
-@EventBusSubscriber(modid = Masterarms.MOD_ID, value = Dist.CLIENT)
-public class MasterarmsClient {
-    public MasterarmsClient(ModContainer container) {
+@EventBusSubscriber(modid = Masterworks.MOD_ID, value = Dist.CLIENT)
+public class MasterworksClient {
+    public MasterworksClient(ModContainer container) {
         // Allows NeoForge to create a config screen for this mod's configs.
         // The config screen is accessed by going to the Mods screen > clicking on your
         // mod > clicking on config.
@@ -28,7 +28,8 @@ public class MasterarmsClient {
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
         // Some client setup code
-        Masterarms.LOGGER.info("HELLO FROM CLIENT SETUP");
-        Masterarms.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        Masterworks.LOGGER.info("HELLO FROM CLIENT SETUP");
+        Masterworks.LOGGER.info("MINECRAFT NAME >> {}",
+                Minecraft.getInstance().getUser().getName());
     }
 }

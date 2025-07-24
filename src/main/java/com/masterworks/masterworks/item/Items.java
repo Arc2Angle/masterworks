@@ -1,11 +1,11 @@
-package com.masterarms.masterarms.item;
+package com.masterworks.masterworks.item;
 
-import com.masterarms.masterarms.Masterarms;
-import com.masterarms.masterarms.material.Material;
-import com.masterarms.masterarms.material.Materials;
-import com.masterarms.masterarms.part.type.PartType;
-import com.masterarms.masterarms.part.type.PartTypes;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import com.masterworks.masterworks.Masterworks;
+import com.masterworks.masterworks.material.Material;
+import com.masterworks.masterworks.material.Materials;
+import com.masterworks.masterworks.part.type.PartType;
+import com.masterworks.masterworks.part.type.PartTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -14,7 +14,7 @@ public class Items {
         public static void init() {}
 
         public static final DeferredHolder<Item, PartItem> PART =
-                        Masterarms.ITEMS.registerItem("part", PartItem::new);
+                        Masterworks.ITEMS.registerItem("part", PartItem::new);
 
         public static void addAllParts(java.util.function.Consumer<ItemStack> output) {
                 Material[] materials =

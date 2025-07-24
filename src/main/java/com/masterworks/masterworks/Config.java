@@ -1,4 +1,4 @@
-package com.masterarms.masterarms;
+package com.masterworks.masterworks;
 
 import java.util.List;
 import java.util.Set;

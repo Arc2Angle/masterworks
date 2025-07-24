@@ -1,11 +1,11 @@
-package com.masterarms.masterarms;
+package com.masterworks.masterworks;
 
 import org.slf4j.Logger;
 
 import net.minecraft.network.chat.Component;
-import com.masterarms.masterarms.component.DataComponents;
-import com.masterarms.masterarms.material.Material;
-import com.masterarms.masterarms.part.type.PartType;
+import com.masterworks.masterworks.component.DataComponents;
+import com.masterworks.masterworks.material.Material;
+import com.masterworks.masterworks.part.type.PartType;
 import com.mojang.logging.LogUtils;
 import java.util.function.Supplier;
 import net.minecraft.core.Registry;
@@ -24,9 +24,9 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(Masterarms.MOD_ID)
-public class Masterarms {
-        public static final String MOD_ID = "masterarms";
+@Mod(Masterworks.MOD_ID)
+public class Masterworks {
+        public static final String MOD_ID = "masterworks";
         public static final Logger LOGGER = LogUtils.getLogger();
 
         public static final ResourceKey<Registry<Material>> MATERIALS_REGISTRY_KEY =
@@ -52,21 +52,21 @@ public class Masterarms {
                                         .title(Component.translatable(
                                                         "itemGroup." + MOD_ID + ".parts"))
                                         .icon(() -> new ItemStack(
-                                                        com.masterarms.masterarms.item.Items.PART
+                                                        com.masterworks.masterworks.item.Items.PART
                                                                         .get()))
                                         .displayItems((params, output) -> {
-                                                com.masterarms.masterarms.item.Items
+                                                com.masterworks.masterworks.item.Items
                                                                 .addAllParts((itemStack) -> {
                                                                         output.accept(itemStack);
                                                                 });
 
                                         }).build());
 
-        public Masterarms(IEventBus modEventBus, ModContainer modContainer) {
+        public Masterworks(IEventBus modEventBus, ModContainer modContainer) {
                 // force class loading to ensure registrations happen
-                com.masterarms.masterarms.material.Materials.init();
-                com.masterarms.masterarms.part.type.PartTypes.init();
-                com.masterarms.masterarms.item.Items.init();
+                com.masterworks.masterworks.material.Materials.init();
+                com.masterworks.masterworks.part.type.PartTypes.init();
+                com.masterworks.masterworks.item.Items.init();
 
                 BLOCKS.register(modEventBus);
                 ITEMS.register(modEventBus);

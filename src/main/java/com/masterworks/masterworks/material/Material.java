@@ -1,4 +1,4 @@
-package com.masterarms.masterarms.material;
+package com.masterworks.masterworks.material;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
