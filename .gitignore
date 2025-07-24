@@ -1,4 +1,5 @@
 # eclipse
+eclipse
 bin
 *.launch
 .settings
@@ -21,9 +22,10 @@ build
 .gradle
 
 # other
-eclipse
 run
 runs
 run-data
 
-repo
+# development
+scripts
+external_docs
