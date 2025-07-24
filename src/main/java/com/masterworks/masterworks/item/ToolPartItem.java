@@ -9,7 +9,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.component.DataComponents;
 import com.masterworks.masterworks.datamap.DataMaps;
@@ -21,7 +20,6 @@ public class ToolPartItem extends Item {
 
     public static void init() {}
 
-    // Constructor that accepts Item.Properties (for registration)
     private ToolPartItem(Item.Properties properties) {
         super(properties);
     }
@@ -31,31 +29,13 @@ public class ToolPartItem extends Item {
 
     public static void addAllParts(java.util.function.Consumer<ItemStack> output) {
         // Get all items that have material properties defined
-        for (ResourceLocation itemId : BuiltInRegistries.ITEM.keySet()) {
-            var itemHolder = BuiltInRegistries.ITEM.get(itemId);
-            if (itemHolder.isEmpty())
-                continue;
-
-            // Check if this item has material properties (can be used as a material)
-            ToolPartMaterialProperties materialProps =
-                    itemHolder.get().getData(DataMaps.ITEM_MATERIAL_PROPERTIES);
-            if (materialProps == null)
-                continue;
-
-            // Get all items that have part type properties defined
-            for (ResourceLocation partTypeItemId : BuiltInRegistries.ITEM.keySet()) {
-                var partTypeHolder = BuiltInRegistries.ITEM.get(partTypeItemId);
-                if (partTypeHolder.isEmpty())
+        for (ResourceLocation materialItem : BuiltInRegistries.ITEM.keySet()) {
+            for (ResourceLocation typeItem : BuiltInRegistries.ITEM.keySet()) {
+                if (materialItem == null || typeItem == null) {
                     continue;
+                }
 
-                // Check if this item has part type properties (can be used as a part type)
-                ToolPartTypeProperties partTypeProps =
-                        partTypeHolder.get().getData(DataMaps.ITEM_PART_TYPE_PROPERTIES);
-                if (partTypeProps == null)
-                    continue;
-
-                // Create a part with this material and part type combination
-                ItemStack partStack = create(TOOL_PART.get(), itemId, partTypeItemId);
+                ItemStack partStack = create(TOOL_PART.get(), materialItem, typeItem);
                 output.accept(partStack);
             }
         }
@@ -63,103 +43,72 @@ public class ToolPartItem extends Item {
 
     /**
      * Creates a configured PartItem stack with the specified material and part type items. This is
-     * the main way to create functional parts from the broken template.
+     * the only way to create a valid ToolPartItem stack.
      */
-    public static ItemStack create(Item partItem, ResourceLocation materialItemId,
-            ResourceLocation partTypeItemId) {
-        ItemStack stack = new ItemStack(partItem);
-        stack.set(DataComponents.MATERIAL_ITEM.get(), materialItemId);
-        stack.set(DataComponents.PART_TYPE_ITEM.get(), partTypeItemId);
+    public static ItemStack create(Item item, ResourceLocation materialItem,
+            ResourceLocation typeItem) {
+        ItemStack stack = new ItemStack(item);
+        stack.set(DataComponents.MATERIAL_ITEM.get(), materialItem);
+        stack.set(DataComponents.PART_TYPE_ITEM.get(), typeItem);
         return stack;
     }
 
-    /**
-     * Returns true if this part has both required components and is functional.
-     */
-    public static boolean isValid(ItemStack stack) {
-        return getMaterial(stack) != null && getPartType(stack) != null;
+
+    public static record Properties(ToolPartMaterialProperties materialProperties,
+            ToolPartTypeProperties typeProperties) {
     }
 
-    /**
-     * Gets the material properties from the item stack, or null if not present.
-     */
-    @Nullable
-    public static ToolPartMaterialProperties getMaterial(ItemStack stack) {
-        ResourceLocation materialItemId = stack.get(DataComponents.MATERIAL_ITEM.get());
-        if (materialItemId == null) {
-            return null;
-        }
+    public static record Construction(ResourceLocation materialItem, ResourceLocation typeItem) {
+        public Properties getProperties() {
 
-        var itemHolder = BuiltInRegistries.ITEM.get(materialItemId);
-        if (itemHolder.isEmpty()) {
-            return ToolPartMaterialProperties.DEFAULT;
-        }
+            ToolPartMaterialProperties materialProperties = BuiltInRegistries.ITEM.get(materialItem)
+                    .get().getData(DataMaps.ITEM_TOOL_PART_MATERIAL_PROPERTIES);
 
-        ToolPartMaterialProperties props =
-                itemHolder.get().getData(DataMaps.ITEM_MATERIAL_PROPERTIES);
-        return props != null ? props : ToolPartMaterialProperties.DEFAULT;
+            ToolPartTypeProperties typeProperties = BuiltInRegistries.ITEM.get(typeItem).get()
+                    .getData(DataMaps.ITEM_TOOL_PART_TYPE_PROPERTIES);
+
+            return new Properties(materialProperties, typeProperties);
+        }
     }
 
-    /**
-     * Gets the part type properties from the item stack, or null if not present.
-     */
-    @Nullable
-    public static ToolPartTypeProperties getPartType(ItemStack stack) {
-        ResourceLocation partTypeItemId = stack.get(DataComponents.PART_TYPE_ITEM.get());
-        if (partTypeItemId == null) {
-            return null;
-        }
-
-        var itemHolder = BuiltInRegistries.ITEM.get(partTypeItemId);
-        if (itemHolder.isEmpty()) {
-            return null;
-        }
-
-        ToolPartTypeProperties props = itemHolder.get().getData(DataMaps.ITEM_PART_TYPE_PROPERTIES);
-        return props; // Return null if no properties found
+    public static Construction getConstruction(ItemStack stack) {
+        ResourceLocation materialItem = stack.get(DataComponents.MATERIAL_ITEM.get());
+        ResourceLocation typeItem = stack.get(DataComponents.PART_TYPE_ITEM.get());
+        return new Construction(materialItem, typeItem);
     }
 
-    /**
-     * Calculates the effective durability of this part based on material and part type.
-     */
-    public static int getEffectiveDurability(ItemStack stack) {
-        ToolPartMaterialProperties material = getMaterial(stack);
-        ToolPartTypeProperties partType = getPartType(stack);
 
-        // Return 0 for broken/incomplete parts instead of crashing
-        if (material == null || partType == null) {
+    public static int getToolPartDurability(ItemStack stack) {
+        try {
+            Properties properties = getConstruction(stack).getProperties();
+            return Math.round(properties.materialProperties().durability()
+                    * properties.typeProperties().durabilityMultiplier());
+        } catch (Exception e) {
+            Masterworks.LOGGER.error("Failed to calculate durability for stack: {}", stack, e);
             return 0;
         }
-
-        return Math.round(material.durability() * partType.durabilityMultiplier());
     }
 
-    /**
-     * Calculates the effective damage contribution of this part.
-     */
-    public static float getEffectiveDamage(ItemStack stack) {
-        ToolPartMaterialProperties material = getMaterial(stack);
-        ToolPartTypeProperties partType = getPartType(stack);
-
-        if (material == null || partType == null) {
+    public static float getToolPartDamage(ItemStack stack) {
+        try {
+            Properties properties = getConstruction(stack).getProperties();
+            return properties.materialProperties().attackDamage()
+                    * properties.typeProperties().damageMultiplier();
+        } catch (Exception e) {
+            Masterworks.LOGGER.error("Failed to calculate damage for stack: {}", stack, e);
             return 0.0f;
         }
-
-        return material.attackDamage() * partType.damageMultiplier();
     }
 
-    /**
-     * Calculates the effective attack/mining speed contribution of this part.
-     */
-    public static float getEffectiveActionSpeed(ItemStack stack) {
-        ToolPartMaterialProperties material = getMaterial(stack);
-        ToolPartTypeProperties partType = getPartType(stack);
-
-        if (material == null || partType == null) {
-            return 0.0f;
+    public static float getToolPartActionSpeed(ItemStack stack) {
+        try {
+            Properties properties = getConstruction(stack).getProperties();
+            return properties.materialProperties().actionSpeed()
+                    * properties.typeProperties().actionSpeedMultiplier();
+        } catch (Exception e) {
+            Masterworks.LOGGER.error("Failed to calculate action speed for stack: {}", stack, e);
+            return 1.0f; // Default action speed
         }
-
-        return material.actionSpeed() * partType.actionSpeedMultiplier();
     }
 
     /**
@@ -173,33 +122,33 @@ public class ToolPartItem extends Item {
             @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, context, display, adder, flag);
 
-        ToolPartMaterialProperties material = getMaterial(stack);
-        ToolPartTypeProperties partType = getPartType(stack);
+        try {
+            Properties properties = getConstruction(stack).getProperties();
+            // Add part type info
+            adder.accept(Component.literal("Part Type: " + properties.typeProperties().name())
+                    .withStyle(style -> style.withColor(0x5555FF)));
 
-        if (material == null || partType == null) {
+            // Add material info
+            adder.accept(Component.literal("Material: " + properties.materialProperties().name())
+                    .withStyle(style -> style.withColor(0x55FF55)));
+
+            // Add calculated stats
+            adder.accept(Component.literal("Durability: " + getToolPartDurability(stack))
+                    .withStyle(style -> style.withColor(0xFFFF55)));
+
+            adder.accept(
+                    Component.literal("Damage: " + String.format("%.1f", getToolPartDamage(stack)))
+                            .withStyle(style -> style.withColor(0xFF5555)));
+
+            adder.accept(Component
+                    .literal(
+                            "Action Speed: " + String.format("%.1f", getToolPartActionSpeed(stack)))
+                    .withStyle(style -> style.withColor(0xFF55FF)));
+        } catch (Exception e) {
+
             adder.accept(Component.literal("Missing material or part type data!")
                     .withStyle(style -> style.withColor(0xFF0000)));
             return;
         }
-
-        // Add part type info
-        adder.accept(Component.literal("Part Type: " + partType.name())
-                .withStyle(style -> style.withColor(0x5555FF)));
-
-        // Add material info
-        adder.accept(Component.literal("Material: " + material.name())
-                .withStyle(style -> style.withColor(0x55FF55)));
-
-        // Add calculated stats
-        adder.accept(Component.literal("Durability: " + getEffectiveDurability(stack))
-                .withStyle(style -> style.withColor(0xFFFF55)));
-
-        adder.accept(
-                Component.literal("Damage: " + String.format("%.1f", getEffectiveDamage(stack)))
-                        .withStyle(style -> style.withColor(0xFF5555)));
-
-        adder.accept(Component
-                .literal("Action Speed: " + String.format("%.1f", getEffectiveActionSpeed(stack)))
-                .withStyle(style -> style.withColor(0xFF55FF)));
     }
 }
