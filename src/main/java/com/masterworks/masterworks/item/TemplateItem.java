@@ -5,8 +5,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import com.masterworks.masterworks.Masterworks;
 
 /**
- * Template items that serve as the base items for part types. These items will have part type
- * properties attached via data maps.
+ * Template items that serve as the base items for part types. They are currently placeholders that
+ * lack functionality; this is intended.
  */
 public class TemplateItem extends Item {
 
