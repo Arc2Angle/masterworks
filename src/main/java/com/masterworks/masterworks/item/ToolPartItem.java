@@ -17,17 +17,17 @@ import com.masterworks.masterworks.properties.tool.part.material.ToolPartMateria
 import com.masterworks.masterworks.properties.tool.part.type.ToolPartTypeProperties;
 import java.util.function.Consumer;
 
-public class PartItem extends Item {
+public class ToolPartItem extends Item {
 
     public static void init() {}
 
     // Constructor that accepts Item.Properties (for registration)
-    private PartItem(Item.Properties properties) {
+    private ToolPartItem(Item.Properties properties) {
         super(properties);
     }
 
-    public static final DeferredHolder<Item, PartItem> PART =
-            Masterworks.ITEMS.registerItem("part", PartItem::new);
+    public static final DeferredHolder<Item, ToolPartItem> TOOL_PART =
+            Masterworks.ITEMS.registerItem("tool_part", ToolPartItem::new);
 
     public static void addAllParts(java.util.function.Consumer<ItemStack> output) {
         // Get all items that have material properties defined
@@ -55,7 +55,7 @@ public class PartItem extends Item {
                     continue;
 
                 // Create a part with this material and part type combination
-                ItemStack partStack = create(PART.get(), itemId, partTypeItemId);
+                ItemStack partStack = create(TOOL_PART.get(), itemId, partTypeItemId);
                 output.accept(partStack);
             }
         }
@@ -71,14 +71,6 @@ public class PartItem extends Item {
         stack.set(DataComponents.MATERIAL_ITEM.get(), materialItemId);
         stack.set(DataComponents.PART_TYPE_ITEM.get(), partTypeItemId);
         return stack;
-    }
-
-    /**
-     * Creates a configured PartItem stack using Item objects (convenience method).
-     */
-    public static ItemStack create(Item partItem, Item materialItem, Item partTypeItem) {
-        return create(partItem, BuiltInRegistries.ITEM.getKey(materialItem),
-                BuiltInRegistries.ITEM.getKey(partTypeItem));
     }
 
     /**

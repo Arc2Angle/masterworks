@@ -7,9 +7,9 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import com.masterworks.masterworks.client.ClientEvents;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = Masterworks.MOD_ID, dist = Dist.CLIENT)
@@ -24,10 +24,6 @@ public class MasterworksClient {
         // Do not forget to add translations for your config options to the en_us.json
         // file.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-
-        // Register client-side events for dynamic item rendering
-        modEventBus.addListener(ClientEvents::registerSelectItemModelProperties);
-        modEventBus.addListener(ClientEvents::registerItemTintSources);
     }
 
     @SubscribeEvent

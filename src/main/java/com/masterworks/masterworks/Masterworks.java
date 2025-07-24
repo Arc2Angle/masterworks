@@ -31,21 +31,22 @@ public class Masterworks {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
-    public static final Supplier<CreativeModeTab> PARTS_TAB = CREATIVE_MODE_TABS.register("parts",
-            () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup." + MOD_ID + ".parts"))
-                    .icon(() -> new ItemStack(PartItem.PART.get()))
-                    .displayItems((params, output) -> {
-                        PartItem.addAllParts((itemStack) -> {
-                            output.accept(itemStack);
-                        });
+    public static final Supplier<CreativeModeTab> PARTS_TAB =
+            CREATIVE_MODE_TABS.register("tool_parts",
+                    () -> CreativeModeTab.builder()
+                            .title(Component.translatable("itemGroup." + MOD_ID + ".tool_parts"))
+                            .icon(() -> new ItemStack(ToolPartItem.TOOL_PART.get()))
+                            .displayItems((params, output) -> {
+                                ToolPartItem.addAllParts((itemStack) -> {
+                                    output.accept(itemStack);
+                                });
 
-                    }).build());
+                            }).build());
 
     public Masterworks(IEventBus modEventBus, ModContainer modContainer) {
         // force class loading to ensure registrations happen
         TemplateItem.init();
-        PartItem.init();
+        ToolPartItem.init();
 
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);

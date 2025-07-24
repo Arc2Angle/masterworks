@@ -1,4 +1,7 @@
 {
-    "parent": "minecraft:item/generated",
-    "loader": "masterworks:tool_part_loader"
+    "type": "minecraft:special",
+    "base": "minecraft:item/generated",
+    "model": {
+        "type": "masterworks:tool_part_renderer"
+    }
 }
