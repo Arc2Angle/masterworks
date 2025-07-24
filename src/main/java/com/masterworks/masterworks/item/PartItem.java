@@ -13,8 +13,8 @@ import javax.annotation.Nullable;
 import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.component.DataComponents;
 import com.masterworks.masterworks.datamap.DataMaps;
-import com.masterworks.masterworks.material.MaterialProperties;
-import com.masterworks.masterworks.part.type.PartTypeProperties;
+import com.masterworks.masterworks.properties.tool.part.material.ToolPartMaterialProperties;
+import com.masterworks.masterworks.properties.tool.part.type.ToolPartTypeProperties;
 import java.util.function.Consumer;
 
 public class PartItem extends Item {
@@ -37,7 +37,7 @@ public class PartItem extends Item {
                 continue;
 
             // Check if this item has material properties (can be used as a material)
-            MaterialProperties materialProps =
+            ToolPartMaterialProperties materialProps =
                     itemHolder.get().getData(DataMaps.ITEM_MATERIAL_PROPERTIES);
             if (materialProps == null)
                 continue;
@@ -49,7 +49,7 @@ public class PartItem extends Item {
                     continue;
 
                 // Check if this item has part type properties (can be used as a part type)
-                PartTypeProperties partTypeProps =
+                ToolPartTypeProperties partTypeProps =
                         partTypeHolder.get().getData(DataMaps.ITEM_PART_TYPE_PROPERTIES);
                 if (partTypeProps == null)
                     continue;
@@ -92,7 +92,7 @@ public class PartItem extends Item {
      * Gets the material properties from the item stack, or null if not present.
      */
     @Nullable
-    public static MaterialProperties getMaterial(ItemStack stack) {
+    public static ToolPartMaterialProperties getMaterial(ItemStack stack) {
         ResourceLocation materialItemId = stack.get(DataComponents.MATERIAL_ITEM.get());
         if (materialItemId == null) {
             return null;
@@ -100,18 +100,19 @@ public class PartItem extends Item {
 
         var itemHolder = BuiltInRegistries.ITEM.get(materialItemId);
         if (itemHolder.isEmpty()) {
-            return MaterialProperties.DEFAULT;
+            return ToolPartMaterialProperties.DEFAULT;
         }
 
-        MaterialProperties props = itemHolder.get().getData(DataMaps.ITEM_MATERIAL_PROPERTIES);
-        return props != null ? props : MaterialProperties.DEFAULT;
+        ToolPartMaterialProperties props =
+                itemHolder.get().getData(DataMaps.ITEM_MATERIAL_PROPERTIES);
+        return props != null ? props : ToolPartMaterialProperties.DEFAULT;
     }
 
     /**
      * Gets the part type properties from the item stack, or null if not present.
      */
     @Nullable
-    public static PartTypeProperties getPartType(ItemStack stack) {
+    public static ToolPartTypeProperties getPartType(ItemStack stack) {
         ResourceLocation partTypeItemId = stack.get(DataComponents.PART_TYPE_ITEM.get());
         if (partTypeItemId == null) {
             return null;
@@ -122,7 +123,7 @@ public class PartItem extends Item {
             return null;
         }
 
-        PartTypeProperties props = itemHolder.get().getData(DataMaps.ITEM_PART_TYPE_PROPERTIES);
+        ToolPartTypeProperties props = itemHolder.get().getData(DataMaps.ITEM_PART_TYPE_PROPERTIES);
         return props; // Return null if no properties found
     }
 
@@ -130,8 +131,8 @@ public class PartItem extends Item {
      * Calculates the effective durability of this part based on material and part type.
      */
     public static int getEffectiveDurability(ItemStack stack) {
-        MaterialProperties material = getMaterial(stack);
-        PartTypeProperties partType = getPartType(stack);
+        ToolPartMaterialProperties material = getMaterial(stack);
+        ToolPartTypeProperties partType = getPartType(stack);
 
         // Return 0 for broken/incomplete parts instead of crashing
         if (material == null || partType == null) {
@@ -145,8 +146,8 @@ public class PartItem extends Item {
      * Calculates the effective damage contribution of this part.
      */
     public static float getEffectiveDamage(ItemStack stack) {
-        MaterialProperties material = getMaterial(stack);
-        PartTypeProperties partType = getPartType(stack);
+        ToolPartMaterialProperties material = getMaterial(stack);
+        ToolPartTypeProperties partType = getPartType(stack);
 
         if (material == null || partType == null) {
             return 0.0f;
@@ -159,8 +160,8 @@ public class PartItem extends Item {
      * Calculates the effective attack/mining speed contribution of this part.
      */
     public static float getEffectiveActionSpeed(ItemStack stack) {
-        MaterialProperties material = getMaterial(stack);
-        PartTypeProperties partType = getPartType(stack);
+        ToolPartMaterialProperties material = getMaterial(stack);
+        ToolPartTypeProperties partType = getPartType(stack);
 
         if (material == null || partType == null) {
             return 0.0f;
@@ -180,8 +181,8 @@ public class PartItem extends Item {
             @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, context, display, adder, flag);
 
-        MaterialProperties material = getMaterial(stack);
-        PartTypeProperties partType = getPartType(stack);
+        ToolPartMaterialProperties material = getMaterial(stack);
+        ToolPartTypeProperties partType = getPartType(stack);
 
         if (material == null || partType == null) {
             adder.accept(Component.literal("Missing material or part type data!")
