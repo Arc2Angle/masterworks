@@ -2,18 +2,21 @@
     "values": {
         "masterworks:blade_template": {
             "name": "Blade",
+            "shape": "masterworks:blade",
             "durability_multiplier": 0.3,
             "damage_multiplier": 0.8,
             "action_speed_multiplier": 0.5
         },
         "masterworks:binding_template": {
             "name": "Binding",
+            "shape": "masterworks:binding",
             "durability_multiplier": 0.5,
             "damage_multiplier": 0.2,
             "action_speed_multiplier": 0.0
         },
         "masterworks:handle_template": {
             "name": "Handle",
+            "shape": "masterworks:handle",
             "durability_multiplier": 0.2,
             "damage_multiplier": 0.0,
             "action_speed_multiplier": 0.5

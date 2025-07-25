@@ -92,7 +92,7 @@ public class ToolPartItem extends Item {
     public static float getToolPartDamage(ItemStack stack) {
         try {
             Properties properties = getConstruction(stack).getProperties();
-            return properties.materialProperties().attackDamage()
+            return properties.materialProperties().damage()
                     * properties.typeProperties().damageMultiplier();
         } catch (Exception e) {
             Masterworks.LOGGER.error("Failed to calculate damage for stack: {}", stack, e);
