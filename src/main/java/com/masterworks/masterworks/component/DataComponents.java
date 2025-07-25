@@ -15,12 +15,12 @@ public final class DataComponents {
             .createDataComponents(Registries.DATA_COMPONENT_TYPE, Masterworks.MOD_ID);
 
     public static final Supplier<DataComponentType<ResourceLocation>> MATERIAL_ITEM =
-            DATA_COMPONENTS.registerComponentType("material_item",
+            DATA_COMPONENTS.registerComponentType("tool_part_material_item",
                     builder -> builder.networkSynchronized(ResourceLocation.STREAM_CODEC)
                             .persistent(ResourceLocation.CODEC));
 
     public static final Supplier<DataComponentType<ResourceLocation>> PART_TYPE_ITEM =
-            DATA_COMPONENTS.registerComponentType("part_type_item",
+            DATA_COMPONENTS.registerComponentType("tool_part_type_item",
                     builder -> builder.networkSynchronized(ResourceLocation.STREAM_CODEC)
                             .persistent(ResourceLocation.CODEC));
 

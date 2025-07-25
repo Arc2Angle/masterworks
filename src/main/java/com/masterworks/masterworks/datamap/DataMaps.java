@@ -10,17 +10,20 @@ import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
 public class DataMaps {
+    public static final ResourceLocation ITEM_TOOL_PART_MATERIAL_PROPERTIES_LOCATION =
+            ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID,
+                    "tool/part/material_properties");
+
     public static final DataMapType<Item, ToolPartMaterialProperties> ITEM_TOOL_PART_MATERIAL_PROPERTIES =
-            DataMapType.builder(
-                    ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID,
-                            "tool_part_material_properties"),
-                    Registries.ITEM, ToolPartMaterialProperties.CODEC).build();
+            DataMapType.builder(ITEM_TOOL_PART_MATERIAL_PROPERTIES_LOCATION, Registries.ITEM,
+                    ToolPartMaterialProperties.CODEC).build();
+
+    public static final ResourceLocation ITEM_TOOL_PART_TYPE_PROPERTIES_LOCATION =
+            ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID, "tool/part/type_properties");
 
     public static final DataMapType<Item, ToolPartTypeProperties> ITEM_TOOL_PART_TYPE_PROPERTIES =
-            DataMapType.builder(
-                    ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID,
-                            "tool_part_type_properties"),
-                    Registries.ITEM, ToolPartTypeProperties.CODEC).build();
+            DataMapType.builder(ITEM_TOOL_PART_TYPE_PROPERTIES_LOCATION, Registries.ITEM,
+                    ToolPartTypeProperties.CODEC).build();
 
     public static void register(RegisterDataMapTypesEvent event) {
         event.register(ITEM_TOOL_PART_MATERIAL_PROPERTIES);

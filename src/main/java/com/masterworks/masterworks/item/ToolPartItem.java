@@ -29,9 +29,16 @@ public class ToolPartItem extends Item {
 
     public static void addAllParts(java.util.function.Consumer<ItemStack> output) {
         // Get all items that have material properties defined
+
         for (ResourceLocation materialItem : BuiltInRegistries.ITEM.keySet()) {
+            if (BuiltInRegistries.ITEM.get(materialItem).get()
+                    .getData(DataMaps.ITEM_TOOL_PART_MATERIAL_PROPERTIES) == null) {
+                continue;
+            }
+
             for (ResourceLocation typeItem : BuiltInRegistries.ITEM.keySet()) {
-                if (materialItem == null || typeItem == null) {
+                if (BuiltInRegistries.ITEM.get(typeItem).get()
+                        .getData(DataMaps.ITEM_TOOL_PART_TYPE_PROPERTIES) == null) {
                     continue;
                 }
 
