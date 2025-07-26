@@ -5,14 +5,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 
-public record ToolPartMaterialProperties(String name, ResourceLocation palate, int durability,
+public record ToolPartMaterialProperties(String name, ResourceLocation palette, int durability,
         float actionSpeed, float damage, float armor, float toughness, int enchantability) {
 
     public static final Codec<ToolPartMaterialProperties> CODEC =
             RecordCodecBuilder.create(instance -> instance
                     .group(Codec.STRING.fieldOf("name").forGetter(ToolPartMaterialProperties::name),
-                            ResourceLocation.CODEC.fieldOf("palate")
-                                    .forGetter(ToolPartMaterialProperties::palate),
+                            ResourceLocation.CODEC.fieldOf("palette")
+                                    .forGetter(ToolPartMaterialProperties::palette),
                             Codec.INT
                                     .fieldOf("durability")
                                     .forGetter(ToolPartMaterialProperties::durability),
@@ -27,6 +27,10 @@ public record ToolPartMaterialProperties(String name, ResourceLocation palate, i
                             Codec.INT.fieldOf("enchantability")
                                     .forGetter(ToolPartMaterialProperties::enchantability))
                     .apply(instance, ToolPartMaterialProperties::new));
+
+    public ResourceLocation getQualifiedPalette() {
+        return palette.withPrefix("textures/part/material/").withSuffix(".png");
+    }
 
     public static final ToolPartMaterialProperties DEFAULT = new ToolPartMaterialProperties(
             "Unknown", ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID, "default"), 1,

@@ -2,7 +2,7 @@
     "values": {
         "minecraft:oak_planks": {
             "name": "Wood",
-            "palate": "masterworks:wood",
+            "palette": "masterworks:wood",
             "durability": 59,
             "action_speed": 2.0,
             "damage": 3.0,
@@ -12,7 +12,7 @@
         },
         "minecraft:leather": {
             "name": "Leather",
-            "palate": "masterworks:default",
+            "palette": "masterworks:default",
             "durability": 59,
             "action_speed": 2.0,
             "damage": 3.0,
@@ -22,7 +22,7 @@
         },
         "minecraft:stone": {
             "name": "Stone",
-            "palate": "masterworks:default",
+            "palette": "masterworks:default",
             "durability": 131,
             "action_speed": 4.0,
             "damage": 4.0,
@@ -32,7 +32,7 @@
         },
         "minecraft:chain": {
             "name": "Chainmail",
-            "palate": "masterworks:default",
+            "palette": "masterworks:default",
             "durability": 131,
             "action_speed": 4.0,
             "damage": 4.0,
@@ -42,7 +42,7 @@
         },
         "minecraft:iron_ingot": {
             "name": "Iron",
-            "palate": "masterworks:default",
+            "palette": "masterworks:default",
             "durability": 250,
             "action_speed": 6.0,
             "damage": 6.0,
@@ -52,7 +52,7 @@
         },
         "minecraft:gold_ingot": {
             "name": "Gold",
-            "palate": "masterworks:gold",
+            "palette": "masterworks:gold",
             "durability": 32,
             "action_speed": 12.0,
             "damage": 4.0,
@@ -62,7 +62,7 @@
         },
         "minecraft:diamond": {
             "name": "Diamond",
-            "palate": "masterworks:diamond",
+            "palette": "masterworks:diamond",
             "durability": 1561,
             "action_speed": 8.0,
             "damage": 7.0,

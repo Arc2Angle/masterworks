@@ -27,18 +27,18 @@ public class ToolPartItem extends Item {
     public static final DeferredHolder<Item, ToolPartItem> TOOL_PART =
             Masterworks.ITEMS.registerItem("tool_part", ToolPartItem::new);
 
-    public static void addAllParts(java.util.function.Consumer<ItemStack> output) {
-        // Get all items that have material properties defined
-
+    public static void addAllPartItemStacks(java.util.function.Consumer<ItemStack> output) {
         for (ResourceLocation materialItem : BuiltInRegistries.ITEM.keySet()) {
-            if (BuiltInRegistries.ITEM.get(materialItem).get()
-                    .getData(DataMaps.ITEM_TOOL_PART_MATERIAL_PROPERTIES) == null) {
+            if (BuiltInRegistries.ITEM.get(materialItem)
+                    .map(item -> item.getData(DataMaps.ITEM_TOOL_PART_MATERIAL_PROPERTIES))
+                    .isEmpty()) {
                 continue;
             }
 
             for (ResourceLocation typeItem : BuiltInRegistries.ITEM.keySet()) {
-                if (BuiltInRegistries.ITEM.get(typeItem).get()
-                        .getData(DataMaps.ITEM_TOOL_PART_TYPE_PROPERTIES) == null) {
+                if (BuiltInRegistries.ITEM.get(typeItem)
+                        .map(item -> item.getData(DataMaps.ITEM_TOOL_PART_TYPE_PROPERTIES))
+                        .isEmpty()) {
                     continue;
                 }
 
@@ -61,18 +61,27 @@ public class ToolPartItem extends Item {
     }
 
 
-    public static record Properties(ToolPartMaterialProperties materialProperties,
-            ToolPartTypeProperties typeProperties) {
+    public static record Properties(ToolPartMaterialProperties material,
+            ToolPartTypeProperties type) {
+
+        public ToolPartMaterialProperties materialOrDefault() {
+            return material != null ? material : ToolPartMaterialProperties.DEFAULT;
+        }
+
+        public ToolPartTypeProperties typeOrDefault() {
+            return type != null ? type : ToolPartTypeProperties.DEFAULT;
+        }
     }
 
     public static record Construction(ResourceLocation materialItem, ResourceLocation typeItem) {
         public Properties getProperties() {
-
             ToolPartMaterialProperties materialProperties = BuiltInRegistries.ITEM.get(materialItem)
-                    .get().getData(DataMaps.ITEM_TOOL_PART_MATERIAL_PROPERTIES);
+                    .map(item -> item.getData(DataMaps.ITEM_TOOL_PART_MATERIAL_PROPERTIES))
+                    .orElse(null);
 
-            ToolPartTypeProperties typeProperties = BuiltInRegistries.ITEM.get(typeItem).get()
-                    .getData(DataMaps.ITEM_TOOL_PART_TYPE_PROPERTIES);
+            ToolPartTypeProperties typeProperties = BuiltInRegistries.ITEM.get(typeItem)
+                    .map(item -> item.getData(DataMaps.ITEM_TOOL_PART_TYPE_PROPERTIES))
+                    .orElse(null);
 
             return new Properties(materialProperties, typeProperties);
         }
@@ -88,8 +97,8 @@ public class ToolPartItem extends Item {
     public static int getToolPartDurability(ItemStack stack) {
         try {
             Properties properties = getConstruction(stack).getProperties();
-            return Math.round(properties.materialProperties().durability()
-                    * properties.typeProperties().durabilityMultiplier());
+            return Math.round(
+                    properties.material().durability() * properties.type().durabilityMultiplier());
         } catch (Exception e) {
             Masterworks.LOGGER.error("Failed to calculate durability for stack: {}", stack, e);
             return 0;
@@ -99,8 +108,7 @@ public class ToolPartItem extends Item {
     public static float getToolPartDamage(ItemStack stack) {
         try {
             Properties properties = getConstruction(stack).getProperties();
-            return properties.materialProperties().damage()
-                    * properties.typeProperties().damageMultiplier();
+            return properties.material().damage() * properties.type().damageMultiplier();
         } catch (Exception e) {
             Masterworks.LOGGER.error("Failed to calculate damage for stack: {}", stack, e);
             return 0.0f;
@@ -110,8 +118,7 @@ public class ToolPartItem extends Item {
     public static float getToolPartActionSpeed(ItemStack stack) {
         try {
             Properties properties = getConstruction(stack).getProperties();
-            return properties.materialProperties().actionSpeed()
-                    * properties.typeProperties().actionSpeedMultiplier();
+            return properties.material().actionSpeed() * properties.type().actionSpeedMultiplier();
         } catch (Exception e) {
             Masterworks.LOGGER.error("Failed to calculate action speed for stack: {}", stack, e);
             return 1.0f; // Default action speed
@@ -132,11 +139,11 @@ public class ToolPartItem extends Item {
         try {
             Properties properties = getConstruction(stack).getProperties();
             // Add part type info
-            adder.accept(Component.literal("Part Type: " + properties.typeProperties().name())
+            adder.accept(Component.literal("Part Type: " + properties.type().name())
                     .withStyle(style -> style.withColor(0x5555FF)));
 
             // Add material info
-            adder.accept(Component.literal("Material: " + properties.materialProperties().name())
+            adder.accept(Component.literal("Material: " + properties.material().name())
                     .withStyle(style -> style.withColor(0x55FF55)));
 
             // Add calculated stats

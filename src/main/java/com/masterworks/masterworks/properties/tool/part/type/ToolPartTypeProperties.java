@@ -21,6 +21,11 @@ public record ToolPartTypeProperties(String name, ResourceLocation shape,
                                     .forGetter(ToolPartTypeProperties::actionSpeedMultiplier))
                     .apply(instance, ToolPartTypeProperties::new));
 
+
+    public ResourceLocation getQualifiedShape() {
+        return shape.withPrefix("textures/part/type/").withSuffix(".png");
+    }
+
     public static final ToolPartTypeProperties DEFAULT = new ToolPartTypeProperties("Unknown",
             ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID, "default"), 0.0f, 0.0f, 0.0f);
 }
