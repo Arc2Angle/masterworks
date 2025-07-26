@@ -1,0 +1,9 @@
+{
+    "model": {
+        "type": "minecraft:special",
+        "base": "masterworks:item/tool_part",
+        "model": {
+            "type": "masterworks:tool_part_renderer"
+        }
+    }
+}

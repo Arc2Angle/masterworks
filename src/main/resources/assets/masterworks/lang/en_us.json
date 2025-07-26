@@ -1,4 +1,5 @@
 {
+    "item.masterworks.tool_part": "Tool Part",
     "itemGroup.masterworks.tool_parts": "Tool Parts",
     "masterworks.configuration.title": "Masterworks Configs",
     "masterworks.configuration.section.masterworks.common.toml": "Masterworks Configs",
