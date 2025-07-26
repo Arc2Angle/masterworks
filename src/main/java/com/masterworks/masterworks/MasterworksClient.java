@@ -1,5 +1,7 @@
 package com.masterworks.masterworks;
 
+import com.masterworks.masterworks.client.ToolPartSpecialRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -7,7 +9,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -28,4 +30,11 @@ public class MasterworksClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {}
+
+    @SubscribeEvent
+    public static void registerSpecialRenderers(RegisterSpecialModelRendererEvent event) {
+        event.register(
+                ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID, "tool_part_renderer"),
+                ToolPartSpecialRenderer.Unbaked.MAP_CODEC);
+    }
 }

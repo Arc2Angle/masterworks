@@ -3,6 +3,7 @@ package com.masterworks.masterworks;
 import org.slf4j.Logger;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import com.mojang.logging.LogUtils;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
@@ -37,7 +38,7 @@ public class Masterworks {
                             .title(Component.translatable("itemGroup." + MOD_ID + ".tool_parts"))
                             .icon(() -> new ItemStack(ToolPartItem.TOOL_PART.get()))
                             .displayItems((params, output) -> {
-                                ToolPartItem.addAllParts((itemStack) -> {
+                                ToolPartItem.addAllPartItemStacks((itemStack) -> {
                                     output.accept(itemStack);
                                 });
 
@@ -61,5 +62,9 @@ public class Masterworks {
     @SubscribeEvent
     public void registerDataMapTypes(RegisterDataMapTypesEvent event) {
         DataMaps.register(event);
+    }
+
+    public static ResourceLocation resourceLocation(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }
