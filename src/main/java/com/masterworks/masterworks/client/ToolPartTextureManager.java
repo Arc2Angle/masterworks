@@ -20,15 +20,20 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 public class ToolPartTextureManager implements ResourceManagerReloadListener {
 
+    private record DynamicResourceLocation(DynamicTexture texture,
+            ResourceLocation resourceLocation) {
+    }
+
     private final Map<ToolPartItem.Construction, DynamicResourceLocation> cache =
             new WeakHashMap<>();
     private ResourceManager resourceManager;
-    // private TextureManager textureManager;
+    private TextureManager textureManager;
     private Resource defaultPalette, defaultShape;
 
 
     private ToolPartTextureManager() {
         resourceManager = Minecraft.getInstance().getResourceManager();
+        textureManager = Minecraft.getInstance().getTextureManager();
 
         defaultPalette = resourceManager
                 .getResource(ToolPartMaterialProperties.DEFAULT.getQualifiedPalette())
@@ -75,8 +80,7 @@ public class ToolPartTextureManager implements ResourceManagerReloadListener {
 
             try {
                 DynamicTexture texture = new DynamicTexture(() -> textureName, pixels);
-                Minecraft.getInstance().getTextureManager().register(location, texture);
-
+                textureManager.register(location, texture);
                 return new DynamicResourceLocation(texture, location);
             } finally {
                 palette.close();
@@ -117,11 +121,6 @@ public class ToolPartTextureManager implements ResourceManagerReloadListener {
         }
 
         return result;
-    }
-
-
-    private record DynamicResourceLocation(DynamicTexture texture,
-            ResourceLocation resourceLocation) {
     }
 
 }
