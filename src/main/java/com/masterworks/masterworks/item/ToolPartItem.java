@@ -3,6 +3,7 @@ package com.masterworks.masterworks.item;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -15,6 +16,7 @@ import com.masterworks.masterworks.datamap.DataMaps;
 import com.masterworks.masterworks.properties.tool.part.material.ToolPartMaterialProperties;
 import com.masterworks.masterworks.properties.tool.part.type.ToolPartTypeProperties;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ToolPartItem extends Item {
 
@@ -27,26 +29,35 @@ public class ToolPartItem extends Item {
     public static final DeferredHolder<Item, ToolPartItem> TOOL_PART =
             Masterworks.ITEMS.registerItem("tool_part", ToolPartItem::new);
 
-    public static void addAllPartItemStacks(java.util.function.Consumer<ItemStack> output) {
-        for (ResourceLocation materialItem : BuiltInRegistries.ITEM.keySet()) {
-            if (BuiltInRegistries.ITEM.get(materialItem)
-                    .map(item -> item.getData(DataMaps.ITEM_TOOL_PART_MATERIAL_PROPERTIES))
-                    .isEmpty()) {
-                continue;
-            }
+    public static final Supplier<CreativeModeTab> PARTS_TAB =
+            Masterworks.CREATIVE_MODE_TABS.register("tool_parts", () -> CreativeModeTab.builder()
+                    .title(Component
+                            .translatable("itemGroup." + Masterworks.MOD_ID + ".tool_parts"))
+                    .icon(() -> new ItemStack(ToolPartItem.TOOL_PART.get()))
+                    .displayItems((params, output) -> {
+                        for (ResourceLocation materialItem : BuiltInRegistries.ITEM.keySet()) {
+                            if (BuiltInRegistries.ITEM.get(materialItem)
+                                    .map(item -> item
+                                            .getData(DataMaps.ITEM_TOOL_PART_MATERIAL_PROPERTIES))
+                                    .isEmpty()) {
+                                continue;
+                            }
 
-            for (ResourceLocation typeItem : BuiltInRegistries.ITEM.keySet()) {
-                if (BuiltInRegistries.ITEM.get(typeItem)
-                        .map(item -> item.getData(DataMaps.ITEM_TOOL_PART_TYPE_PROPERTIES))
-                        .isEmpty()) {
-                    continue;
-                }
+                            for (ResourceLocation typeItem : BuiltInRegistries.ITEM.keySet()) {
+                                if (BuiltInRegistries.ITEM.get(typeItem)
+                                        .map(item -> item
+                                                .getData(DataMaps.ITEM_TOOL_PART_TYPE_PROPERTIES))
+                                        .isEmpty()) {
+                                    continue;
+                                }
 
-                ItemStack partStack = create(TOOL_PART.get(), materialItem, typeItem);
-                output.accept(partStack);
-            }
-        }
-    }
+                                ItemStack partStack =
+                                        create(TOOL_PART.get(), materialItem, typeItem);
+                                output.accept(partStack);
+                            }
+                        }
+                    }).build());
+
 
     /**
      * Creates a configured PartItem stack with the specified material and part type items. This is

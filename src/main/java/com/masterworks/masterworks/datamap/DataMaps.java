@@ -11,15 +11,14 @@ import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
 public class DataMaps {
     public static final ResourceLocation ITEM_TOOL_PART_MATERIAL_PROPERTIES_LOCATION =
-            ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID,
-                    "tool/part/material_properties");
+            Masterworks.resourceLocation("tool/part/material_properties");
 
     public static final DataMapType<Item, ToolPartMaterialProperties> ITEM_TOOL_PART_MATERIAL_PROPERTIES =
             DataMapType.builder(ITEM_TOOL_PART_MATERIAL_PROPERTIES_LOCATION, Registries.ITEM,
                     ToolPartMaterialProperties.CODEC).build();
 
     public static final ResourceLocation ITEM_TOOL_PART_TYPE_PROPERTIES_LOCATION =
-            ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID, "tool/part/type_properties");
+            Masterworks.resourceLocation("tool/part/type_properties");
 
     public static final DataMapType<Item, ToolPartTypeProperties> ITEM_TOOL_PART_TYPE_PROPERTIES =
             DataMapType.builder(ITEM_TOOL_PART_TYPE_PROPERTIES_LOCATION, Registries.ITEM,

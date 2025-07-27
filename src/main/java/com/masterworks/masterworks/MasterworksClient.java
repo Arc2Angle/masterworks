@@ -1,7 +1,6 @@
 package com.masterworks.masterworks;
 
 import com.masterworks.masterworks.client.ToolPartSpecialRenderer;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -33,8 +32,7 @@ public class MasterworksClient {
 
     @SubscribeEvent
     public static void registerSpecialRenderers(RegisterSpecialModelRendererEvent event) {
-        event.register(
-                ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID, "tool_part_renderer"),
+        event.register(Masterworks.resourceLocation("tool_part_renderer"),
                 ToolPartSpecialRenderer.Unbaked.MAP_CODEC);
     }
 }

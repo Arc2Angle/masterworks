@@ -33,6 +33,5 @@ public record ToolPartMaterialProperties(String name, ResourceLocation palette, 
     }
 
     public static final ToolPartMaterialProperties DEFAULT = new ToolPartMaterialProperties(
-            "Unknown", ResourceLocation.fromNamespaceAndPath(Masterworks.MOD_ID, "default"), 1,
-            1.0f, 0.0f, 0.0f, 0.0f, 0);
+            "Unknown", Masterworks.resourceLocation("default"), 1, 1.0f, 0.0f, 0.0f, 0.0f, 0);
 }

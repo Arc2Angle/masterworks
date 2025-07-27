@@ -2,13 +2,10 @@ package com.masterworks.masterworks;
 
 import org.slf4j.Logger;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.logging.LogUtils;
-import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -31,18 +28,6 @@ public class Masterworks {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
-
-    public static final Supplier<CreativeModeTab> PARTS_TAB =
-            CREATIVE_MODE_TABS.register("tool_parts",
-                    () -> CreativeModeTab.builder()
-                            .title(Component.translatable("itemGroup." + MOD_ID + ".tool_parts"))
-                            .icon(() -> new ItemStack(ToolPartItem.TOOL_PART.get()))
-                            .displayItems((params, output) -> {
-                                ToolPartItem.addAllPartItemStacks((itemStack) -> {
-                                    output.accept(itemStack);
-                                });
-
-                            }).build());
 
     public Masterworks(IEventBus modEventBus, ModContainer modContainer) {
         // force class loading to ensure registrations happen

@@ -1,29 +1,19 @@
 package com.masterworks.masterworks.client;
 
-import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.item.ToolPartItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.ModelPart.Vertex;
-import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.entity.DisplayRenderer.ItemDisplayRenderer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.item.ItemStackRenderState.FoilType;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -43,7 +33,6 @@ public class ToolPartSpecialRenderer implements SpecialModelRenderer<ToolPartIte
         @Override
         @Nonnull
         public SpecialModelRenderer<?> bake(@Nonnull EntityModelSet modelSet) {
-            Masterworks.LOGGER.debug("Baking ToolPartSpecialRenderer");
             return new ToolPartSpecialRenderer();
         }
     }
