@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.datamap;
 
 import com.masterworks.masterworks.Masterworks;
+import com.masterworks.masterworks.properties.Constructs;
 import com.masterworks.masterworks.properties.tool.part.material.ToolPartMaterialProperties;
 import com.masterworks.masterworks.properties.tool.part.type.ToolPartTypeProperties;
 import net.minecraft.core.registries.Registries;
@@ -24,8 +25,13 @@ public class DataMaps {
             DataMapType.builder(ITEM_TOOL_PART_TYPE_PROPERTIES_LOCATION, Registries.ITEM,
                     ToolPartTypeProperties.CODEC).build();
 
+    public static final DataMapType<Item, Constructs> CONSTRUCTS = DataMapType
+            .builder(Masterworks.resourceLocation("constructs"), Registries.ITEM, Constructs.CODEC)
+            .build();
+
     public static void register(RegisterDataMapTypesEvent event) {
         event.register(ITEM_TOOL_PART_MATERIAL_PROPERTIES);
         event.register(ITEM_TOOL_PART_TYPE_PROPERTIES);
+        event.register(CONSTRUCTS);
     }
 }

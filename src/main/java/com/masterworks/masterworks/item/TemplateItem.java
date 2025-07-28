@@ -16,13 +16,22 @@ public class TemplateItem extends Item {
         super(properties);
     }
 
-    // Template items for different part types
-    public static final DeferredHolder<Item, TemplateItem> BLADE_TEMPLATE =
-            Masterworks.ITEMS.registerItem("blade_template", TemplateItem::new);
-
     public static final DeferredHolder<Item, TemplateItem> HANDLE_TEMPLATE =
-            Masterworks.ITEMS.registerItem("handle_template", TemplateItem::new);
+            Masterworks.ITEMS.registerItem("rod_template", TemplateItem::new);
 
     public static final DeferredHolder<Item, TemplateItem> BINDING_TEMPLATE =
             Masterworks.ITEMS.registerItem("binding_template", TemplateItem::new);
+
+    public static final DeferredHolder<Item, TemplateItem> PICKAXE_HEAD_TEMPLATE =
+            Masterworks.ITEMS.registerItem("pickaxe_head_template", TemplateItem::new);
+
+    public static final DeferredHolder<Item, TemplateItem> PICKAXE_TEMPLATE =
+            Masterworks.ITEMS.registerItem("pickaxe_template", TemplateItem::new);
+
+    public static final DeferredHolder<Item, TemplateItem> SWORD_BLADE_TEMPLATE =
+            Masterworks.ITEMS.registerItem("sword_blade_template", TemplateItem::new);
+
+    public static final DeferredHolder<Item, TemplateItem> SWORD_TEMPLATE =
+            Masterworks.ITEMS.registerItem("sword_template", TemplateItem::new);
+
 }

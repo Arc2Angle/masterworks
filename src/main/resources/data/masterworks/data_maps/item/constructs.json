@@ -1,0 +1,167 @@
+{
+    "values": {
+        "masterworks:rod_template": [
+            {
+                "tier": 0,
+                "parts": [
+                    {
+                        "id": "material",
+                        "shape": "masterworks:rod"
+                    }
+                ],
+                "properties": {
+                    "durability": "$material * 0.2",
+                    "action_speed": "$material"
+                }
+            }
+        ],
+        "masterworks:binding_template": [
+            {
+                "tier": 0,
+                "parts": [
+                    {
+                        "id": "material",
+                        "shape": "masterworks:binding"
+                    }
+                ],
+                "properties": {
+                    "durability": "$material * 0.3",
+                    "action_speed": "$material"
+                }
+            }
+        ],
+        "masterworks:pickaxe_head_template": [
+            {
+                "tier": 0,
+                "parts": [
+                    {
+                        "id": "material",
+                        "shape": "masterworks:pickaxe_head"
+                    }
+                ],
+                "properties": {
+                    "durability": "$material * 0.5",
+                    "damage": "$material - 2",
+                    "action_speed": "$material * 0.3"
+                }
+            }
+        ],
+        "masterworks:pickaxe_template": [
+            {
+                "tier": 0,
+                "parts": [
+                    {
+                        "id": "material",
+                        "shape": "masterworks:pickaxe"
+                    }
+                ],
+                "properties": {
+                    "durability": "$material",
+                    "damage": "$material",
+                    "action_speed": "$material"
+                }
+            },
+            {
+                "tier": 0,
+                "parts": [
+                    {
+                        "id": "head",
+                        "shape": "masterworks:pickaxe/head",
+                        "template": "masterworks:pickaxe_head_template"
+                    },
+                    {
+                        "id": "binding",
+                        "shape": "masterworks:pickaxe/binding",
+                        "template": "masterworks:binding_template"
+                    },
+                    {
+                        "id": "handle",
+                        "shape": "masterworks:pickaxe/handle",
+                        "template": "masterworks:rod_template"
+                    }
+                ],
+                "properties": {
+                    "durability": "$head + $binding + $handle",
+                    "damage": "$head",
+                    "action_speed": "$head * 0.4 + $binding * 0.2 + $handle * 0.4"
+                }
+            }
+        ],
+        "masterworks:sword_blade_template": [
+            {
+                "tier": 0,
+                "parts": [
+                    {
+                        "id": "material",
+                        "shape": "masterworks:sword/blade"
+                    }
+                ],
+                "properties": {
+                    "durability": "$material * 0.5",
+                    "damage": "$material",
+                    "action_speed": "$material"
+                }
+            },
+            {
+                "tier": 1,
+                "parts": [
+                    {
+                        "id": "left_edge",
+                        "shape": "masterworks:sword/blade/left_edge",
+                        "template": "masterworks:sword_blade_template"
+                    },
+                    {
+                        "id": "right_edge",
+                        "shape": "masterworks:sword/blade/right_edge",
+                        "template": "masterworks:sword_blade_template"
+                    }
+                ],
+                "properties": {
+                    "durability": "$left_edge * 0.25 + $right_edge * 0.25",
+                    "damage": "$left_edge * 0.5 + $right_edge * 0.5",
+                    "action_speed": "$left_edge * 0.5 + $right_edge * 0.5"
+                }
+            }
+        ],
+        "masterworks:sword_template": [
+            {
+                "tier": 0,
+                "parts": [
+                    {
+                        "id": "material",
+                        "shape": "masterworks:sword"
+                    }
+                ],
+                "properties": {
+                    "durability": "$material",
+                    "damage": "$material",
+                    "action_speed": "$material"
+                }
+            },
+            {
+                "tier": 0,
+                "parts": [
+                    {
+                        "id": "blade",
+                        "template": "masterworks:sword_blade_template"
+                    },
+                    {
+                        "id": "guard",
+                        "shape": "masterworks:sword/guard",
+                        "template": "masterworks:binding_template"
+                    },
+                    {
+                        "id": "handle",
+                        "shape": "masterworks:sword/handle",
+                        "template": "masterworks:rod_template"
+                    }
+                ],
+                "properties": {
+                    "durability": "$blade + $guard + $handle",
+                    "damage": "$blade",
+                    "action_speed": "$blade * 0.4 + $guard * 0.2 + $handle * 0.4"
+                }
+            }
+        ]
+    }
+}
