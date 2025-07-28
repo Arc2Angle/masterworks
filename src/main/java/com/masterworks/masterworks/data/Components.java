@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.component;
+package com.masterworks.masterworks.data;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -9,22 +9,17 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 import com.masterworks.masterworks.Masterworks;
 
-public final class DataComponents {
+public class Components {
 
-    public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister
+    private static final DeferredRegister.DataComponents REGISTRAR = DeferredRegister
             .createDataComponents(Registries.DATA_COMPONENT_TYPE, Masterworks.MOD_ID);
 
     public static final Supplier<DataComponentType<ResourceLocation>> MATERIAL_ITEM =
-            DATA_COMPONENTS.registerComponentType("tool_part_material_item",
-                    builder -> builder.networkSynchronized(ResourceLocation.STREAM_CODEC)
-                            .persistent(ResourceLocation.CODEC));
-
-    public static final Supplier<DataComponentType<ResourceLocation>> PART_TYPE_ITEM =
-            DATA_COMPONENTS.registerComponentType("tool_part_type_item",
+            REGISTRAR.registerComponentType("material_item",
                     builder -> builder.networkSynchronized(ResourceLocation.STREAM_CODEC)
                             .persistent(ResourceLocation.CODEC));
 
     public static void register(IEventBus bus) {
-        DATA_COMPONENTS.register(bus);
+        REGISTRAR.register(bus);
     }
 }
