@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
 public class Registries {
+    public static void init() {}
 
     public static final ResourceKey<Registry<Stat>> STAT_KEY =
             ResourceKey.createRegistryKey(Masterworks.resourceLocation("stat"));
