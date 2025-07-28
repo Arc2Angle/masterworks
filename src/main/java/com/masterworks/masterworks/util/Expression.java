@@ -22,9 +22,9 @@ public abstract class Expression {
 
     private Expression() {}
 
-    public abstract Stream<String> arguments();
+    public abstract Stream<String> parameters();
 
-    public abstract Double run(Map<String, Double> arguments) throws IllegalArgumentException;
+    public abstract Double evaluate(Map<String, Double> arguments) throws IllegalArgumentException;
 
     public abstract String format();
 
@@ -63,12 +63,12 @@ public abstract class Expression {
         }
 
         @Override
-        public Stream<String> arguments() {
+        public Stream<String> parameters() {
             return Stream.empty();
         }
 
         @Override
-        public Double run(Map<String, Double> arguments) {
+        public Double evaluate(Map<String, Double> arguments) {
             return value;
         }
 
@@ -86,12 +86,12 @@ public abstract class Expression {
         }
 
         @Override
-        public Stream<String> arguments() {
+        public Stream<String> parameters() {
             return Stream.of(name);
         }
 
         @Override
-        public Double run(Map<String, Double> arguments) throws IllegalArgumentException {
+        public Double evaluate(Map<String, Double> arguments) throws IllegalArgumentException {
             if (!arguments.containsKey(name)) {
                 throw new IllegalArgumentException("Variable " + name + " not found in arguments");
             }
@@ -112,13 +112,13 @@ public abstract class Expression {
         }
 
         @Override
-        public Stream<String> arguments() {
-            return child.arguments();
+        public Stream<String> parameters() {
+            return child.parameters();
         }
 
         @Override
-        public Double run(Map<String, Double> arguments) throws IllegalArgumentException {
-            return -child.run(arguments);
+        public Double evaluate(Map<String, Double> arguments) throws IllegalArgumentException {
+            return -child.evaluate(arguments);
         }
 
         @Override
@@ -136,15 +136,15 @@ public abstract class Expression {
 
 
         @Override
-        public Stream<String> arguments() {
-            return children.stream().flatMap(Expression::arguments);
+        public Stream<String> parameters() {
+            return children.stream().flatMap(Expression::parameters);
         }
 
-        protected abstract Double run(Stream<Double> values) throws IllegalArgumentException;
+        protected abstract Double evaluate(Stream<Double> values) throws IllegalArgumentException;
 
         @Override
-        public Double run(Map<String, Double> arguments) throws IllegalArgumentException {
-            return run(children.stream().map(child -> child.run(arguments)));
+        public Double evaluate(Map<String, Double> arguments) throws IllegalArgumentException {
+            return evaluate(children.stream().map(child -> child.evaluate(arguments)));
         }
 
         protected abstract String symbol();
@@ -162,7 +162,7 @@ public abstract class Expression {
         }
 
         @Override
-        protected Double run(Stream<Double> values) throws IllegalArgumentException {
+        protected Double evaluate(Stream<Double> values) throws IllegalArgumentException {
             return values.reduce(0.0, Double::sum);
         }
 
@@ -178,7 +178,7 @@ public abstract class Expression {
         }
 
         @Override
-        protected Double run(Stream<Double> values) throws IllegalArgumentException {
+        protected Double evaluate(Stream<Double> values) throws IllegalArgumentException {
             return values.reduce(1.0, (a, b) -> a * b);
         }
 

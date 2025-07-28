@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.properties;
+package com.masterworks.masterworks.data.material;
 
 import com.masterworks.masterworks.Masterworks;
 import com.mojang.serialization.Codec;

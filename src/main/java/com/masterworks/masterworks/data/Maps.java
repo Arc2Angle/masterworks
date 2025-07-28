@@ -1,8 +1,10 @@
 package com.masterworks.masterworks.data;
 
+import java.util.List;
 import com.masterworks.masterworks.Masterworks;
-import com.masterworks.masterworks.properties.Compositions;
-import com.masterworks.masterworks.properties.Material;
+import com.masterworks.masterworks.data.composition.Composition;
+import com.masterworks.masterworks.data.material.Material;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,9 +18,9 @@ public class Maps {
             .builder(Masterworks.resourceLocation("material"), Registries.ITEM, Material.CODEC)
             .build();
 
-    public static final DataMapType<Item, Compositions> COMPOSITIONS =
+    public static final DataMapType<Item, List<Composition>> COMPOSITIONS =
             DataMapType.builder(Masterworks.resourceLocation("compositions"), Registries.ITEM,
-                    Compositions.CODEC).build();
+                    Codec.list(Composition.CODEC)).build();
 
     @SubscribeEvent
     public void register(RegisterDataMapTypesEvent event) {

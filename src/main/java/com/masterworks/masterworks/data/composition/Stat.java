@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.properties;
+package com.masterworks.masterworks.data.composition;
 
 public enum Stat {
     DURABILITY("durability"), DAMAGE("damage"), ACTION_SPEED("action_speed");
