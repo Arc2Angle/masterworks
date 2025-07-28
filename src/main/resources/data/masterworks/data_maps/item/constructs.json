@@ -5,7 +5,7 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "id": "material",
+                        "name": "material",
                         "shape": "masterworks:rod"
                     }
                 ],
@@ -20,7 +20,7 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "id": "material",
+                        "name": "material",
                         "shape": "masterworks:binding"
                     }
                 ],
@@ -35,7 +35,7 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "id": "material",
+                        "name": "material",
                         "shape": "masterworks:pickaxe_head"
                     }
                 ],
@@ -51,7 +51,7 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "id": "material",
+                        "name": "material",
                         "shape": "masterworks:pickaxe"
                     }
                 ],
@@ -65,19 +65,19 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "id": "head",
+                        "name": "head",
                         "shape": "masterworks:pickaxe/head",
-                        "template": "masterworks:pickaxe_head_template"
+                        "requires": "masterworks:pickaxe_head_template"
                     },
                     {
-                        "id": "binding",
+                        "name": "binding",
                         "shape": "masterworks:pickaxe/binding",
-                        "template": "masterworks:binding_template"
+                        "requires": "masterworks:binding_template"
                     },
                     {
-                        "id": "handle",
+                        "name": "handle",
                         "shape": "masterworks:pickaxe/handle",
-                        "template": "masterworks:rod_template"
+                        "requires": "masterworks:rod_template"
                     }
                 ],
                 "properties": {
@@ -92,7 +92,7 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "id": "material",
+                        "name": "material",
                         "shape": "masterworks:sword/blade"
                     }
                 ],
@@ -106,14 +106,14 @@
                 "tier": 1,
                 "parts": [
                     {
-                        "id": "left_edge",
+                        "name": "left_edge",
                         "shape": "masterworks:sword/blade/left_edge",
-                        "template": "masterworks:sword_blade_template"
+                        "requires": "masterworks:sword_blade_template"
                     },
                     {
-                        "id": "right_edge",
+                        "name": "right_edge",
                         "shape": "masterworks:sword/blade/right_edge",
-                        "template": "masterworks:sword_blade_template"
+                        "requires": "masterworks:sword_blade_template"
                     }
                 ],
                 "properties": {
@@ -128,7 +128,7 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "id": "material",
+                        "name": "material",
                         "shape": "masterworks:sword"
                     }
                 ],
@@ -142,18 +142,18 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "id": "blade",
-                        "template": "masterworks:sword_blade_template"
+                        "name": "blade",
+                        "requires": "masterworks:sword_blade_template"
                     },
                     {
-                        "id": "guard",
+                        "name": "guard",
                         "shape": "masterworks:sword/guard",
-                        "template": "masterworks:binding_template"
+                        "requires": "masterworks:binding_template"
                     },
                     {
-                        "id": "handle",
+                        "name": "handle",
                         "shape": "masterworks:sword/handle",
-                        "template": "masterworks:rod_template"
+                        "requires": "masterworks:rod_template"
                     }
                 ],
                 "properties": {

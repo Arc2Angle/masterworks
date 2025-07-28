@@ -9,21 +9,25 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 
+/**
+ * Represents the static collection of construct recipes for a template.
+ */
 public record Constructs(List<Construct> variants) {
 
     public record Construct(int tier, List<Part> parts, Map<String, Expression> properties) {
 
-        public record Part(String id, Optional<ResourceLocation> shape, Optional<String> template) {
+        public record Part(String id, Optional<ResourceLocation> shape,
+                Optional<ResourceLocation> requires) {
 
-            public static final Codec<Part> CODEC = RecordCodecBuilder.create(instance -> instance
-                    .group(Codec.STRING.fieldOf("id").forGetter(Part::id),
-                            ResourceLocation.CODEC.optionalFieldOf("shape").forGetter(Part::shape),
-                            Codec.STRING.optionalFieldOf("template").forGetter(Part::template))
-                    .apply(instance, Part::new));
-
-            public Optional<ResourceLocation> getQualifiedShape() {
-                return shape.map(s -> s.withPrefix("textures/construct/").withSuffix(".png"));
-            }
+            public static final Codec<Part> CODEC =
+                    RecordCodecBuilder
+                            .create(instance -> instance
+                                    .group(Codec.STRING.fieldOf("id").forGetter(Part::id),
+                                            ResourceLocation.CODEC.optionalFieldOf("shape")
+                                                    .forGetter(Part::shape),
+                                            ResourceLocation.CODEC.optionalFieldOf("requires")
+                                                    .forGetter(Part::requires))
+                                    .apply(instance, Part::new));
         }
 
         public static final Codec<Construct> CODEC = RecordCodecBuilder.create(instance -> instance
