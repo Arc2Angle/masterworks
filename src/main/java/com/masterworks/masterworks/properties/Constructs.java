@@ -3,6 +3,7 @@ package com.masterworks.masterworks.properties;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import com.masterworks.masterworks.data.Registries;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -25,13 +26,12 @@ public record Constructs(List<Construct> variants) {
             }
         }
 
-        public static final Codec<Construct> CODEC =
-                RecordCodecBuilder.create(instance -> instance
-                        .group(Codec.INT.fieldOf("tier").forGetter(Construct::tier),
-                                Codec.list(Part.CODEC).fieldOf("parts").forGetter(Construct::parts),
-                                Codec.unboundedMap(Codec.STRING, Expression.CODEC)
-                                        .fieldOf("properties").forGetter(Construct::properties))
-                        .apply(instance, Construct::new));
+        public static final Codec<Construct> CODEC = RecordCodecBuilder.create(instance -> instance
+                .group(Codec.INT.fieldOf("tier").forGetter(Construct::tier),
+                        Codec.list(Part.CODEC).fieldOf("parts").forGetter(Construct::parts),
+                        Codec.simpleMap(Codec.STRING, Expression.CODEC, Registries.STAT)
+                                .fieldOf("properties").forGetter(Construct::properties))
+                .apply(instance, Construct::new));
     }
 
     public static final Codec<Constructs> CODEC =
