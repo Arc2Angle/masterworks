@@ -11,7 +11,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import com.masterworks.masterworks.item.ToolPartItem;
+import com.masterworks.masterworks.item.ConstructItem;
 import com.masterworks.masterworks.item.TemplateItem;
 
 
@@ -37,7 +37,7 @@ public class Masterworks {
         com.masterworks.masterworks.data.Maps.init();
 
         TemplateItem.init();
-        ToolPartItem.init();
+        ConstructItem.init();
 
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
