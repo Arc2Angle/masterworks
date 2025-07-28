@@ -12,9 +12,9 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * Represents the static collection of construct recipes for a template.
  */
-public record Constructs(List<Construct> variants) {
+public record Compositions(List<Composition> variants) {
 
-    public record Construct(int tier, List<Part> parts, Map<String, Expression> properties) {
+    public record Composition(int tier, List<Part> parts, Map<String, Expression> properties) {
 
         public record Part(String id, Optional<ResourceLocation> shape,
                 Optional<ResourceLocation> requires) {
@@ -30,14 +30,14 @@ public record Constructs(List<Construct> variants) {
                                     .apply(instance, Part::new));
         }
 
-        public static final Codec<Construct> CODEC = RecordCodecBuilder.create(instance -> instance
-                .group(Codec.INT.fieldOf("tier").forGetter(Construct::tier),
-                        Codec.list(Part.CODEC).fieldOf("parts").forGetter(Construct::parts),
+        public static final Codec<Composition> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(Codec.INT.fieldOf("tier").forGetter(Composition::tier),
+                        Codec.list(Part.CODEC).fieldOf("parts").forGetter(Composition::parts),
                         Codec.simpleMap(Codec.STRING, Expression.CODEC, Registries.STAT)
-                                .fieldOf("properties").forGetter(Construct::properties))
-                .apply(instance, Construct::new));
+                                .fieldOf("properties").forGetter(Composition::properties))
+                        .apply(instance, Composition::new));
     }
 
-    public static final Codec<Constructs> CODEC =
-            Codec.list(Construct.CODEC).xmap(Constructs::new, Constructs::variants);
+    public static final Codec<Compositions> CODEC =
+            Codec.list(Composition.CODEC).xmap(Compositions::new, Compositions::variants);
 }
