@@ -1,30 +1,25 @@
 package com.masterworks.masterworks.util;
 
 import com.mojang.serialization.Codec;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.List;
 
 /**
- * Represents a mathematical expression that can contain variables prefixed with '$'.
+ * Represents a mathematical expression that can contain positional "variables" prefixed with '$'.
  * <p>
  * It can be serialized/deserialized as a string and evaluated with provided variable values.
  * <p>
  * Examples:
  * <ul>
- * <li>{@code $a * 3}</li>
- * <li>{@code $a * 0.5 + $b * 0.5}</li>
- * <li>{@code $a + $b + $c}</li>
+ * <li>{@code $0 * 3}</li>
+ * <li>{@code $0 * 0.5 + $1 * 0.5}</li>
+ * <li>{@code $2 + $0 + $1}</li>
  * </ul>
  */
 public abstract class Expression {
 
-    private Expression() {}
-
-    public abstract Stream<String> parameters();
-
-    public abstract Double evaluate(Map<String, Double> arguments) throws IllegalArgumentException;
+    public abstract Double evaluate(List<Double> arguments) throws IllegalArgumentException;
 
     public abstract String format();
 
@@ -44,7 +39,7 @@ public abstract class Expression {
         }
 
         if (VARIABLE_PATTERN.matcher(format).matches()) {
-            return new Variable(format.substring(1));
+            return new Variable(Integer.parseInt(format.substring(1)));
         }
 
         if (CONSTANT_PATTERN.matcher(format).matches()) {
@@ -54,7 +49,6 @@ public abstract class Expression {
         throw new IllegalArgumentException("Invalid expression format: " + format);
     }
 
-
     private static class Constant extends Expression {
         private Double value;
 
@@ -63,12 +57,7 @@ public abstract class Expression {
         }
 
         @Override
-        public Stream<String> parameters() {
-            return Stream.empty();
-        }
-
-        @Override
-        public Double evaluate(Map<String, Double> arguments) {
+        public Double evaluate(List<Double> arguments) {
             return value;
         }
 
@@ -79,28 +68,25 @@ public abstract class Expression {
     }
 
     private static class Variable extends Expression {
-        private String name;
+        private int position;
 
-        public Variable(String name) {
-            this.name = name;
+        public Variable(int position) {
+            this.position = position;
         }
 
         @Override
-        public Stream<String> parameters() {
-            return Stream.of(name);
-        }
-
-        @Override
-        public Double evaluate(Map<String, Double> arguments) throws IllegalArgumentException {
-            if (!arguments.containsKey(name)) {
-                throw new IllegalArgumentException("Variable " + name + " not found in arguments");
+        public Double evaluate(List<Double> arguments) throws IllegalArgumentException {
+            try {
+                return arguments.get(position);
+            } catch (IndexOutOfBoundsException e) {
+                throw new IllegalArgumentException(
+                        "Variable $" + position + " not found in arguments", e);
             }
-            return arguments.get(name);
         }
 
         @Override
         public String format() {
-            return "$" + name;
+            return "$" + position;
         }
     }
 
@@ -112,12 +98,7 @@ public abstract class Expression {
         }
 
         @Override
-        public Stream<String> parameters() {
-            return child.parameters();
-        }
-
-        @Override
-        public Double evaluate(Map<String, Double> arguments) throws IllegalArgumentException {
+        public Double evaluate(List<Double> arguments) throws IllegalArgumentException {
             return -child.evaluate(arguments);
         }
 
@@ -127,24 +108,18 @@ public abstract class Expression {
         }
     }
 
-    private static abstract class Operator extends Expression {
+    private static abstract class VariadicOperator extends Expression {
         private List<Expression> children;
 
-        protected Operator(List<Expression> children) {
+        protected VariadicOperator(List<Expression> children) {
             this.children = children;
         }
 
+        protected abstract Double calculate(Stream<Double> values) throws IllegalArgumentException;
 
         @Override
-        public Stream<String> parameters() {
-            return children.stream().flatMap(Expression::parameters);
-        }
-
-        protected abstract Double evaluate(Stream<Double> values) throws IllegalArgumentException;
-
-        @Override
-        public Double evaluate(Map<String, Double> arguments) throws IllegalArgumentException {
-            return evaluate(children.stream().map(child -> child.evaluate(arguments)));
+        public Double evaluate(List<Double> arguments) throws IllegalArgumentException {
+            return calculate(children.stream().map(child -> child.evaluate(arguments)));
         }
 
         protected abstract String symbol();
@@ -156,13 +131,13 @@ public abstract class Expression {
         }
     }
 
-    private static class Sum extends Operator {
+    private static class Sum extends VariadicOperator {
         public Sum(List<Expression> children) {
             super(children);
         }
 
         @Override
-        protected Double evaluate(Stream<Double> values) throws IllegalArgumentException {
+        protected Double calculate(Stream<Double> values) throws IllegalArgumentException {
             return values.reduce(0.0, Double::sum);
         }
 
@@ -172,13 +147,13 @@ public abstract class Expression {
         }
     }
 
-    private static class Product extends Operator {
+    private static class Product extends VariadicOperator {
         public Product(List<Expression> children) {
             super(children);
         }
 
         @Override
-        protected Double evaluate(Stream<Double> values) throws IllegalArgumentException {
+        protected Double calculate(Stream<Double> values) throws IllegalArgumentException {
             return values.reduce(1.0, (a, b) -> a * b);
         }
 
@@ -191,6 +166,6 @@ public abstract class Expression {
     public static final Codec<Expression> CODEC =
             Codec.STRING.xmap(Expression::parse, Expression::format);
 
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("^\\$[a-z_][a-z0-9_]*$");
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("^\\$[a-z0-9_]*$");
     private static final Pattern CONSTANT_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
 }

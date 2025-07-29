@@ -20,7 +20,7 @@ public class Registries {
     public static void registers(NewRegistryEvent event) {
 
         for (Stat stat : Stat.values()) {
-            Registry.register(STAT, stat.name, stat);
+            Registry.register(STAT, stat.id, stat);
         }
         event.register(STAT);
     }

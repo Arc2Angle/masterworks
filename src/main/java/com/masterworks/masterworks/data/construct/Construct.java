@@ -1,16 +1,12 @@
 package com.masterworks.masterworks.data.construct;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import com.masterworks.masterworks.data.Maps;
 import com.masterworks.masterworks.data.composition.Composition;
-import com.masterworks.masterworks.data.composition.Part;
 import com.masterworks.masterworks.data.composition.Stat;
 import com.masterworks.masterworks.util.Expression;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -24,83 +20,85 @@ import net.minecraft.world.item.Item;
 /**
  * Represents a dynamic tool's composition.
  */
-public record Construct(ResourceLocation template, Map<String, Construct> parts) {
+public record Construct(ResourceLocation template, int variant,
+        List<Either<ResourceLocation, Construct>> parts) {
 
-    public static final Codec<Construct> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(ResourceLocation.CODEC.fieldOf("template").forGetter(Construct::template),
-                    Codec.dispatchedMap(Codec.STRING, key -> Construct.CODEC).fieldOf("parts")
-                            .forGetter(Construct::parts))
-            .apply(instance, Construct::new));
+    private static final int MAX_PARTS = 5;
 
-    // might require Codec.recursive if Codec.dispatchedMap doesn't lazy load
+    public static final Codec<Construct> CODEC =
+            Codec.recursive("construct",
+                    self -> RecordCodecBuilder
+                            .create(instance -> instance.group(
+                                    ResourceLocation.CODEC.fieldOf("template")
+                                            .forGetter(Construct::template),
+                                    Codec.INT.fieldOf("variant").forGetter(Construct::variant),
+                                    Codec.list(Codec.either(ResourceLocation.CODEC, self))
+                                            .fieldOf("parts").forGetter(Construct::parts))
+                                    .apply(instance, Construct::new)));
 
-    public static final StreamCodec<ByteBuf, Construct> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, Construct::template,
-            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, Construct.STREAM_CODEC, 256),
-            Construct::parts, Construct::new);
+    public static final StreamCodec<ByteBuf, Construct> STREAM_CODEC =
+            StreamCodec
+                    .recursive(self -> StreamCodec.composite(ResourceLocation.STREAM_CODEC,
+                            Construct::template, ByteBufCodecs.INT, Construct::variant,
+                            ByteBufCodecs.either(ResourceLocation.STREAM_CODEC, self)
+                                    .apply(ByteBufCodecs.list(MAX_PARTS)),
+                            Construct::parts, Construct::new));
 
+    public static List<Composition> getCompositionsByTemplate(ResourceLocation templateItem) {
+        Holder.Reference<Item> item = BuiltInRegistries.ITEM.get(templateItem).orElse(null);
 
-    // might require StreamCodec.recursive if ByteBufCodecs.map doesn't lazy load
+        if (item == null) {
+            throw new IllegalArgumentException(
+                    "Construct template item not found: " + templateItem);
+        }
 
-    public static List<Composition> getAllCompositions(ResourceLocation template) {
-        Holder.Reference<Item> templateItem = BuiltInRegistries.ITEM.get(template)
-                .orElseThrow(() -> new IllegalStateException("Construct template item not found"));
+        List<Composition> compositions = item.getData(Maps.COMPOSITIONS);
 
-        List<Composition> compositions =
-                Optional.ofNullable(templateItem.getData(Maps.COMPOSITIONS)).orElseThrow(
-                        () -> new IllegalStateException("Compositions missing for template"));
+        if (compositions == null) {
+            throw new IllegalArgumentException(
+                    "Construct template data missing for item: " + templateItem);
+        }
 
         return compositions;
     }
 
     public Composition getComposition() {
-        Set<String> constructPartNames = parts.keySet();
-
-        for (Composition composition : getAllCompositions(template)) {
-            Set<String> compositionPartNames =
-                    composition.parts().stream().map(Part::name).collect(Collectors.toSet());
-
-            if (compositionPartNames.equals(constructPartNames)) {
-                return composition;
-            }
+        try {
+            return getCompositionsByTemplate(template).get(variant);
+        } catch (IndexOutOfBoundsException e) {
+            throw new UnknownVariantException();
         }
-
-        throw new UnknownPartSetException(constructPartNames);
     }
 
-    public boolean relevant(Stat stat) {
-        return getComposition().properties().containsKey(stat.name);
+    public boolean hasStat(Stat stat) {
+        return getComposition().properties().containsKey(stat);
     }
 
     public double getStat(Stat stat) {
         Composition composition = getComposition();
-        Expression expression = composition.properties().get(stat.name);
+        Expression expression = composition.properties().get(stat);
 
         if (expression == null) {
-            throw new IrrelevantStatException(stat);
+            throw stat.new IrrelevantException("construct template: " + template);
         }
 
-        Set<String> parameters = expression.parameters().collect(Collectors.toSet());
-        Map<String, Double> arguments = new HashMap<>();
-
-        for (Map.Entry<String, Construct> partEntry : parts.entrySet()) {
-            if (parameters.contains(partEntry.getKey())) {
-                arguments.put(partEntry.getKey(), partEntry.getValue().getStat(stat));
+        List<Double> arguments = parts.stream().map(part -> part.map(materialItem -> {
+            return 0.0;
+        }, subConstruct -> {
+            try {
+                return subConstruct.getStat(stat);
+            } catch (Stat.IrrelevantException e) {
+                return null;
             }
-        }
+        })).collect(Collectors.toList());
 
         return expression.evaluate(arguments);
     }
 
-    public class UnknownPartSetException extends RuntimeException {
-        public UnknownPartSetException(Set<String> partNames) {
-            super("Unknown part set: " + partNames + " for construct template: " + template);
-        }
-    }
-
-    public class IrrelevantStatException extends RuntimeException {
-        public IrrelevantStatException(Stat stat) {
-            super("Stat " + stat.name + " is not relevant for construct template: " + template);
+    public class UnknownVariantException extends RuntimeException {
+        public UnknownVariantException() {
+            super("Unknown variant identifier: " + variant + " for construct template: "
+                    + template);
         }
     }
 }
