@@ -31,7 +31,7 @@ public record Material(String name, ResourceLocation palette, Map<Stat, Double> 
                     Map.of(Stat.DURABILITY, 1.0, Stat.DAMAGE, 0.0, Stat.ACTION_SPEED, 0.0,
                             Stat.ARMOR, 0.0, Stat.TOUGHNESS, 0.0, Stat.ENCHANTABILITY, 0.0));
 
-    public static Material getMaterialByItem(ResourceLocation materialItem) {
+    public static Material fromItem(ResourceLocation materialItem) {
         Holder.Reference<Item> item = BuiltInRegistries.ITEM.get(materialItem).orElse(null);
 
         if (item == null) {

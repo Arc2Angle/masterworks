@@ -13,4 +13,9 @@ public record PartDefinition(Optional<ResourceLocation> shape,
                     ResourceLocation.CODEC.optionalFieldOf("requires")
                             .forGetter(PartDefinition::requires))
             .apply(instance, PartDefinition::new));
+
+    public ResourceLocation getQualifiedShapeOrThrow() {
+        return shape.orElseThrow(() -> new IllegalStateException("Shapeless part definition."))
+                .withPrefix("textures/part/material/").withSuffix(".png");
+    }
 }

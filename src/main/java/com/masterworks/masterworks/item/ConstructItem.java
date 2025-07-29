@@ -1,7 +1,6 @@
 package com.masterworks.masterworks.item;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +11,8 @@ import javax.annotation.Nonnull;
 import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.Components;
 import com.masterworks.masterworks.data.construct.Construct;
-import java.util.Map;
+import com.mojang.datafixers.util.Either;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -48,9 +48,8 @@ public class ConstructItem extends Item {
     }
 
     private static ItemStack createExampleSword() {
-        Construct material = new Construct(Masterworks.resourceLocation("iron"), Map.of());
-        Construct sword =
-                new Construct(Masterworks.resourceLocation("sword"), Map.of("material", material));
+        Construct sword = new Construct(Masterworks.resourceLocation("sword"), 0,
+                List.of(Either.left(Masterworks.resourceLocation("iron"))));
         return create(REGISTRATION.get(), sword);
     }
 

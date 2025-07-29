@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import com.masterworks.masterworks.data.Maps;
 import com.masterworks.masterworks.data.composition.Composition;
 import com.masterworks.masterworks.data.composition.Stat;
+import com.masterworks.masterworks.data.material.Material;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -82,17 +83,20 @@ public record Construct(ResourceLocation template, int variant,
             throw stat.new IrrelevantException("construct template: " + template);
         }
 
-        List<Double> arguments = parts.stream().map(part -> part.map(materialItem -> {
-            return 0.0;
-        }, subConstruct -> {
-            try {
-                return subConstruct.getStat(stat);
-            } catch (Stat.IrrelevantException e) {
-                return null;
-            }
-        })).collect(Collectors.toList());
+        List<Double> arguments = parts.stream()
+                .map(part -> part.map(materialItem -> Material.fromItem(materialItem).getStat(stat),
+                        subConstruct -> subConstruct.getStatOrNull(stat)))
+                .collect(Collectors.toList());
 
         return expression.evaluate(arguments);
+    }
+
+    private Double getStatOrNull(Stat stat) {
+        try {
+            return getStat(stat);
+        } catch (Stat.IrrelevantException e) {
+            return null;
+        }
     }
 
     public class UnknownVariantException extends RuntimeException {

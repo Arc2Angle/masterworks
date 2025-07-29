@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.client;
+package com.masterworks.masterworks.client.render;
 
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -6,7 +6,9 @@ import javax.annotation.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import com.masterworks.masterworks.item.ToolPartItem;
+import com.masterworks.masterworks.client.resource.ConstructTextureManager;
+import com.masterworks.masterworks.data.Components;
+import com.masterworks.masterworks.data.construct.Construct;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.serialization.MapCodec;
@@ -19,28 +21,32 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class ToolPartSpecialRenderer implements SpecialModelRenderer<ToolPartItem.Construction> {
+public class ConstructRenderer implements SpecialModelRenderer<Construct> {
 
     public record Unbaked() implements SpecialModelRenderer.Unbaked {
-        public static final MapCodec<ToolPartSpecialRenderer.Unbaked> MAP_CODEC =
-                MapCodec.unit(ToolPartSpecialRenderer.Unbaked::new);
+        public static final MapCodec<ConstructRenderer.Unbaked> MAP_CODEC =
+                MapCodec.unit(ConstructRenderer.Unbaked::new);
 
         @Override
-        public MapCodec<ToolPartSpecialRenderer.Unbaked> type() {
+        public MapCodec<ConstructRenderer.Unbaked> type() {
             return MAP_CODEC;
         }
 
         @Override
         @Nonnull
         public SpecialModelRenderer<?> bake(@Nonnull EntityModelSet modelSet) {
-            return new ToolPartSpecialRenderer();
+            return new ConstructRenderer();
         }
     }
 
     @Override
     @Nullable
-    public ToolPartItem.Construction extractArgument(@Nullable ItemStack stack) {
-        return ToolPartItem.getConstruction(stack);
+    public Construct extractArgument(@Nullable ItemStack stack) {
+        if (stack == null) {
+            return null;
+        }
+
+        return stack.get(Components.CONSTRUCT.get());
     }
 
     @Override
@@ -54,14 +60,14 @@ public class ToolPartSpecialRenderer implements SpecialModelRenderer<ToolPartIte
     }
 
     @Override
-    public void render(@Nullable ToolPartItem.Construction construction,
-            @Nonnull ItemDisplayContext displayContext, @Nonnull PoseStack poseStack,
-            @Nonnull MultiBufferSource bufferSource, int light, int overlay, boolean hasFoil) {
-        if (construction == null) {
+    public void render(@Nullable Construct construct, @Nonnull ItemDisplayContext displayContext,
+            @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource bufferSource, int light,
+            int overlay, boolean hasFoil) {
+        if (construct == null) {
             return;
         }
 
-        ResourceLocation texture = ToolPartTextureManager.getInstance().get(construction);
+        ResourceLocation texture = ConstructTextureManager.getInstance().get(construct);
 
         poseStack.pushPose();
 
