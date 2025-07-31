@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.item;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -47,8 +48,25 @@ public class ConstructItem extends Item {
     }
 
     private static ItemStack createExampleSword() {
-        Construct sword = new Construct(Masterworks.resourceLocation("sword"), 0,
-                List.of(Either.left(Masterworks.resourceLocation("iron"))));
+        ResourceLocation wood = ResourceLocation.fromNamespaceAndPath("minecraft", "oak_planks");
+        ResourceLocation iron = ResourceLocation.fromNamespaceAndPath("minecraft", "iron_ingot");
+        ResourceLocation diamond = ResourceLocation.fromNamespaceAndPath("minecraft", "diamond");
+        ResourceLocation emerald = ResourceLocation.fromNamespaceAndPath("minecraft", "emerald");
+
+        Construct leftEdge = new Construct(Masterworks.resourceLocation("sword_blade"), 0,
+                List.of(Either.left(emerald)));
+        Construct rightEdge = new Construct(Masterworks.resourceLocation("sword_blade"), 0,
+                List.of(Either.left(diamond)));
+        Construct blade = new Construct(Masterworks.resourceLocation("sword_blade"), 1,
+                List.of(Either.right(leftEdge), Either.right(rightEdge)));
+
+        Construct rod =
+                new Construct(Masterworks.resourceLocation("rod"), 0, List.of(Either.left(wood)));
+        Construct binding = new Construct(Masterworks.resourceLocation("binding"), 0,
+                List.of(Either.left(iron)));
+
+        Construct sword = new Construct(Masterworks.resourceLocation("sword"), 1,
+                List.of(Either.right(blade), Either.right(binding), Either.right(rod)));
 
         return create(ConstructItem.ITEM.get(), sword);
     }
