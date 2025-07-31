@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.function.IntUnaryOperator;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.Masterworks;
-import com.masterworks.masterworks.data.composition.PartDefinition;
 import com.masterworks.masterworks.data.construct.Construct;
 import com.masterworks.masterworks.data.material.Material;
 import com.masterworks.masterworks.util.Streams;
@@ -56,29 +55,31 @@ public class ConstructPixelsManager implements ResourceManagerReloadListener {
     }
 
     public NativeImage get(Construct construct) {
-        return cache.computeIfAbsent(construct, this::generate);
+        // return cache.computeIfAbsent(construct, this::generate);
+        return generate(construct);
     }
 
     private NativeImage generate(Construct construct) {
         return Streams.zip(construct.parts().stream(), construct.getComposition().parts().stream())
-                .map((value, definition) -> value.map(material -> draw(material, definition),
-                        part -> definition.shape().isEmpty() ? get(part) : get(part)))
-                .reduce(ConstructPixelsManager::cropOverlay)
-                .orElseThrow(() -> new IllegalStateException(
-                        "No parts found for construct: " + construct));
+                .map((value, definition) -> value.map(
+                        material -> draw(material, definition.getQualifiedShape().orElseThrow()),
+                        part -> definition.getQualifiedShape()
+                                .map(shape -> draw(part.getOnlyMaterialItem(), shape))
+                                .orElseGet(() -> get(part))))
+                .reduce(ConstructPixelsManager::cropOverlay).orElseThrow(
+                        () -> new IllegalStateException("No parts for construct: " + construct));
     }
 
-    private NativeImage draw(ResourceLocation materialItem, PartDefinition definition) {
+    private NativeImage draw(ResourceLocation materialItem, ResourceLocation shapeTexture) {
         try (NativeImage palette = getComponentImage(
                 Material.fromItem(materialItem).getQualifiedPalette(), defaultPalette);
-                NativeImage shape =
-                        getComponentImage(definition.getQualifiedShapeOrThrow(), defaultShape)) {
+                NativeImage shape = getComponentImage(shapeTexture, defaultShape)) {
 
             return shape.mappedCopy(new GrayscaleColorer(palette));
 
         } catch (IOException e) {
             throw new RuntimeException(
-                    "Failed to load textures for " + materialItem + " x " + definition, e);
+                    "Failed to load textures for " + materialItem + " x " + shapeTexture, e);
         }
     }
 
@@ -97,15 +98,14 @@ public class ConstructPixelsManager implements ResourceManagerReloadListener {
         int width = bottom.getWidth();
         int height = bottom.getHeight();
 
-        NativeImage result = new NativeImage(width, height, true);
+        NativeImage result = new NativeImage(width, height, false);
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int topPixel = top.getPixel(x, y);
                 int bottomPixel = bottom.getPixel(x, y);
 
-                int topAlpha = topPixel & 0xFF000000;
-                result.setPixel(x, y, topAlpha > 0 ? topPixel : bottomPixel);
+                result.setPixel(x, y, (topPixel & 0xFF000000) != 0 ? topPixel : bottomPixel);
             }
         }
 

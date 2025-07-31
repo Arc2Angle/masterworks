@@ -72,6 +72,15 @@ public record Construct(ResourceLocation template, int variant,
         return compositions;
     }
 
+    public ResourceLocation getOnlyMaterialItem() {
+        if (parts.size() != 1) {
+            throw new IllegalStateException("Construct with multiple parts: " + this);
+        }
+
+        return parts.get(0).left()
+                .orElseThrow(() -> new IllegalStateException("Complex single part: " + this));
+    }
+
     public ResourceLocation getQualifiedTemplateItem() {
         return template.withPrefix("template/");
     }
