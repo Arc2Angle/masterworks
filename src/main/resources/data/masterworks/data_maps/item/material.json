@@ -14,7 +14,7 @@
         },
         "minecraft:stone": {
             "name": "Stone",
-            "palette": "masterworks:default",
+            "palette": "masterworks:stone",
             "stats": {
                 "durability": 131,
                 "action_speed": 4.0,
@@ -26,7 +26,7 @@
         },
         "minecraft:iron_ingot": {
             "name": "Iron",
-            "palette": "masterworks:default",
+            "palette": "masterworks:iron",
             "stats": {
                 "durability": 250,
                 "action_speed": 6.0,
