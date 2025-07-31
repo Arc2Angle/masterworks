@@ -8,9 +8,11 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
+@EventBusSubscriber(modid = Masterworks.MOD_ID)
 public class Maps {
     public static void init() {}
 
@@ -23,7 +25,7 @@ public class Maps {
                     Codec.list(Composition.CODEC)).build();
 
     @SubscribeEvent
-    public void register(RegisterDataMapTypesEvent event) {
+    public static void registerDataMapTypes(RegisterDataMapTypesEvent event) {
         event.register(MATERIALS);
         event.register(COMPOSITIONS);
     }
