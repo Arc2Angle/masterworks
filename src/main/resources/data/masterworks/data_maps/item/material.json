@@ -3,62 +3,74 @@
         "minecraft:oak_planks": {
             "name": "Wood",
             "palette": "masterworks:wood",
-            "durability": 59,
-            "action_speed": 2.0,
-            "damage": 3.0,
-            "armor": 7.0,
-            "toughness": 0.0,
-            "enchantability": 15
+            "stats": {
+                "durability": 59,
+                "action_speed": 2.0,
+                "damage": 3.0,
+                "armor": 7.0,
+                "toughness": 0.0,
+                "enchantability": 15
+            }
         },
         "minecraft:stone": {
             "name": "Stone",
             "palette": "masterworks:default",
-            "durability": 131,
-            "action_speed": 4.0,
-            "damage": 4.0,
-            "armor": 12.0,
-            "toughness": 0.0,
-            "enchantability": 12
+            "stats": {
+                "durability": 131,
+                "action_speed": 4.0,
+                "damage": 4.0,
+                "armor": 12.0,
+                "toughness": 0.0,
+                "enchantability": 12
+            }
         },
         "minecraft:iron_ingot": {
             "name": "Iron",
             "palette": "masterworks:default",
-            "durability": 250,
-            "action_speed": 6.0,
-            "damage": 6.0,
-            "armor": 15.0,
-            "toughness": 0.0,
-            "enchantability": 14
+            "stats": {
+                "durability": 250,
+                "action_speed": 6.0,
+                "damage": 6.0,
+                "armor": 15.0,
+                "toughness": 0.0,
+                "enchantability": 14
+            }
         },
         "minecraft:gold_ingot": {
             "name": "Gold",
             "palette": "masterworks:gold",
-            "durability": 32,
-            "action_speed": 12.0,
-            "damage": 4.0,
-            "armor": 11.0,
-            "toughness": 0.0,
-            "enchantability": 22
+            "stats": {
+                "durability": 32,
+                "action_speed": 12.0,
+                "damage": 4.0,
+                "armor": 11.0,
+                "toughness": 0.0,
+                "enchantability": 22
+            }
         },
         "minecraft:diamond": {
             "name": "Diamond",
             "palette": "masterworks:diamond",
-            "durability": 1561,
-            "action_speed": 8.0,
-            "damage": 7.0,
-            "armor": 20.0,
-            "toughness": 8.0,
-            "enchantability": 10
+            "stats": {
+                "durability": 1561,
+                "action_speed": 8.0,
+                "damage": 7.0,
+                "armor": 20.0,
+                "toughness": 8.0,
+                "enchantability": 10
+            }
         },
         "minecraft:emerald": {
             "name": "Emerald",
             "palette": "masterworks:emerald",
-            "durability": 2199,
-            "action_speed": 10.0,
-            "damage": 5.5,
-            "armor": 15.0,
-            "toughness": 4.0,
-            "enchantability": 31
+            "stats": {
+                "durability": 2199,
+                "action_speed": 10.0,
+                "damage": 5.5,
+                "armor": 15.0,
+                "toughness": 4.0,
+                "enchantability": 31
+            }
         }
     }
 }

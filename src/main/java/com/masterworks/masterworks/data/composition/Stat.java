@@ -12,7 +12,15 @@ public enum Stat {
         this.id = id;
     }
 
-    public static final Codec<Stat> CODEC = Codec.STRING.xmap(Stat::valueOf, stat -> stat.id);
+    public static final Codec<Stat> CODEC = Codec.STRING.xmap(Stat::valueOfId, stat -> stat.id);
+
+    private static Stat valueOfId(String id) {
+        try {
+            return Stat.valueOf(id.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unknown stat: " + id, e);
+        }
+    }
 
     /**
      * Thrown when a stat is not relevant to a specific carrier instance which can generally have
