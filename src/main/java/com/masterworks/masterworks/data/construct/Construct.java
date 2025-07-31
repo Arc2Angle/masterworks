@@ -1,7 +1,9 @@
 package com.masterworks.masterworks.data.construct;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.Maps;
 import com.masterworks.masterworks.data.composition.Composition;
 import com.masterworks.masterworks.data.composition.Stat;
@@ -12,6 +14,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -23,6 +26,7 @@ import net.minecraft.world.item.Item;
  */
 public record Construct(ResourceLocation template, int variant,
         List<Either<ResourceLocation, Construct>> parts) {
+    public static void init() {}
 
     private static final int MAX_PARTS = 5;
 
@@ -45,15 +49,20 @@ public record Construct(ResourceLocation template, int variant,
                                     .apply(ByteBufCodecs.list(MAX_PARTS)),
                             Construct::parts, Construct::new));
 
-    public static List<Composition> getCompositionsByTemplate(ResourceLocation templateItem) {
-        Holder.Reference<Item> item = BuiltInRegistries.ITEM.get(templateItem).orElse(null);
+    public static final Supplier<DataComponentType<Construct>> DATA_COMPONENT =
+            Masterworks.DATA_COMPONENTS.registerComponentType("construct", builder -> builder
+                    .networkSynchronized(Construct.STREAM_CODEC).persistent(Construct.CODEC));
 
-        if (item == null) {
+    public static List<Composition> getCompositionsByTemplateItem(ResourceLocation templateItem) {
+        Holder.Reference<Item> templateItemHolder =
+                BuiltInRegistries.ITEM.get(templateItem).orElse(null);
+
+        if (templateItemHolder == null) {
             throw new IllegalArgumentException(
                     "Construct template item not found: " + templateItem);
         }
 
-        List<Composition> compositions = item.getData(Maps.COMPOSITIONS);
+        List<Composition> compositions = templateItemHolder.getData(Maps.COMPOSITIONS);
 
         if (compositions == null) {
             throw new IllegalArgumentException(
@@ -63,9 +72,13 @@ public record Construct(ResourceLocation template, int variant,
         return compositions;
     }
 
+    public ResourceLocation getQualifiedTemplateItem() {
+        return template.withPrefix("template/");
+    }
+
     public Composition getComposition() {
         try {
-            return getCompositionsByTemplate(template).get(variant);
+            return getCompositionsByTemplateItem(getQualifiedTemplateItem()).get(variant);
         } catch (IndexOutOfBoundsException e) {
             throw new UnknownVariantException();
         }

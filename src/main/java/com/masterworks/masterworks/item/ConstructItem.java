@@ -9,7 +9,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.Masterworks;
-import com.masterworks.masterworks.data.Components;
 import com.masterworks.masterworks.data.construct.Construct;
 import com.mojang.datafixers.util.Either;
 import java.util.List;
@@ -24,14 +23,14 @@ public class ConstructItem extends Item {
         super(properties);
     }
 
-    public static final DeferredHolder<Item, ConstructItem> REGISTRATION =
+    public static final DeferredHolder<Item, ConstructItem> ITEM =
             Masterworks.ITEMS.registerItem("construct", ConstructItem::new);
 
     public static final Supplier<CreativeModeTab> PARTS_TAB =
             Masterworks.CREATIVE_MODE_TABS.register("constructs", () -> CreativeModeTab.builder()
                     .title(Component
                             .translatable("itemGroup." + Masterworks.MOD_ID + ".constructs"))
-                    .icon(() -> new ItemStack(ConstructItem.REGISTRATION.get()))
+                    .icon(() -> new ItemStack(ConstructItem.ITEM.get()))
                     .displayItems((params, output) -> {
                         output.accept(createExampleSword());
                     }).build());
@@ -43,14 +42,15 @@ public class ConstructItem extends Item {
      */
     public static ItemStack create(Item item, Construct construct) {
         ItemStack stack = new ItemStack(item);
-        stack.set(Components.CONSTRUCT.get(), construct);
+        stack.set(Construct.DATA_COMPONENT.get(), construct);
         return stack;
     }
 
     private static ItemStack createExampleSword() {
         Construct sword = new Construct(Masterworks.resourceLocation("sword"), 0,
                 List.of(Either.left(Masterworks.resourceLocation("iron"))));
-        return create(REGISTRATION.get(), sword);
+
+        return create(ConstructItem.ITEM.get(), sword);
     }
 
     /**

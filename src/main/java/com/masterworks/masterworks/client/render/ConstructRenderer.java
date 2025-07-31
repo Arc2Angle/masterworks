@@ -7,7 +7,6 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import com.masterworks.masterworks.client.resource.ConstructTextureManager;
-import com.masterworks.masterworks.data.Components;
 import com.masterworks.masterworks.data.construct.Construct;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -46,7 +45,7 @@ public class ConstructRenderer implements SpecialModelRenderer<Construct> {
             return null;
         }
 
-        return stack.get(Components.CONSTRUCT.get());
+        return stack.get(Construct.DATA_COMPONENT.get());
     }
 
     @Override
