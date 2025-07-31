@@ -1,7 +1,6 @@
 package com.masterworks.masterworks.data.material;
 
 import java.util.Map;
-import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.Maps;
 import com.masterworks.masterworks.data.Registries;
 import com.masterworks.masterworks.data.composition.Stat;
@@ -23,13 +22,8 @@ public record Material(String name, ResourceLocation palette, Map<Stat, Double> 
                     .apply(instance, Material::new));
 
     public ResourceLocation getQualifiedPalette() {
-        return palette.withPrefix("textures/part/material/").withSuffix(".png");
+        return palette.withPrefix("textures/material/").withSuffix(".png");
     }
-
-    public static final Material DEFAULT =
-            new Material("Unknown", Masterworks.resourceLocation("default"),
-                    Map.of(Stat.DURABILITY, 1.0, Stat.DAMAGE, 0.0, Stat.ACTION_SPEED, 0.0,
-                            Stat.ARMOR, 0.0, Stat.TOUGHNESS, 0.0, Stat.ENCHANTABILITY, 0.0));
 
     public static Material fromItem(ResourceLocation materialItem) {
         Holder.Reference<Item> item = BuiltInRegistries.ITEM.get(materialItem).orElse(null);

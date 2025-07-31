@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntUnaryOperator;
 import javax.annotation.Nonnull;
+import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.composition.PartDefinition;
 import com.masterworks.masterworks.data.construct.Construct;
 import com.masterworks.masterworks.data.material.Material;
@@ -44,11 +45,12 @@ public class ConstructPixelsManager implements ResourceManagerReloadListener {
     public void onResourceManagerReload(@Nonnull ResourceManager manager) {
         resourceManager = manager;
 
-        defaultPalette =
-                resourceManager.getResource(Material.DEFAULT.getQualifiedPalette()).orElseThrow();
-        defaultShape = null;
-        // resourceManager.getResource(ToolPartTypeProperties.DEFAULT.getQualifiedShape())
-        // .orElseThrow();
+        defaultPalette = resourceManager
+                .getResource(Masterworks.resourceLocation("textures/material/none.png"))
+                .orElseThrow();
+        defaultShape = resourceManager
+                .getResource(Masterworks.resourceLocation("textures/construct/orb.png"))
+                .orElseThrow();
 
         cache.clear();
     }

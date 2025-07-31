@@ -16,6 +16,6 @@ public record PartDefinition(Optional<ResourceLocation> shape,
 
     public ResourceLocation getQualifiedShapeOrThrow() {
         return shape.orElseThrow(() -> new IllegalStateException("Shapeless part definition."))
-                .withPrefix("textures/part/material/").withSuffix(".png");
+                .withPrefix("textures/construct/").withSuffix(".png");
     }
 }
