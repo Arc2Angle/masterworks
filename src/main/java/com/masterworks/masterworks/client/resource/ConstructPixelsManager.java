@@ -1,5 +1,6 @@
 package com.masterworks.masterworks.client.resource;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
-public class ConstructPixelsManager implements ResourceManagerReloadListener {
+public class ConstructPixelsManager implements Closeable, ResourceManagerReloadListener {
 
     // Optimization: Use Caffeine cache or a similar library to weak cache images
     // the default WeakHashMap cannot be used here as it does not support closing
@@ -36,6 +37,7 @@ public class ConstructPixelsManager implements ResourceManagerReloadListener {
     public static ConstructPixelsManager getInstance() {
         if (instance == null) {
             instance = new ConstructPixelsManager();
+            Runtime.getRuntime().addShutdownHook(new Thread(instance::close));
         }
         return instance;
     }
@@ -54,9 +56,22 @@ public class ConstructPixelsManager implements ResourceManagerReloadListener {
         cache.clear();
     }
 
+    @Override
+    public void close() {
+        for (NativeImage image : cache.values()) {
+            image.close();
+        }
+        cache.clear();
+    }
+
     public NativeImage get(Construct construct) {
-        // return cache.computeIfAbsent(construct, this::generate);
-        return generate(construct);
+        if (cache.containsKey(construct)) {
+            return cache.get(construct);
+        }
+
+        NativeImage pixels = generate(construct);
+        cache.put(construct, pixels);
+        return pixels;
     }
 
     private NativeImage generate(Construct construct) {
