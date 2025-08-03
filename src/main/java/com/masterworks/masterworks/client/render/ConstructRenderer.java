@@ -10,7 +10,7 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 
-public class ConstructRenderer extends DynamicImageFlatRenderer<Construct> {
+public class ConstructRenderer extends NativeItemSpecialRenderer<Construct> {
 
     public record Unbaked() implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<ConstructRenderer.Unbaked> MAP_CODEC =
@@ -39,6 +39,7 @@ public class ConstructRenderer extends DynamicImageFlatRenderer<Construct> {
     }
 
     @Override
+    @Nonnull
     protected NativeImage getImage(@Nonnull Construct argument) {
         return ConstructPixelsManager.getInstance().get(argument);
     }
