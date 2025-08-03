@@ -20,7 +20,7 @@ public class TemplateItem extends Item {
         super(properties);
     }
 
-    public static final DeferredHolder<Item, TemplateItem> HANDLE_TEMPLATE =
+    public static final DeferredHolder<Item, TemplateItem> ROD_TEMPLATE =
             Masterworks.ITEMS.registerItem("rod_template", TemplateItem::new);
 
     public static final DeferredHolder<Item, TemplateItem> BINDING_TEMPLATE =
@@ -44,7 +44,7 @@ public class TemplateItem extends Item {
                     .title(Component.translatable("itemGroup." + Masterworks.MOD_ID + ".templates"))
                     .icon(() -> new ItemStack(PICKAXE_TEMPLATE.get()))
                     .displayItems((params, output) -> {
-                        output.accept(HANDLE_TEMPLATE.get());
+                        output.accept(ROD_TEMPLATE.get());
                         output.accept(BINDING_TEMPLATE.get());
                         output.accept(PICKAXE_HEAD_TEMPLATE.get());
                         output.accept(PICKAXE_TEMPLATE.get());
