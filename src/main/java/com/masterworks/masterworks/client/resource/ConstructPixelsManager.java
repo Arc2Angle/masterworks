@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.ARGB;
 
 public class ConstructPixelsManager implements Closeable, ResourceManagerReloadListener {
 
@@ -120,7 +121,7 @@ public class ConstructPixelsManager implements Closeable, ResourceManagerReloadL
                 int topPixel = top.getPixel(x, y);
                 int bottomPixel = bottom.getPixel(x, y);
 
-                result.setPixel(x, y, (topPixel & 0xFF000000) != 0 ? topPixel : bottomPixel);
+                result.setPixel(x, y, ARGB.alpha(topPixel) != 0 ? topPixel : bottomPixel);
             }
         }
 
@@ -130,9 +131,9 @@ public class ConstructPixelsManager implements Closeable, ResourceManagerReloadL
     private record GrayscaleColorer(NativeImage palette) implements IntUnaryOperator {
         @Override
         public int applyAsInt(int shapePixel) {
-            int grayness = shapePixel & 0x000000FF;
+            int intensity = ARGB.red(shapePixel);
             int alphaMask = shapePixel | 0x00FFFFFF;
-            int index = (0xFF - grayness) / 0x24;
+            int index = (0xFF - intensity) / 0x24;
             int color = palette.getPixel(index, 0);
             return color & alphaMask;
         }

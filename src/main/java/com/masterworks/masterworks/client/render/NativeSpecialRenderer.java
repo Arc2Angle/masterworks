@@ -12,6 +12,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemDisplayContext;
 
 public abstract class NativeSpecialRenderer<T> implements SpecialModelRenderer<T> {
@@ -50,6 +51,8 @@ public abstract class NativeSpecialRenderer<T> implements SpecialModelRenderer<T
         Pixels pixels = getPixels(argument);
 
         poseStack.pushPose();
+        poseStack.translate(0, 1, 0);
+        poseStack.scale(1, -1, 1);
 
         renderNative(pixels, bufferSource.getBuffer(RenderType.debugQuads()), poseStack, light,
                 overlay);
@@ -71,13 +74,12 @@ public abstract class NativeSpecialRenderer<T> implements SpecialModelRenderer<T
         for (int i = 0; i < pixels.colors.length; i++) {
             int color = pixels.colors[i];
 
-            if ((color & 0xFF000000) == 0) {
+            if (ARGB.alpha(color) == 0) {
                 continue;
             }
 
             float xi = i % pixels.count.x;
-            float ryi = (i % (pixels.count.x * pixels.count.y)) / pixels.count.x;
-            float yi = pixels.count.y - ryi - 1;
+            float yi = (i % (pixels.count.x * pixels.count.y)) / pixels.count.x;
             float zi = i / (pixels.count.x * pixels.count.y);
 
             float x0 = pixels.size.x * xi / pixels.count.x + pixels.offset.x;
@@ -87,38 +89,50 @@ public abstract class NativeSpecialRenderer<T> implements SpecialModelRenderer<T
             float y1 = pixels.size.y * (yi + 1) / pixels.count.y + pixels.offset.y;
             float z1 = pixels.size.z * (zi + 1) / pixels.count.z + pixels.offset.z;
 
-            consumer.addVertex(x0, y0, z0, color, Direction.BACK);
-            consumer.addVertex(x1, y0, z0, color, Direction.BACK);
-            consumer.addVertex(x1, y1, z0, color, Direction.BACK);
-            consumer.addVertex(x0, y1, z0, color, Direction.BACK);
+            if (xi == 0 || ARGB.alpha(pixels.colors[i - 1]) != 0xFF) {
+                consumer.addVertex(x0, y0, z0, color, Direction.LEFT);
+                consumer.addVertex(x0, y0, z1, color, Direction.LEFT);
+                consumer.addVertex(x0, y1, z1, color, Direction.LEFT);
+                consumer.addVertex(x0, y1, z0, color, Direction.LEFT);
+            }
 
-            consumer.addVertex(x0, y0, z1, color, Direction.FRONT);
-            consumer.addVertex(x1, y0, z1, color, Direction.FRONT);
-            consumer.addVertex(x1, y1, z1, color, Direction.FRONT);
-            consumer.addVertex(x0, y1, z1, color, Direction.FRONT);
+            if (xi == pixels.count.x - 1 || ARGB.alpha(pixels.colors[i + 1]) != 0xFF) {
+                consumer.addVertex(x1, y0, z1, color, Direction.RIGHT);
+                consumer.addVertex(x1, y0, z0, color, Direction.RIGHT);
+                consumer.addVertex(x1, y1, z0, color, Direction.RIGHT);
+                consumer.addVertex(x1, y1, z1, color, Direction.RIGHT);
+            }
 
-            consumer.addVertex(x0, y0, z0, color, Direction.LEFT);
-            consumer.addVertex(x0, y0, z1, color, Direction.LEFT);
-            consumer.addVertex(x0, y1, z1, color, Direction.LEFT);
-            consumer.addVertex(x0, y1, z0, color, Direction.LEFT);
+            if (yi == 0 || ARGB.alpha(pixels.colors[i - pixels.count.x]) != 0xFF) {
+                consumer.addVertex(x0, y0, z0, color, Direction.BOTTOM);
+                consumer.addVertex(x1, y0, z0, color, Direction.BOTTOM);
+                consumer.addVertex(x1, y0, z1, color, Direction.BOTTOM);
+                consumer.addVertex(x0, y0, z1, color, Direction.BOTTOM);
+            }
 
-            consumer.addVertex(x1, y0, z1, color, Direction.RIGHT);
-            consumer.addVertex(x1, y0, z0, color, Direction.RIGHT);
-            consumer.addVertex(x1, y1, z0, color, Direction.RIGHT);
-            consumer.addVertex(x1, y1, z1, color, Direction.RIGHT);
+            if (yi == pixels.count.y - 1 || ARGB.alpha(pixels.colors[i + pixels.count.x]) != 0xFF) {
+                consumer.addVertex(x0, y1, z1, color, Direction.TOP);
+                consumer.addVertex(x1, y1, z1, color, Direction.TOP);
+                consumer.addVertex(x1, y1, z0, color, Direction.TOP);
+                consumer.addVertex(x0, y1, z0, color, Direction.TOP);
+            }
 
-            consumer.addVertex(x0, y0, z0, color, Direction.BOTTOM);
-            consumer.addVertex(x1, y0, z0, color, Direction.BOTTOM);
-            consumer.addVertex(x1, y0, z1, color, Direction.BOTTOM);
-            consumer.addVertex(x0, y0, z1, color, Direction.BOTTOM);
+            if (zi == 0 || ARGB.alpha(pixels.colors[i - pixels.count.x * pixels.count.y]) != 0xFF) {
+                consumer.addVertex(x0, y0, z0, color, Direction.BACK);
+                consumer.addVertex(x1, y0, z0, color, Direction.BACK);
+                consumer.addVertex(x1, y1, z0, color, Direction.BACK);
+                consumer.addVertex(x0, y1, z0, color, Direction.BACK);
+            }
 
-            consumer.addVertex(x0, y1, z1, color, Direction.TOP);
-            consumer.addVertex(x1, y1, z1, color, Direction.TOP);
-            consumer.addVertex(x1, y1, z0, color, Direction.TOP);
-            consumer.addVertex(x0, y1, z0, color, Direction.TOP);
+            if (zi == pixels.count.z - 1
+                    || ARGB.alpha(pixels.colors[i + pixels.count.x * pixels.count.y]) != 0xFF) {
+                consumer.addVertex(x0, y0, z1, color, Direction.FRONT);
+                consumer.addVertex(x1, y0, z1, color, Direction.FRONT);
+                consumer.addVertex(x1, y1, z1, color, Direction.FRONT);
+                consumer.addVertex(x0, y1, z1, color, Direction.FRONT);
+            }
         }
     }
-
 
     private enum Direction {
         BACK(new Vector3f(0, 0, -1)), FRONT(new Vector3f(0, 0, 1)), LEFT(
