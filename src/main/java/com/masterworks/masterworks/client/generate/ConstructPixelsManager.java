@@ -1,33 +1,28 @@
 package com.masterworks.masterworks.client.generate;
 
 import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntUnaryOperator;
 import javax.annotation.Nonnull;
-import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.construct.Construct;
-import com.masterworks.masterworks.data.material.Material;
+import com.masterworks.masterworks.resource.location.PaletteResourceLocation;
+import com.masterworks.masterworks.resource.location.ShapeResourceLocation;
 import com.masterworks.masterworks.util.Streams;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.ARGB;
 
 public class ConstructPixelsManager implements Closeable, ResourceManagerReloadListener {
 
+    private ResourceManager resourceManager;
+    private NativeImage defaultPalette, defaultShape;
     // Optimization: Use Caffeine cache or a similar library to weak cache images
     // the default WeakHashMap cannot be used here as it does not support closing
     // of dropped values properly.
     private final Map<Construct, NativeImage> cache = new HashMap<>();
-
-    private ResourceManager resourceManager;
-    private Resource defaultPalette, defaultShape;
 
     private ConstructPixelsManager() {
         onResourceManagerReload(Minecraft.getInstance().getResourceManager());
@@ -47,18 +42,21 @@ public class ConstructPixelsManager implements Closeable, ResourceManagerReloadL
     public void onResourceManagerReload(@Nonnull ResourceManager manager) {
         resourceManager = manager;
 
-        defaultPalette = resourceManager
-                .getResource(Masterworks.resourceLocation("textures/material/none.png"))
-                .orElseThrow();
-        defaultShape = resourceManager
-                .getResource(Masterworks.resourceLocation("textures/construct/orb.png"))
-                .orElseThrow();
+        try {
+            defaultPalette = PaletteResourceLocation.DEFAULT.getTexture(manager);
+            defaultShape = ShapeResourceLocation.DEFAULT.getTexture(manager);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load default textures", e);
+        }
 
         cache.clear();
     }
 
     @Override
     public void close() {
+        defaultPalette.close();
+        defaultShape.close();
+
         for (NativeImage image : cache.values()) {
             image.close();
         }
@@ -77,36 +75,29 @@ public class ConstructPixelsManager implements Closeable, ResourceManagerReloadL
 
     private NativeImage generate(Construct construct) {
         return Streams.zip(construct.parts().stream(), construct.getComposition().parts().stream())
-                .map((value, definition) -> value.map(
-                        material -> draw(material, definition.getQualifiedShape().orElseThrow()),
-                        part -> definition.getQualifiedShape()
-                                .map(shape -> draw(part.getOnlyMaterialItem(), shape))
+                .map((materialOrPart, definition) -> materialOrPart.map(
+                        material -> draw(material.getMappedValue().palette(),
+                                definition.shape()
+                                        .orElseThrow(() -> new IllegalStateException(
+                                                "No overriding shape for simple construct part"))),
+                        part -> definition.shape()
+                                .map(shape -> draw(part.getMaterialIfSingle()
+                                        .orElseThrow(() -> new IllegalStateException(
+                                                "Overriding shape for complex construct"))
+                                        .getMappedValue().palette(), shape))
                                 .orElseGet(() -> get(part))))
                 .reduce(ConstructPixelsManager::cropOverlay).orElseThrow(
                         () -> new IllegalStateException("No parts for construct: " + construct));
     }
 
-    private NativeImage draw(ResourceLocation materialItem, ResourceLocation shapeTexture) {
-        try (NativeImage palette = getComponentImage(
-                Material.fromItem(materialItem).getQualifiedPalette(), defaultPalette);
-                NativeImage shape = getComponentImage(shapeTexture, defaultShape)) {
+    private NativeImage draw(PaletteResourceLocation paletteResourceLocation,
+            ShapeResourceLocation shapeResourceLocation) {
+        try (NativeImage palette =
+                paletteResourceLocation.getTexture(resourceManager, defaultPalette);
+                NativeImage shape =
+                        shapeResourceLocation.getTexture(resourceManager, defaultShape)) {
 
             return shape.mappedCopy(new GrayscaleColorer(palette));
-
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Failed to load textures for " + materialItem + " x " + shapeTexture, e);
-        }
-    }
-
-    private NativeImage getComponentImage(ResourceLocation location, Resource defaultResource)
-            throws IOException {
-        Resource resource = resourceManager.getResource(location).orElse(defaultResource);
-        InputStream stream = resource.open();
-        try {
-            return NativeImage.read(stream);
-        } finally {
-            stream.close();
         }
     }
 
