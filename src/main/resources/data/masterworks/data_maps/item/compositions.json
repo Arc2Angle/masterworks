@@ -2,7 +2,7 @@
     "values": {
         "masterworks:rod_template": [
             {
-                "tier": 0,
+                "tier": "masterworks:basic",
                 "parts": [
                     {
                         "shape": "masterworks:rod"
@@ -16,7 +16,7 @@
         ],
         "masterworks:binding_template": [
             {
-                "tier": 0,
+                "tier": "masterworks:basic",
                 "parts": [
                     {
                         "shape": "masterworks:binding"
@@ -30,7 +30,7 @@
         ],
         "masterworks:pickaxe_head_template": [
             {
-                "tier": 0,
+                "tier": "masterworks:basic",
                 "parts": [
                     {
                         "shape": "masterworks:pickaxe_head"
@@ -45,7 +45,7 @@
         ],
         "masterworks:pickaxe_template": [
             {
-                "tier": 0,
+                "tier": "masterworks:basic",
                 "parts": [
                     {
                         "shape": "masterworks:pickaxe"
@@ -58,7 +58,7 @@
                 }
             },
             {
-                "tier": 0,
+                "tier": "masterworks:basic",
                 "parts": [
                     {
                         "shape": "masterworks:pickaxe/head",
@@ -82,7 +82,7 @@
         ],
         "masterworks:sword_blade_template": [
             {
-                "tier": 0,
+                "tier": "masterworks:basic",
                 "parts": [
                     {
                         "shape": "masterworks:sword/blade"
@@ -95,7 +95,7 @@
                 }
             },
             {
-                "tier": 1,
+                "tier": "masterworks:advanced",
                 "parts": [
                     {
                         "shape": "masterworks:sword/blade/left_edge",
@@ -115,7 +115,7 @@
         ],
         "masterworks:sword_template": [
             {
-                "tier": 0,
+                "tier": "masterworks:basic",
                 "parts": [
                     {
                         "shape": "masterworks:sword"
@@ -128,7 +128,7 @@
                 }
             },
             {
-                "tier": 0,
+                "tier": "masterworks:basic",
                 "parts": [
                     {
                         "requires": "masterworks:sword_blade_template"
