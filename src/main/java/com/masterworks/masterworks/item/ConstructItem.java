@@ -11,6 +11,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.construct.Construct;
+import com.masterworks.masterworks.resource.location.MaterialResourceLocation;
+import com.masterworks.masterworks.resource.location.TemplateResourceLocation;
 import com.mojang.datafixers.util.Either;
 import java.util.List;
 import java.util.function.Consumer;
@@ -48,25 +50,34 @@ public class ConstructItem extends Item {
     }
 
     private static ItemStack createExampleSword() {
-        ResourceLocation wood = ResourceLocation.fromNamespaceAndPath("minecraft", "oak_planks");
-        ResourceLocation iron = ResourceLocation.fromNamespaceAndPath("minecraft", "iron_ingot");
-        ResourceLocation diamond = ResourceLocation.fromNamespaceAndPath("minecraft", "diamond");
-        ResourceLocation emerald = ResourceLocation.fromNamespaceAndPath("minecraft", "emerald");
+        MaterialResourceLocation wood = new MaterialResourceLocation(
+                ResourceLocation.fromNamespaceAndPath("minecraft", "oak_planks"));
+        MaterialResourceLocation iron = new MaterialResourceLocation(
+                ResourceLocation.fromNamespaceAndPath("minecraft", "iron_ingot"));
+        MaterialResourceLocation diamond = new MaterialResourceLocation(
+                ResourceLocation.fromNamespaceAndPath("minecraft", "diamond"));
+        MaterialResourceLocation emerald = new MaterialResourceLocation(
+                ResourceLocation.fromNamespaceAndPath("minecraft", "emerald"));
 
-        Construct leftEdge = new Construct(Masterworks.resourceLocation("sword_blade"), 0,
-                List.of(Either.left(emerald)));
-        Construct rightEdge = new Construct(Masterworks.resourceLocation("sword_blade"), 0,
-                List.of(Either.left(diamond)));
-        Construct blade = new Construct(Masterworks.resourceLocation("sword_blade"), 1,
+        TemplateResourceLocation swordBladeTemplate =
+                new TemplateResourceLocation(Masterworks.resourceLocation("sword_blade_template"));
+        TemplateResourceLocation bindingTemplate =
+                new TemplateResourceLocation(Masterworks.resourceLocation("binding_template"));
+        TemplateResourceLocation rodTemplate =
+                new TemplateResourceLocation(Masterworks.resourceLocation("rod_template"));
+        TemplateResourceLocation swordTemplate =
+                new TemplateResourceLocation(Masterworks.resourceLocation("sword_template"));
+
+        Construct leftEdge = new Construct(swordBladeTemplate, 0, List.of(Either.left(diamond)));
+        Construct rightEdge = new Construct(swordBladeTemplate, 0, List.of(Either.left(emerald)));
+        Construct swordBlade = new Construct(swordBladeTemplate, 1,
                 List.of(Either.right(leftEdge), Either.right(rightEdge)));
 
-        Construct rod =
-                new Construct(Masterworks.resourceLocation("rod"), 0, List.of(Either.left(wood)));
-        Construct binding = new Construct(Masterworks.resourceLocation("binding"), 0,
-                List.of(Either.left(iron)));
+        Construct rod = new Construct(rodTemplate, 0, List.of(Either.left(wood)));
+        Construct binding = new Construct(bindingTemplate, 0, List.of(Either.left(iron)));
 
-        Construct sword = new Construct(Masterworks.resourceLocation("sword"), 1,
-                List.of(Either.right(blade), Either.right(binding), Either.right(rod)));
+        Construct sword = new Construct(swordTemplate, 1,
+                List.of(Either.right(swordBlade), Either.right(binding), Either.right(rod)));
 
         return create(ConstructItem.ITEM.get(), sword);
     }
