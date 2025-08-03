@@ -39,8 +39,12 @@ public class ConstructRenderer extends NativeItemSpecialRenderer<Construct> {
     }
 
     @Override
-    @Nonnull
-    protected NativeImage getImage(@Nonnull Construct argument) {
+    @Nullable
+    protected NativeImage getImage(@Nullable Construct argument) {
+        if (argument == null) {
+            return null;
+        }
+
         return ConstructPixelsManager.getInstance().get(argument);
     }
 }

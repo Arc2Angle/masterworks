@@ -31,8 +31,8 @@ public abstract class NativeSpecialRenderer<T> implements SpecialModelRenderer<T
     protected record Pixels(int[] colors, Vector3i count, Vector3f size, Vector3f offset) {
     }
 
-    @Nonnull
-    protected abstract Pixels getPixels(@Nonnull T argument);
+    @Nullable
+    protected abstract Pixels getPixels(@Nullable T argument);
 
     @Override
     public void getExtents(@Nonnull Set<Vector3f> output) {
@@ -44,11 +44,11 @@ public abstract class NativeSpecialRenderer<T> implements SpecialModelRenderer<T
     public void render(@Nullable T argument, @Nonnull ItemDisplayContext displayContext,
             @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource bufferSource, int light,
             int overlay, boolean hasFoil) {
-        if (argument == null) {
-            return;
-        }
 
         Pixels pixels = getPixels(argument);
+        if (pixels == null) {
+            return;
+        }
 
         poseStack.pushPose();
         poseStack.translate(0, 1, 0);
