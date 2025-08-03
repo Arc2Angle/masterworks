@@ -3,7 +3,9 @@ package com.masterworks.masterworks.util;
 import com.mojang.serialization.Codec;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a mathematical expression that can contain positional "variables" prefixed with '$'.
@@ -19,35 +21,18 @@ import java.util.List;
  */
 public abstract class Expression {
 
-    public abstract Double evaluate(List<Double> arguments) throws IllegalArgumentException;
+    /**
+     * Evaluates the expression with the provided arguments
+     * 
+     * @param arguments to be used as variable values. Unused variables will be ignored, and can be
+     *        left null
+     * @return the result of the expression evaluation
+     * @throws IllegalArgumentException if the expression is missing required variables
+     */
+    public abstract Double evaluate(@Nonnull List<Double> arguments)
+            throws IllegalArgumentException;
 
     public abstract String format();
-
-    public static Expression parse(String format) {
-        format = format.trim();
-
-        if (format.contains("+")) {
-            return new Sum(Stream.of(format.split("\\+")).map(Expression::parse).toList());
-        }
-
-        if (format.contains("*")) {
-            return new Product(Stream.of(format.split("\\*")).map(Expression::parse).toList());
-        }
-
-        if (format.startsWith("-")) {
-            return new Negation(Expression.parse(format.substring(1)));
-        }
-
-        if (VARIABLE_PATTERN.matcher(format).matches()) {
-            return new Variable(Integer.parseInt(format.substring(1)));
-        }
-
-        if (CONSTANT_PATTERN.matcher(format).matches()) {
-            return new Constant(Double.parseDouble(format));
-        }
-
-        throw new IllegalArgumentException("Invalid expression format: " + format);
-    }
 
     private static class Constant extends Expression {
         private Double value;
@@ -57,7 +42,7 @@ public abstract class Expression {
         }
 
         @Override
-        public Double evaluate(List<Double> arguments) {
+        public Double evaluate(@Nonnull List<Double> arguments) {
             return value;
         }
 
@@ -75,12 +60,14 @@ public abstract class Expression {
         }
 
         @Override
-        public Double evaluate(List<Double> arguments) throws IllegalArgumentException {
+        public Double evaluate(@Nonnull List<Double> arguments) throws IllegalArgumentException {
             try {
-                return arguments.get(position);
+                return Objects.requireNonNull(arguments.get(position));
             } catch (IndexOutOfBoundsException e) {
                 throw new IllegalArgumentException(
                         "Variable $" + position + " not found in arguments", e);
+            } catch (NullPointerException e) {
+                throw new IllegalArgumentException("Variable $" + position + " is empty", e);
             }
         }
 
@@ -98,7 +85,7 @@ public abstract class Expression {
         }
 
         @Override
-        public Double evaluate(List<Double> arguments) throws IllegalArgumentException {
+        public Double evaluate(@Nonnull List<Double> arguments) throws IllegalArgumentException {
             return -child.evaluate(arguments);
         }
 
@@ -118,7 +105,7 @@ public abstract class Expression {
         protected abstract Double calculate(Stream<Double> values) throws IllegalArgumentException;
 
         @Override
-        public Double evaluate(List<Double> arguments) throws IllegalArgumentException {
+        public Double evaluate(@Nonnull List<Double> arguments) throws IllegalArgumentException {
             return calculate(children.stream().map(child -> child.evaluate(arguments)));
         }
 
@@ -161,6 +148,32 @@ public abstract class Expression {
         protected String symbol() {
             return "*";
         }
+    }
+
+    public static Expression parse(String format) {
+        format = format.trim();
+
+        if (format.contains("+")) {
+            return new Sum(Stream.of(format.split("\\+")).map(Expression::parse).toList());
+        }
+
+        if (format.contains("*")) {
+            return new Product(Stream.of(format.split("\\*")).map(Expression::parse).toList());
+        }
+
+        if (format.startsWith("-")) {
+            return new Negation(Expression.parse(format.substring(1)));
+        }
+
+        if (VARIABLE_PATTERN.matcher(format).matches()) {
+            return new Variable(Integer.parseInt(format.substring(1)));
+        }
+
+        if (CONSTANT_PATTERN.matcher(format).matches()) {
+            return new Constant(Double.parseDouble(format));
+        }
+
+        throw new IllegalArgumentException("Invalid expression format: " + format);
     }
 
     public static final Codec<Expression> CODEC =
