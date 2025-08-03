@@ -1,6 +1,7 @@
 package com.masterworks.masterworks;
 
 import com.masterworks.masterworks.client.render.ConstructRenderer;
+import com.masterworks.masterworks.client.render.TemplateRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,5 +35,7 @@ public class MasterworksClient {
     public static void registerSpecialRenderers(RegisterSpecialModelRendererEvent event) {
         event.register(Masterworks.resourceLocation("construct_renderer"),
                 ConstructRenderer.Unbaked.MAP_CODEC);
+        event.register(Masterworks.resourceLocation("template_renderer"),
+                TemplateRenderer.Unbaked.MAP_CODEC);
     }
 }
