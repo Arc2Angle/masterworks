@@ -1,6 +1,6 @@
 {
     "values": {
-        "masterworks:template/rod": [
+        "masterworks:rod_template": [
             {
                 "tier": 0,
                 "parts": [
@@ -14,7 +14,7 @@
                 }
             }
         ],
-        "masterworks:template/binding": [
+        "masterworks:binding_template": [
             {
                 "tier": 0,
                 "parts": [
@@ -28,7 +28,7 @@
                 }
             }
         ],
-        "masterworks:template/pickaxe_head": [
+        "masterworks:pickaxe_head_template": [
             {
                 "tier": 0,
                 "parts": [
@@ -43,7 +43,7 @@
                 }
             }
         ],
-        "masterworks:template/pickaxe": [
+        "masterworks:pickaxe_template": [
             {
                 "tier": 0,
                 "parts": [
@@ -62,15 +62,15 @@
                 "parts": [
                     {
                         "shape": "masterworks:pickaxe/head",
-                        "requires": "masterworks:pickaxe_head"
+                        "requires": "masterworks:pickaxe_head_template"
                     },
                     {
                         "shape": "masterworks:pickaxe/binding",
-                        "requires": "masterworks:binding"
+                        "requires": "masterworks:binding_template"
                     },
                     {
                         "shape": "masterworks:pickaxe/handle",
-                        "requires": "masterworks:rod"
+                        "requires": "masterworks:rod_template"
                     }
                 ],
                 "properties": {
@@ -80,7 +80,7 @@
                 }
             }
         ],
-        "masterworks:template/sword_blade": [
+        "masterworks:sword_blade_template": [
             {
                 "tier": 0,
                 "parts": [
@@ -99,11 +99,11 @@
                 "parts": [
                     {
                         "shape": "masterworks:sword/blade/left_edge",
-                        "requires": "masterworks:sword_blade"
+                        "requires": "masterworks:sword_blade_template"
                     },
                     {
                         "shape": "masterworks:sword/blade/right_edge",
-                        "requires": "masterworks:sword_blade"
+                        "requires": "masterworks:sword_blade_template"
                     }
                 ],
                 "properties": {
@@ -113,7 +113,7 @@
                 }
             }
         ],
-        "masterworks:template/sword": [
+        "masterworks:sword_template": [
             {
                 "tier": 0,
                 "parts": [
@@ -131,15 +131,15 @@
                 "tier": 0,
                 "parts": [
                     {
-                        "requires": "masterworks:sword_blade"
+                        "requires": "masterworks:sword_blade_template"
                     },
                     {
                         "shape": "masterworks:sword/guard",
-                        "requires": "masterworks:binding"
+                        "requires": "masterworks:binding_template"
                     },
                     {
                         "shape": "masterworks:sword/handle",
-                        "requires": "masterworks:rod"
+                        "requires": "masterworks:rod_template"
                     }
                 ],
                 "properties": {

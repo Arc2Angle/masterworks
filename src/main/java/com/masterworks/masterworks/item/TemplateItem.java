@@ -19,21 +19,21 @@ public class TemplateItem extends Item {
 
 
     public static final DeferredHolder<Item, TemplateItem> HANDLE_TEMPLATE =
-            Masterworks.ITEMS.registerItem("template/rod", TemplateItem::new);
+            Masterworks.ITEMS.registerItem("rod_template", TemplateItem::new);
 
     public static final DeferredHolder<Item, TemplateItem> BINDING_TEMPLATE =
-            Masterworks.ITEMS.registerItem("template/binding", TemplateItem::new);
+            Masterworks.ITEMS.registerItem("binding_template", TemplateItem::new);
 
     public static final DeferredHolder<Item, TemplateItem> PICKAXE_HEAD_TEMPLATE =
-            Masterworks.ITEMS.registerItem("template/pickaxe_head", TemplateItem::new);
+            Masterworks.ITEMS.registerItem("pickaxe_head_template", TemplateItem::new);
 
     public static final DeferredHolder<Item, TemplateItem> PICKAXE_TEMPLATE =
-            Masterworks.ITEMS.registerItem("template/pickaxe", TemplateItem::new);
+            Masterworks.ITEMS.registerItem("pickaxe_template", TemplateItem::new);
 
     public static final DeferredHolder<Item, TemplateItem> SWORD_BLADE_TEMPLATE =
-            Masterworks.ITEMS.registerItem("template/sword_blade", TemplateItem::new);
+            Masterworks.ITEMS.registerItem("sword_blade_template", TemplateItem::new);
 
     public static final DeferredHolder<Item, TemplateItem> SWORD_TEMPLATE =
-            Masterworks.ITEMS.registerItem("template/sword", TemplateItem::new);
+            Masterworks.ITEMS.registerItem("sword_template", TemplateItem::new);
 
 }
