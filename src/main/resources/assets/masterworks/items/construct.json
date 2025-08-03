@@ -1,7 +1,7 @@
 {
     "model": {
         "type": "minecraft:special",
-        "base": "masterworks:item/construct",
+        "base": "minecraft:item/generated",
         "model": {
             "type": "masterworks:construct_renderer"
         }
