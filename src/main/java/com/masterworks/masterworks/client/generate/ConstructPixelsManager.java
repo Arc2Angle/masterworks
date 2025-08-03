@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.client.resource;
+package com.masterworks.masterworks.client.generate;
 
 import java.io.Closeable;
 import java.io.IOException;
