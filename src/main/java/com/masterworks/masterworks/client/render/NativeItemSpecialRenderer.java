@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.client.render.direct;
+package com.masterworks.masterworks.client.render;
 
 import javax.annotation.Nonnull;
 import org.joml.Vector3f;
