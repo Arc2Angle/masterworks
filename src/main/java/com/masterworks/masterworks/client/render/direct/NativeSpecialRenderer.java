@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.client.render;
+package com.masterworks.masterworks.client.render.direct;
 
 import java.util.Set;
 import javax.annotation.Nonnull;

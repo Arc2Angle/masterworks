@@ -3,6 +3,7 @@ package com.masterworks.masterworks.client.render;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.masterworks.masterworks.client.generate.ConstructPixelsManager;
+import com.masterworks.masterworks.client.render.direct.NativeItemSpecialRenderer;
 import com.masterworks.masterworks.data.construct.Construct;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.MapCodec;
