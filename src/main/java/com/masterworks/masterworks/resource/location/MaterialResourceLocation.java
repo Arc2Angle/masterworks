@@ -21,4 +21,8 @@ public record MaterialResourceLocation(ResourceLocation value)
     public DataMapType<Item, Material> getDataMapType() {
         return Maps.MATERIALS;
     }
+
+    public static MaterialResourceLocation fromNamespaceAndPath(String namespace, String path) {
+        return new MaterialResourceLocation(ResourceLocation.fromNamespaceAndPath(namespace, path));
+    }
 }

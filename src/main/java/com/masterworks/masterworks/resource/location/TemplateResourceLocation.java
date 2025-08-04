@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.resource.location;
 
 import java.util.List;
+import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.Maps;
 import com.masterworks.masterworks.data.composition.Composition;
 import com.mojang.serialization.Codec;
@@ -21,5 +22,9 @@ public record TemplateResourceLocation(ResourceLocation value)
 
     public DataMapType<Item, List<Composition>> getDataMapType() {
         return Maps.COMPOSITIONS;
+    }
+
+    public static TemplateResourceLocation fromMasterworksAndPath(String path) {
+        return new TemplateResourceLocation(Masterworks.resourceLocation(path));
     }
 }

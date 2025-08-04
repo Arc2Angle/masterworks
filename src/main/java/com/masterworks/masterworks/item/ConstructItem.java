@@ -1,8 +1,9 @@
 package com.masterworks.masterworks.item;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -14,6 +15,7 @@ import com.masterworks.masterworks.data.construct.Construct;
 import com.masterworks.masterworks.resource.location.MaterialResourceLocation;
 import com.masterworks.masterworks.resource.location.TemplateResourceLocation;
 import com.mojang.datafixers.util.Either;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -34,10 +36,7 @@ public class ConstructItem extends Item {
                     .title(Component
                             .translatable("itemGroup." + Masterworks.MOD_ID + ".constructs"))
                     .icon(() -> new ItemStack(ConstructItem.ITEM.get()))
-                    .displayItems((params, output) -> {
-                        output.accept(createExampleSword());
-                    }).build());
-
+                    .displayItems(new DisplayItemsGenerator()).build());
 
     /**
      * Creates a configured ItemStack with the specified material and part type items. This is the
@@ -47,39 +46,6 @@ public class ConstructItem extends Item {
         ItemStack stack = new ItemStack(item);
         stack.set(Construct.DATA_COMPONENT.get(), construct);
         return stack;
-    }
-
-    private static ItemStack createExampleSword() {
-        MaterialResourceLocation wood = new MaterialResourceLocation(
-                ResourceLocation.fromNamespaceAndPath("minecraft", "oak_planks"));
-        MaterialResourceLocation iron = new MaterialResourceLocation(
-                ResourceLocation.fromNamespaceAndPath("minecraft", "iron_ingot"));
-        MaterialResourceLocation diamond = new MaterialResourceLocation(
-                ResourceLocation.fromNamespaceAndPath("minecraft", "diamond"));
-        MaterialResourceLocation emerald = new MaterialResourceLocation(
-                ResourceLocation.fromNamespaceAndPath("minecraft", "emerald"));
-
-        TemplateResourceLocation swordBladeTemplate =
-                new TemplateResourceLocation(Masterworks.resourceLocation("sword_blade_template"));
-        TemplateResourceLocation bindingTemplate =
-                new TemplateResourceLocation(Masterworks.resourceLocation("binding_template"));
-        TemplateResourceLocation rodTemplate =
-                new TemplateResourceLocation(Masterworks.resourceLocation("rod_template"));
-        TemplateResourceLocation swordTemplate =
-                new TemplateResourceLocation(Masterworks.resourceLocation("sword_template"));
-
-        Construct leftEdge = new Construct(swordBladeTemplate, 0, List.of(Either.left(diamond)));
-        Construct rightEdge = new Construct(swordBladeTemplate, 0, List.of(Either.left(emerald)));
-        Construct swordBlade = new Construct(swordBladeTemplate, 1,
-                List.of(Either.right(leftEdge), Either.right(rightEdge)));
-
-        Construct rod = new Construct(rodTemplate, 0, List.of(Either.left(wood)));
-        Construct binding = new Construct(bindingTemplate, 0, List.of(Either.left(iron)));
-
-        Construct sword = new Construct(swordTemplate, 1,
-                List.of(Either.right(swordBlade), Either.right(binding), Either.right(rod)));
-
-        return create(ConstructItem.ITEM.get(), sword);
     }
 
     /**
@@ -95,5 +61,87 @@ public class ConstructItem extends Item {
 
         adder.accept(Component.literal("Description here")
                 .withStyle(style -> style.withColor(0xFF0000)));
+    }
+
+    private static class DisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
+        private static final TemplateResourceLocation rodTemplate =
+                TemplateResourceLocation.fromMasterworksAndPath("rod_template");
+        private static final TemplateResourceLocation bindingTemplate =
+                TemplateResourceLocation.fromMasterworksAndPath("binding_template");
+        private static final TemplateResourceLocation pickaxeHeadTemplate =
+                TemplateResourceLocation.fromMasterworksAndPath("pickaxe_head_template");
+        private static final TemplateResourceLocation pickaxeTemplate =
+                TemplateResourceLocation.fromMasterworksAndPath("pickaxe_template");
+        private static final TemplateResourceLocation swordBladeTemplate =
+                TemplateResourceLocation.fromMasterworksAndPath("sword_blade_template");
+        private static final TemplateResourceLocation swordTemplate =
+                TemplateResourceLocation.fromMasterworksAndPath("sword_template");
+
+        private static final MaterialResourceLocation wood =
+                MaterialResourceLocation.fromNamespaceAndPath("minecraft", "oak_planks");
+        private static final MaterialResourceLocation stone =
+                MaterialResourceLocation.fromNamespaceAndPath("minecraft", "stone");
+        private static final MaterialResourceLocation iron =
+                MaterialResourceLocation.fromNamespaceAndPath("minecraft", "iron_ingot");
+        private static final MaterialResourceLocation gold =
+                MaterialResourceLocation.fromNamespaceAndPath("minecraft", "gold_ingot");
+        private static final MaterialResourceLocation diamond =
+                MaterialResourceLocation.fromNamespaceAndPath("minecraft", "diamond");
+        private static final MaterialResourceLocation emerald =
+                MaterialResourceLocation.fromNamespaceAndPath("minecraft", "emerald");
+
+        @Override
+        public void accept(@Nonnull ItemDisplayParameters params, @Nonnull Output output) {
+            Construct woodRod = simple(rodTemplate, wood);
+            Construct ironRod = simple(rodTemplate, iron);
+            Construct diamondRod = simple(rodTemplate, diamond);
+
+            Construct stoneBinding = simple(bindingTemplate, stone);
+            Construct ironBinding = simple(bindingTemplate, iron);
+            Construct emeraldBinding = simple(bindingTemplate, emerald);
+
+            Construct stonePickaxeHead = simple(pickaxeHeadTemplate, stone);
+            Construct goldPickaxeHead = simple(pickaxeHeadTemplate, gold);
+
+            Construct diamondSwordBlade = simple(swordBladeTemplate, diamond);
+            Construct ironSwordBlade = simple(swordBladeTemplate, iron);
+            Construct diamondIronSwordBlade =
+                    composite(swordBladeTemplate, 1, diamondSwordBlade, ironSwordBlade);
+
+            output.accept(stack(simple(pickaxeTemplate, emerald)));
+
+            output.accept(stack(stonePickaxeHead));
+            output.accept(stack(ironRod));
+            output.accept(stack(emeraldBinding));
+            output.accept(
+                    stack(composite(pickaxeTemplate, 1, goldPickaxeHead, ironRod, emeraldBinding)));
+
+            output.accept(stack(ironSwordBlade));
+            output.accept(stack(diamondRod));
+            output.accept(stack(stoneBinding));
+            output.accept(
+                    stack(composite(swordTemplate, 0, ironSwordBlade, diamondRod, stoneBinding)));
+
+            output.accept(stack(diamondIronSwordBlade));
+            output.accept(stack(woodRod));
+            output.accept(stack(ironBinding));
+            output.accept(stack(
+                    composite(swordTemplate, 1, diamondIronSwordBlade, woodRod, ironBinding)));
+        }
+
+        private static Construct simple(TemplateResourceLocation template,
+                MaterialResourceLocation material) {
+            return new Construct(template, 0, List.of(Either.left(material)));
+        }
+
+        private static Construct composite(TemplateResourceLocation template, int variant,
+                Construct... parts) {
+            return new Construct(template, variant, Arrays.stream(parts)
+                    .map(Either::<MaterialResourceLocation, Construct>right).toList());
+        }
+
+        private static ItemStack stack(Construct construct) {
+            return ConstructItem.create(ConstructItem.ITEM.get(), construct);
+        }
     }
 }

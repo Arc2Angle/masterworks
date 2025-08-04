@@ -33,7 +33,7 @@
                 "tier": "masterworks:basic",
                 "parts": [
                     {
-                        "shape": "masterworks:pickaxe_head"
+                        "shape": "masterworks:pickaxe/head"
                     }
                 ],
                 "properties": {
@@ -65,12 +65,12 @@
                         "requires": "masterworks:pickaxe_head_template"
                     },
                     {
-                        "shape": "masterworks:pickaxe/binding",
-                        "requires": "masterworks:binding_template"
-                    },
-                    {
                         "shape": "masterworks:pickaxe/handle",
                         "requires": "masterworks:rod_template"
+                    },
+                    {
+                        "shape": "masterworks:pickaxe/binding",
+                        "requires": "masterworks:binding_template"
                     }
                 ],
                 "properties": {
@@ -134,12 +134,12 @@
                         "requires": "masterworks:sword_blade_template"
                     },
                     {
-                        "shape": "masterworks:sword/guard",
-                        "requires": "masterworks:binding_template"
-                    },
-                    {
                         "shape": "masterworks:sword/handle",
                         "requires": "masterworks:rod_template"
+                    },
+                    {
+                        "shape": "masterworks:sword/guard",
+                        "requires": "masterworks:binding_template"
                     }
                 ],
                 "properties": {
