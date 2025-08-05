@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntUnaryOperator;
 import javax.annotation.Nonnull;
+import com.masterworks.masterworks.data.composition.PartDefinition;
 import com.masterworks.masterworks.data.construct.Construct;
+import com.masterworks.masterworks.resource.location.MaterialResourceLocation;
 import com.masterworks.masterworks.resource.location.PaletteResourceLocation;
 import com.masterworks.masterworks.resource.location.ShapeResourceLocation;
-import com.masterworks.masterworks.util.Streams;
+import com.masterworks.masterworks.util.streams.BiStream;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -74,20 +76,26 @@ public class ConstructPixelsManager implements Closeable, ResourceManagerReloadL
     }
 
     private NativeImage generate(Construct construct) {
-        return Streams.zip(construct.parts().stream(), construct.getComposition().parts().stream())
+        return BiStream.zip(construct.parts().stream(), construct.getComposition().parts().stream())
                 .map((materialOrPart, definition) -> materialOrPart.map(
-                        material -> draw(material.getMappedValue().palette(),
-                                definition.shape()
-                                        .orElseThrow(() -> new IllegalStateException(
-                                                "No overriding shape for simple construct part"))),
-                        part -> definition.shape()
-                                .map(shape -> draw(part.getMaterialIfSingle()
-                                        .orElseThrow(() -> new IllegalStateException(
-                                                "Overriding shape for complex construct"))
-                                        .getMappedValue().palette(), shape))
-                                .orElseGet(() -> get(part))))
+                        material -> drawMaterial(material, definition),
+                        part -> drawPart(part, definition)))
                 .reduce(ConstructPixelsManager::cropOverlay).orElseThrow(
                         () -> new IllegalStateException("No parts for construct: " + construct));
+    }
+
+    private NativeImage drawMaterial(MaterialResourceLocation material, PartDefinition definition) {
+        return draw(material.getMappedValue().palette(), definition.shape().orElseThrow(
+                () -> new IllegalStateException("Missing shape for simple construct part")));
+    }
+
+    private NativeImage drawPart(Construct part, PartDefinition definition) {
+        return definition.shape()
+                .map(shape -> draw(part.getMaterialIfSingle()
+                        .orElseThrow(() -> new IllegalStateException(
+                                "Cannot override shape for composite construct part"))
+                        .getMappedValue().palette(), shape))
+                .orElseGet(() -> get(part));
     }
 
     private NativeImage draw(PaletteResourceLocation paletteResourceLocation,
