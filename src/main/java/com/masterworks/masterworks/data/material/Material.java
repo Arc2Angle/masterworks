@@ -2,13 +2,14 @@ package com.masterworks.masterworks.data.material;
 
 import java.util.Map;
 import com.masterworks.masterworks.data.Registries;
-import com.masterworks.masterworks.data.composition.Stat;
+import com.masterworks.masterworks.data.stat.Stat;
+import com.masterworks.masterworks.data.stat.StatCarrier;
 import com.masterworks.masterworks.resource.location.PaletteResourceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record Material(String name, PaletteResourceLocation palette, InterfaceColor interfaceColor,
-        Map<Stat, Double> stats) {
+        Map<Stat, Double> stats) implements StatCarrier {
 
     public static final Codec<Material> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(Codec.STRING.fieldOf("name").forGetter(Material::name),

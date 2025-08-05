@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.data.composition;
+package com.masterworks.masterworks.data.stat;
 
 import com.mojang.serialization.Codec;
 
@@ -31,5 +31,4 @@ public enum Stat {
             super("Stat " + id + " is not relevant for: " + carrier);
         }
     }
-
 }

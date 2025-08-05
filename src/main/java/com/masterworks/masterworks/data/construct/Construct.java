@@ -2,13 +2,16 @@ package com.masterworks.masterworks.data.construct;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.composition.Composition;
-import com.masterworks.masterworks.data.composition.Stat;
+import com.masterworks.masterworks.data.composition.PartDefinition;
+import com.masterworks.masterworks.data.stat.Stat;
+import com.masterworks.masterworks.data.stat.StatCarrier;
 import com.masterworks.masterworks.resource.location.TemplateResourceLocation;
 import com.masterworks.masterworks.resource.location.MaterialResourceLocation;
 import com.masterworks.masterworks.util.Expression;
@@ -24,7 +27,7 @@ import net.minecraft.network.codec.StreamCodec;
  * Represents a dynamic tool's composition.
  */
 public record Construct(TemplateResourceLocation template, int variant,
-        List<Either<MaterialResourceLocation, Construct>> parts) {
+        List<Either<MaterialResourceLocation, Construct>> parts) implements StatCarrier {
     public static void init() {}
 
     private static final int MAX_PARTS = 5;
@@ -72,31 +75,28 @@ public record Construct(TemplateResourceLocation template, int variant,
     }
 
     public double getStat(Stat stat) {
-        Double value = getStatOrNull(stat);
-        if (value == null) {
-            throw stat.new IrrelevantException("construct template: " + template);
-        }
-        return value;
-    }
-
-    private Double getStatOrNull(Stat stat) {
         Composition composition = getComposition();
 
         Expression expression = composition.properties().get(stat);
         if (expression == null) {
-            return null;
+            throw stat.new IrrelevantException("construct template: " + template);
         }
 
         Map<String, Double> arguments = IntStream.range(0, parts.size()).mapToObj(i -> {
-            var materialOrPart = parts.get(i);
-            var definition = composition.parts().get(i);
+            StatCarrier component =
+                    Either.unwrap(parts.get(i).mapLeft(material -> material.getMappedValue()));
+            PartDefinition definition = composition.parts().get(i);
+
+            if (!component.hasStat(stat)) {
+                return null;
+            }
 
             String identifier = "$" + definition.identifier().orElse(Integer.toString(i));
-            Double value = materialOrPart.map(material -> material.getMappedValue().getStat(stat),
-                    part -> part.getStatOrNull(stat));
+            Double value = component.getStat(stat);
 
             return Map.entry(identifier, value);
-        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }).filter(Objects::nonNull)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return expression.evaluate(arguments);
     }

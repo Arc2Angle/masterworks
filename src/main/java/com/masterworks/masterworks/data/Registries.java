@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.data;
 
 import com.masterworks.masterworks.Masterworks;
-import com.masterworks.masterworks.data.composition.Stat;
+import com.masterworks.masterworks.data.stat.Stat;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.SubscribeEvent;

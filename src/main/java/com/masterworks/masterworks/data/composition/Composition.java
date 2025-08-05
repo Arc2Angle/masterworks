@@ -3,6 +3,7 @@ package com.masterworks.masterworks.data.composition;
 import java.util.List;
 import java.util.Map;
 import com.masterworks.masterworks.data.Registries;
+import com.masterworks.masterworks.data.stat.Stat;
 import com.masterworks.masterworks.resource.location.TierResourceLocation;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Codec;
