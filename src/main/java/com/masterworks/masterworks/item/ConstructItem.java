@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.item;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTab.Output;
@@ -11,9 +12,12 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.Masterworks;
+import com.masterworks.masterworks.data.composition.PartDefinition;
 import com.masterworks.masterworks.data.construct.Construct;
+import com.masterworks.masterworks.data.material.Material;
 import com.masterworks.masterworks.resource.location.MaterialResourceLocation;
 import com.masterworks.masterworks.resource.location.TemplateResourceLocation;
+import com.masterworks.masterworks.util.streams.BiStream;
 import com.mojang.datafixers.util.Either;
 import java.util.Arrays;
 import java.util.List;
@@ -59,9 +63,50 @@ public class ConstructItem extends Item {
             @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, context, display, adder, flag);
 
-        adder.accept(Component.literal("Description here")
-                .withStyle(style -> style.withColor(0xFF0000)));
+        Construct construct = stack.get(Construct.DATA_COMPONENT.get());
+
+        if (construct == null) {
+            adder.accept(Component.literal("Broken Construct")
+                    .withStyle(style -> style.withColor(0xFF0000)));
+            return;
+        }
+
+        adder.accept(formatConstruct(construct));
     }
+
+    private static MutableComponent formatConstruct(Construct construct) {
+        var partComponents = BiStream
+                .zip(construct.parts().stream(), construct.getComposition().parts().stream())
+                .map((materialOrPart, definition) -> materialOrPart
+                        .map(ConstructItem::formatMaterial, ConstructItem::formatConstruct)
+                        .append(formatPartDefinition(definition)))
+                .toList();
+
+        if (partComponents.size() == 1) {
+            return partComponents.get(0);
+        }
+
+        var partsChainComponent = partComponents
+                .stream().reduce((left, right) -> left
+                        .append(Component.literal(" + ").withColor(0xFFFFFF)).append(right))
+                .orElse(Component.empty());
+
+        return Component.literal("(").withColor(0xFFFFFF).append(partsChainComponent)
+                .append(Component.literal(")").withColor(0xFFFFFF));
+    }
+
+    private static MutableComponent formatMaterial(MaterialResourceLocation resourceLocation) {
+        Material material = resourceLocation.getMappedValue();
+        return Component.literal(material.name()).withColor(material.interfaceColor().argb());
+    }
+
+    private static MutableComponent formatPartDefinition(PartDefinition definition) {
+        return definition.identifier()
+                .map(identifier -> Component.literal(" "
+                        + Character.toUpperCase(identifier.charAt(0)) + identifier.substring(1)))
+                .orElse(Component.empty());
+    }
+
 
     private static class DisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
         private static final TemplateResourceLocation rodTemplate =
