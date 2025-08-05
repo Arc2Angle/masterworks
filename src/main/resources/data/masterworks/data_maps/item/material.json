@@ -3,6 +3,7 @@
         "minecraft:oak_planks": {
             "name": "Wood",
             "palette": "masterworks:wood",
+            "interface_color": "ff755821",
             "stats": {
                 "durability": 59,
                 "action_speed": 2.0,
@@ -15,6 +16,7 @@
         "minecraft:stone": {
             "name": "Stone",
             "palette": "masterworks:stone",
+            "interface_color": "ff787777",
             "stats": {
                 "durability": 131,
                 "action_speed": 4.0,
@@ -27,6 +29,7 @@
         "minecraft:iron_ingot": {
             "name": "Iron",
             "palette": "masterworks:iron",
+            "interface_color": "ffd8d8d8",
             "stats": {
                 "durability": 250,
                 "action_speed": 6.0,
@@ -39,6 +42,7 @@
         "minecraft:gold_ingot": {
             "name": "Gold",
             "palette": "masterworks:gold",
+            "interface_color": "ffe9b115",
             "stats": {
                 "durability": 32,
                 "action_speed": 12.0,
@@ -51,6 +55,7 @@
         "minecraft:diamond": {
             "name": "Diamond",
             "palette": "masterworks:diamond",
+            "interface_color": "ff33ebcb",
             "stats": {
                 "durability": 1561,
                 "action_speed": 8.0,
@@ -63,6 +68,7 @@
         "minecraft:emerald": {
             "name": "Emerald",
             "palette": "masterworks:emerald",
+            "interface_color": "ff00aa2c",
             "stats": {
                 "durability": 2199,
                 "action_speed": 10.0,

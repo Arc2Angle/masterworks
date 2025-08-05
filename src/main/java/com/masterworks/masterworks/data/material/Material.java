@@ -7,15 +7,16 @@ import com.masterworks.masterworks.resource.location.PaletteResourceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public record Material(String name, PaletteResourceLocation palette, Map<Stat, Double> stats) {
+public record Material(String name, PaletteResourceLocation palette, InterfaceColor interfaceColor,
+        Map<Stat, Double> stats) {
 
-    public static final Codec<Material> CODEC =
-            RecordCodecBuilder.create(instance -> instance
-                    .group(Codec.STRING.fieldOf("name").forGetter(Material::name),
-                            PaletteResourceLocation.CODEC.fieldOf("palette")
-                                    .forGetter(Material::palette),
-                            Codec.simpleMap(Stat.CODEC, Codec.DOUBLE, Registries.STAT)
-                                    .fieldOf("stats").forGetter(Material::stats))
+    public static final Codec<Material> CODEC = RecordCodecBuilder.create(
+            instance -> instance.group(Codec.STRING.fieldOf("name").forGetter(Material::name),
+                    PaletteResourceLocation.CODEC.fieldOf("palette").forGetter(Material::palette),
+                    InterfaceColor.CODEC.fieldOf("interface_color")
+                            .forGetter(Material::interfaceColor),
+                    Codec.simpleMap(Stat.CODEC, Codec.DOUBLE, Registries.STAT).fieldOf("stats")
+                            .forGetter(Material::stats))
                     .apply(instance, Material::new));
 
     public boolean hasStat(Stat stat) {
