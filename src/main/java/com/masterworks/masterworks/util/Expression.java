@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -26,10 +27,10 @@ public abstract class Expression {
      * 
      * @param arguments to be used as variable values. Unused variables will be ignored, and can be
      *        left null
-     * @return the result of the expression evaluation
+     * @return The result of the expression evaluation
      * @throws IllegalArgumentException if the expression is missing required variables
      */
-    public abstract Double evaluate(@Nonnull List<Double> arguments)
+    public abstract Double evaluate(@Nonnull Map<String, Double> arguments)
             throws IllegalArgumentException;
 
     public abstract String format();
@@ -42,7 +43,7 @@ public abstract class Expression {
         }
 
         @Override
-        public Double evaluate(@Nonnull List<Double> arguments) {
+        public Double evaluate(@Nonnull Map<String, Double> arguments) {
             return value;
         }
 
@@ -53,27 +54,28 @@ public abstract class Expression {
     }
 
     private static class Variable extends Expression {
-        private int position;
+        private String name;
 
-        public Variable(int position) {
-            this.position = position;
+        public Variable(String name) {
+            this.name = name;
         }
 
         @Override
-        public Double evaluate(@Nonnull List<Double> arguments) throws IllegalArgumentException {
+        public Double evaluate(@Nonnull Map<String, Double> arguments)
+                throws IllegalArgumentException {
             try {
-                return Objects.requireNonNull(arguments.get(position));
+                return Objects.requireNonNull(arguments.get(name));
             } catch (IndexOutOfBoundsException e) {
                 throw new IllegalArgumentException(
-                        "Variable $" + position + " not found in arguments", e);
+                        "Variable \"" + name + "\" not found in arguments", e);
             } catch (NullPointerException e) {
-                throw new IllegalArgumentException("Variable $" + position + " is empty", e);
+                throw new IllegalArgumentException("Variable \"" + name + "\" is null", e);
             }
         }
 
         @Override
         public String format() {
-            return "$" + position;
+            return name;
         }
     }
 
@@ -85,7 +87,8 @@ public abstract class Expression {
         }
 
         @Override
-        public Double evaluate(@Nonnull List<Double> arguments) throws IllegalArgumentException {
+        public Double evaluate(@Nonnull Map<String, Double> arguments)
+                throws IllegalArgumentException {
             return -child.evaluate(arguments);
         }
 
@@ -95,17 +98,18 @@ public abstract class Expression {
         }
     }
 
-    private static abstract class VariadicOperator extends Expression {
+    private static abstract class NaryOperator extends Expression {
         private List<Expression> children;
 
-        protected VariadicOperator(List<Expression> children) {
+        protected NaryOperator(List<Expression> children) {
             this.children = children;
         }
 
         protected abstract Double calculate(Stream<Double> values) throws IllegalArgumentException;
 
         @Override
-        public Double evaluate(@Nonnull List<Double> arguments) throws IllegalArgumentException {
+        public Double evaluate(@Nonnull Map<String, Double> arguments)
+                throws IllegalArgumentException {
             return calculate(children.stream().map(child -> child.evaluate(arguments)));
         }
 
@@ -118,7 +122,7 @@ public abstract class Expression {
         }
     }
 
-    private static class Sum extends VariadicOperator {
+    private static class Sum extends NaryOperator {
         public Sum(List<Expression> children) {
             super(children);
         }
@@ -134,7 +138,7 @@ public abstract class Expression {
         }
     }
 
-    private static class Product extends VariadicOperator {
+    private static class Product extends NaryOperator {
         public Product(List<Expression> children) {
             super(children);
         }
@@ -165,11 +169,11 @@ public abstract class Expression {
             return new Negation(Expression.parse(format.substring(1)));
         }
 
-        if (VARIABLE_PATTERN.matcher(format).matches()) {
-            return new Variable(Integer.parseInt(format.substring(1)));
+        if (IDENTIFIER_PATTERN.matcher(format).matches()) {
+            return new Variable(format);
         }
 
-        if (CONSTANT_PATTERN.matcher(format).matches()) {
+        if (DECIMAL_PATTERN.matcher(format).matches()) {
             return new Constant(Double.parseDouble(format));
         }
 
@@ -179,6 +183,6 @@ public abstract class Expression {
     public static final Codec<Expression> CODEC =
             Codec.STRING.xmap(Expression::parse, Expression::format);
 
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("^\\$[a-z0-9_]*$");
-    private static final Pattern CONSTANT_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
+    private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("^[$a-z_][a-z0-9_]*$");
+    private static final Pattern DECIMAL_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
 }

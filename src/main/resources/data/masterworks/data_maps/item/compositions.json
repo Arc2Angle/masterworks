@@ -61,22 +61,25 @@
                 "tier": "masterworks:basic",
                 "parts": [
                     {
+                        "identifier": "head",
                         "shape": "masterworks:pickaxe/head",
                         "requires": "masterworks:pickaxe_head_template"
                     },
                     {
+                        "identifier": "handle",
                         "shape": "masterworks:pickaxe/handle",
                         "requires": "masterworks:rod_template"
                     },
                     {
+                        "identifier": "binding",
                         "shape": "masterworks:pickaxe/binding",
                         "requires": "masterworks:binding_template"
                     }
                 ],
                 "properties": {
-                    "durability": "$0 + $1 + $2",
-                    "damage": "$0",
-                    "action_speed": "$0 * 0.4 + $1 * 0.2 + $2 * 0.4"
+                    "durability": "$head + $handle + $binding",
+                    "damage": "$head",
+                    "action_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
                 }
             }
         ],
@@ -98,11 +101,11 @@
                 "tier": "masterworks:advanced",
                 "parts": [
                     {
-                        "shape": "masterworks:sword/blade/left_edge",
+                        "shape": "masterworks:sword/blade/right_edge",
                         "requires": "masterworks:sword_blade_template"
                     },
                     {
-                        "shape": "masterworks:sword/blade/right_edge",
+                        "shape": "masterworks:sword/blade/left_edge",
                         "requires": "masterworks:sword_blade_template"
                     }
                 ],
@@ -131,21 +134,24 @@
                 "tier": "masterworks:basic",
                 "parts": [
                     {
+                        "identifier": "blade",
                         "requires": "masterworks:sword_blade_template"
                     },
                     {
+                        "identifier": "handle",
                         "shape": "masterworks:sword/handle",
                         "requires": "masterworks:rod_template"
                     },
                     {
+                        "identifier": "guard",
                         "shape": "masterworks:sword/guard",
                         "requires": "masterworks:binding_template"
                     }
                 ],
                 "properties": {
-                    "durability": "$0 + $1 + $2",
-                    "damage": "$0",
-                    "action_speed": "$0 * 0.4 + $1 * 0.2 + $2 * 0.4"
+                    "durability": "$blade + $handle + $guard",
+                    "damage": "$blade",
+                    "action_speed": "$blade * 0.4 + $handle * 0.4 + $guard * 0.2"
                 }
             }
         ]

@@ -1,9 +1,11 @@
 package com.masterworks.masterworks.data.construct;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.composition.Composition;
 import com.masterworks.masterworks.data.composition.Stat;
@@ -70,28 +72,33 @@ public record Construct(TemplateResourceLocation template, int variant,
     }
 
     public double getStat(Stat stat) {
-        Composition composition = getComposition();
-        Expression expression = composition.properties().get(stat);
-
-        if (expression == null) {
+        Double value = getStatOrNull(stat);
+        if (value == null) {
             throw stat.new IrrelevantException("construct template: " + template);
         }
-
-        List<Double> arguments =
-                parts.stream()
-                        .map(part -> part.map(material -> material.getMappedValue().getStat(stat),
-                                construct -> construct.getStatOrNull(stat)))
-                        .collect(Collectors.toList());
-
-        return expression.evaluate(arguments);
+        return value;
     }
 
     private Double getStatOrNull(Stat stat) {
-        try {
-            return getStat(stat);
-        } catch (Stat.IrrelevantException e) {
+        Composition composition = getComposition();
+
+        Expression expression = composition.properties().get(stat);
+        if (expression == null) {
             return null;
         }
+
+        Map<String, Double> arguments = IntStream.range(0, parts.size()).mapToObj(i -> {
+            var materialOrPart = parts.get(i);
+            var definition = composition.parts().get(i);
+
+            String identifier = "$" + definition.identifier().orElse(Integer.toString(i));
+            Double value = materialOrPart.map(material -> material.getMappedValue().getStat(stat),
+                    part -> part.getStatOrNull(stat));
+
+            return Map.entry(identifier, value);
+        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return expression.evaluate(arguments);
     }
 
     public class UnknownVariantException extends RuntimeException {
