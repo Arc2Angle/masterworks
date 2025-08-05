@@ -82,20 +82,21 @@ public record Construct(TemplateResourceLocation template, int variant,
             throw stat.new IrrelevantException("construct template: " + template);
         }
 
-        Map<String, Double> arguments = IntStream.range(0, parts.size()).mapToObj(i -> {
-            StatCarrier component =
-                    Either.unwrap(parts.get(i).mapLeft(material -> material.getMappedValue()));
-            PartDefinition definition = composition.parts().get(i);
+        Map<String, Double> arguments = IntStream
+                .range(0, Math.min(parts.size(), composition.parts().size())).mapToObj(i -> {
+                    StatCarrier component = Either
+                            .unwrap(parts.get(i).mapLeft(material -> material.getMappedValue()));
+                    PartDefinition definition = composition.parts().get(i);
 
-            if (!component.hasStat(stat)) {
-                return null;
-            }
+                    if (!component.hasStat(stat)) {
+                        return null;
+                    }
 
-            String identifier = "$" + definition.identifier().orElse(Integer.toString(i));
-            Double value = component.getStat(stat);
+                    String identifier = "$" + definition.identifier().orElse(Integer.toString(i));
+                    Double value = component.getStat(stat);
 
-            return Map.entry(identifier, value);
-        }).filter(Objects::nonNull)
+                    return Map.entry(identifier, value);
+                }).filter(Objects::nonNull)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return expression.evaluate(arguments);

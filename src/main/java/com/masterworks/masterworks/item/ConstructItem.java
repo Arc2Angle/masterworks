@@ -15,6 +15,7 @@ import com.masterworks.masterworks.Masterworks;
 import com.masterworks.masterworks.data.composition.PartDefinition;
 import com.masterworks.masterworks.data.construct.Construct;
 import com.masterworks.masterworks.data.material.Material;
+import com.masterworks.masterworks.data.stat.Stat;
 import com.masterworks.masterworks.resource.location.MaterialResourceLocation;
 import com.masterworks.masterworks.resource.location.TemplateResourceLocation;
 import com.masterworks.masterworks.util.streams.BiStream;
@@ -72,6 +73,12 @@ public class ConstructItem extends Item {
         }
 
         adder.accept(formatConstruct(construct));
+
+        for (Stat stat : Stat.values()) {
+            if (construct.hasStat(stat)) {
+                adder.accept(Component.literal(stat.name() + ": " + construct.getStat(stat)));
+            }
+        }
     }
 
     private static MutableComponent formatConstruct(Construct construct) {
