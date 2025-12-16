@@ -1,0 +1,19 @@
+{
+    "components": {
+        "blade": "masterworks:component/sword_blade/broad",
+        "guard": "masterworks:component/guard/wide",
+        "handle": "masterworks:component/handle/short"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render": {
+                "blade": true,
+                "guard": true,
+                "handle": true
+            },
+            "masterworks:durability": "$blade + $handle + $guard",
+            "masterworks:attack_damage": "$blade",
+            "masterworks:attack_speed": "$blade * 0.4 + $handle * 0.4 + $guard * 0.2"
+        }
+    }
+}

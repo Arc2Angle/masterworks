@@ -1,0 +1,13 @@
+{
+    "name": "Stone",
+    "palette": "masterworks:stone",
+    "color": "ff787777",
+    "properties": {
+        "masterworks:durability": 131,
+        "masterworks:mining_speed": 4.0,
+        "masterworks:attack_damage": 4.0,
+        "masterworks:attack_speed": 2.0,
+        "masterworks:armor": 12.0,
+        "masterworks:toughness": 0.0
+    }
+}

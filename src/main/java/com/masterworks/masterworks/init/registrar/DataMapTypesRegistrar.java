@@ -1,0 +1,36 @@
+package com.masterworks.masterworks.init.registrar;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.datamaps.DataMapType;
+import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
+
+public class DataMapTypesRegistrar {
+    final String namespace;
+    final List<DataMapType<?, ?>> entries = new LinkedList<>();
+
+    public DataMapTypesRegistrar(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public <K, V> DataMapType<K, V> registerDataMapType(String name,
+            Function<ResourceLocation, DataMapType<K, V>> factory) {
+        ResourceLocation key = ResourceLocation.fromNamespaceAndPath(namespace, name);
+        DataMapType<K, V> dataMapType = factory.apply(key);
+        entries.add(dataMapType);
+        return dataMapType;
+    }
+
+    public void register(IEventBus bus) {
+        bus.addListener(this::addEntries);
+    }
+
+    void addEntries(RegisterDataMapTypesEvent event) {
+        for (var entry : entries) {
+            event.register(entry);
+        }
+    }
+}

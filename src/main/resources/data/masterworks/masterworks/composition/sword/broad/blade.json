@@ -1,0 +1,23 @@
+{
+    "components": {
+        "main": "masterworks:material"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render": {
+                "main": "masterworks:sword/broad_blade"
+            },
+            "masterworks:durability": "$main * 0.5",
+            "masterworks:attack_damage": "$main",
+            "masterworks:attack_speed": "$main"
+        },
+        "masterworks:component/sword_blade/broad": {
+            "masterworks:render": {
+                "main": "masterworks:sword/broad_blade"
+            },
+            "masterworks:durability": "$main * 0.5",
+            "masterworks:attack_damage": "$main",
+            "masterworks:attack_speed": "$main"
+        }
+    }
+}

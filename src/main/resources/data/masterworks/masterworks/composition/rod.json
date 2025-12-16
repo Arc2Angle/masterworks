@@ -1,0 +1,31 @@
+{
+    "components": {
+        "main": "masterworks:material"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render": {
+                "main": "masterworks:rod"
+            },
+            "masterworks:durability": "$main * 0.2",
+            "masterworks:mining_speed": "$main",
+            "masterworks:attack_speed": "$main"
+        },
+        "masterworks:component/handle/tool": {
+            "masterworks:render": {
+                "main": "masterworks:rod/tool_handle"
+            },
+            "masterworks:durability": "$main * 0.2",
+            "masterworks:mining_speed": "$main",
+            "masterworks:attack_speed": "$main"
+        },
+        "masterworks:component/handle/short": {
+            "masterworks:render": {
+                "main": "masterworks:rod/short_handle"
+            },
+            "masterworks:durability": "$main * 0.2",
+            "masterworks:mining_speed": "$main",
+            "masterworks:attack_speed": "$main"
+        }
+    }
+}

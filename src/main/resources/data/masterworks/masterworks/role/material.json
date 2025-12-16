@@ -1,0 +1,7 @@
+{
+    "type": "masterworks:material",
+    "examples": [
+        "masterworks:ingot",
+        "masterworks:gem"
+    ]
+}

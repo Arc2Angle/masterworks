@@ -1,0 +1,20 @@
+{
+    "components": {
+        "head": "masterworks:component/pickaxe_head",
+        "binding": "masterworks:component/binder/tool",
+        "handle": "masterworks:component/handle/tool"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render": {
+                "head": true,
+                "binding": true,
+                "handle": true
+            },
+            "masterworks:durability": "$head + $handle + $binding",
+            "masterworks:mining_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2",
+            "masterworks:attack_damage": "$head",
+            "masterworks:attack_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
+        }
+    }
+}

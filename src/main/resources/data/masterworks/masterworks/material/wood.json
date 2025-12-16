@@ -1,0 +1,13 @@
+{
+    "name": "Wood",
+    "palette": "masterworks:wood",
+    "color": "ff755821",
+    "properties": {
+        "masterworks:durability": 59,
+        "masterworks:mining_speed": 2.0,
+        "masterworks:attack_damage": 3.0,
+        "masterworks:attack_speed": 4.0,
+        "masterworks:armor": 7.0,
+        "masterworks:toughness": 0.0
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "values": {
+        "minecraft:oak_planks": "masterworks:wood",
+        "minecraft:stone": "masterworks:stone",
+        "minecraft:iron_ingot": "masterworks:iron",
+        "minecraft:gold_ingot": "masterworks:gold",
+        "minecraft:diamond": "masterworks:diamond",
+        "minecraft:emerald": "masterworks:emerald"
+    }
+}

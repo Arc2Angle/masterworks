@@ -1,0 +1,13 @@
+{
+    "name": "Diamond",
+    "palette": "masterworks:diamond",
+    "color": "ff33ebcb",
+    "properties": {
+        "masterworks:durability": 1561,
+        "masterworks:mining_speed": 8.0,
+        "masterworks:attack_damage": 7.0,
+        "masterworks:attack_speed": 8.0,
+        "masterworks:armor": 20.0,
+        "masterworks:toughness": 8.0
+    }
+}

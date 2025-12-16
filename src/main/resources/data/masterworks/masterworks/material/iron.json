@@ -1,0 +1,13 @@
+{
+    "name": "Iron",
+    "palette": "masterworks:iron",
+    "color": "ffd8d8d8",
+    "properties": {
+        "masterworks:durability": 250,
+        "masterworks:mining_speed": 6.0,
+        "masterworks:attack_damage": 6.0,
+        "masterworks:attack_speed": 6.0,
+        "masterworks:armor": 15.0,
+        "masterworks:toughness": 0.0
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "name": "Emerald",
+    "palette": "masterworks:emerald",
+    "color": "ff00aa2c",
+    "properties": {
+        "masterworks:durability": 2199,
+        "masterworks:mining_speed": 10.0,
+        "masterworks:attack_damage": 5.5,
+        "masterworks:attack_speed": 10.0,
+        "masterworks:armor": 15.0,
+        "masterworks:toughness": 4.0
+    }
+}

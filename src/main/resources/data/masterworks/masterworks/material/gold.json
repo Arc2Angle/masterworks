@@ -1,0 +1,13 @@
+{
+    "name": "Gold",
+    "palette": "masterworks:gold",
+    "color": "ffe9b115",
+    "properties": {
+        "masterworks:durability": 32,
+        "masterworks:mining_speed": 12.0,
+        "masterworks:attack_damage": 4.0,
+        "masterworks:attack_speed": 12.0,
+        "masterworks:armor": 11.0,
+        "masterworks:toughness": 0.0
+    }
+}
