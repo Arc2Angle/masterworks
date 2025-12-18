@@ -1,6 +1,5 @@
 package com.masterworks.masterworks.data.property.core;
 
-import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.provider.ToolRuleProviderProperty;
 import javax.annotation.Nullable;
 import com.masterworks.masterworks.data.Construct;
@@ -35,11 +34,12 @@ public record MiningSpeedProperty(Expression expression)
     }
 
     @Override
-    public Property.Type<MiningSpeedProperty> type() {
+    public Type type() {
         return MasterworksPropertyTypes.MINING_SPEED.get();
     }
 
-    public static class Type implements ExpressionProperty.Type<MiningSpeedProperty> {
+    public static class Type implements ExpressionProperty.Type<MiningSpeedProperty>,
+            ToolRuleProviderProperty.Type<MiningSpeedProperty> {
         @Override
         public String name() {
             return "Mining Speed";

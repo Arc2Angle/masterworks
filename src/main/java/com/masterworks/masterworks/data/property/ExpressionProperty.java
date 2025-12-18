@@ -18,7 +18,7 @@ public interface ExpressionProperty extends Property {
     Expression expression();
 
     @Override
-    Property.Type<? extends ExpressionProperty> type();
+    Type<?> type();
 
     interface Type<P extends ExpressionProperty> extends Property.Type<P> {
         P create(Expression expression);

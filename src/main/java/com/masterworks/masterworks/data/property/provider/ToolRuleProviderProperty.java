@@ -15,7 +15,7 @@ public interface ToolRuleProviderProperty extends Property {
     Tool.Rule get(Construct construct);
 
     @Override
-    Property.Type<? extends ToolRuleProviderProperty> type();
+    Type<?> type();
 
     interface Type<P extends ToolRuleProviderProperty> extends Property.Type<P> {
     }

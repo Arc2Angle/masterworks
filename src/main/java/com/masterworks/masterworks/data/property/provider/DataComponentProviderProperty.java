@@ -12,7 +12,7 @@ public interface DataComponentProviderProperty<T> extends Property {
     T get(Construct construct);
 
     @Override
-    Property.Type<? extends DataComponentProviderProperty<T>> type();
+    Type<?, ?> type();
 
 
     interface Type<T, P extends DataComponentProviderProperty<T>> extends Property.Type<P> {

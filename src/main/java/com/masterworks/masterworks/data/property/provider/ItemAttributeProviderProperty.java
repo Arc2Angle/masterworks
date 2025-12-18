@@ -20,7 +20,7 @@ public interface ItemAttributeProviderProperty extends Property {
     Double get(Construct construct);
 
     @Override
-    Property.Type<? extends ItemAttributeProviderProperty> type();
+    Type<?> type();
 
     interface Type<P extends ItemAttributeProviderProperty> extends Property.Type<P> {
         Holder<Attribute> attribute();

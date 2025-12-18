@@ -1,6 +1,5 @@
 package com.masterworks.masterworks.data.property.core;
 
-import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
 import javax.annotation.Nullable;
 import com.masterworks.masterworks.MasterworksMod;
@@ -31,7 +30,7 @@ public record ToughnessProperty(Expression expression)
     }
 
     @Override
-    public Property.Type<ToughnessProperty> type() {
+    public Type type() {
         return MasterworksPropertyTypes.TOUGHNESS.get();
     }
 

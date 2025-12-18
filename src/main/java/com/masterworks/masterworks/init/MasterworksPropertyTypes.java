@@ -21,31 +21,31 @@ public class MasterworksPropertyTypes {
         REGISTRAR.register(bus);
     }
 
-    static <T extends Property> Supplier<Property.Type<T>> register(String path,
-            Supplier<Property.Type<T>> type) {
+    static <P extends Property, T extends Property.Type<P>> Supplier<T> register(String path,
+            Supplier<T> type) {
         return REGISTRAR.register(path, type);
     }
 
 
 
-    public static final Supplier<Property.Type<RenderProperty>> RENDER =
+    public static final Supplier<RenderProperty.Type> RENDER =
             register("render", RenderProperty.Type::new);
 
-    public static final Supplier<Property.Type<DurabilityProperty>> DURABILITY =
+    public static final Supplier<DurabilityProperty.Type> DURABILITY =
             register("durability", DurabilityProperty.Type::new);
 
-    public static final Supplier<Property.Type<MiningSpeedProperty>> MINING_SPEED =
+    public static final Supplier<MiningSpeedProperty.Type> MINING_SPEED =
             register("mining_speed", MiningSpeedProperty.Type::new);
 
-    public static final Supplier<Property.Type<AttackDamageProperty>> ATTACK_DAMAGE =
+    public static final Supplier<AttackDamageProperty.Type> ATTACK_DAMAGE =
             register("attack_damage", AttackDamageProperty.Type::new);
 
-    public static final Supplier<Property.Type<AttackSpeedProperty>> ATTACK_SPEED =
+    public static final Supplier<AttackSpeedProperty.Type> ATTACK_SPEED =
             register("attack_speed", AttackSpeedProperty.Type::new);
 
-    public static final Supplier<Property.Type<ArmorProperty>> ARMOR =
+    public static final Supplier<ArmorProperty.Type> ARMOR =
             register("armor", ArmorProperty.Type::new);
 
-    public static final Supplier<Property.Type<ToughnessProperty>> TOUGHNESS =
+    public static final Supplier<ToughnessProperty.Type> TOUGHNESS =
             register("toughness", ToughnessProperty.Type::new);
 }

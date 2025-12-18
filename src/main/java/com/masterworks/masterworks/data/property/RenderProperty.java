@@ -33,7 +33,7 @@ public record RenderProperty(Map<Construct.Component.Key, Dynamic<?>> arguments,
     }
 
     @Override
-    public Property.Type<RenderProperty> type() {
+    public Type type() {
         return MasterworksPropertyTypes.RENDER.get();
     }
 

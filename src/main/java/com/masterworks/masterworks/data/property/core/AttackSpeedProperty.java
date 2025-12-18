@@ -1,6 +1,5 @@
 package com.masterworks.masterworks.data.property.core;
 
-import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
 import javax.annotation.Nullable;
 import com.masterworks.masterworks.data.Construct;
@@ -28,7 +27,7 @@ public record AttackSpeedProperty(Expression expression)
     }
 
     @Override
-    public Property.Type<AttackSpeedProperty> type() {
+    public Type type() {
         return MasterworksPropertyTypes.ATTACK_SPEED.get();
     }
 
