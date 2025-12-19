@@ -12,11 +12,11 @@ import javax.annotation.Nonnull;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Material;
 import com.masterworks.masterworks.data.property.ExpressionProperty;
-import com.masterworks.masterworks.data.property.provider.DataComponentProviderProperty;
 import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
 import com.masterworks.masterworks.data.property.provider.ToolRuleProviderProperty;
 import com.masterworks.masterworks.init.MasterworksDataComponents;
 import com.masterworks.masterworks.init.MasterworksItems;
+import com.masterworks.masterworks.init.MasterworksTags;
 import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.PropertyTypeReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
@@ -37,32 +37,30 @@ public class ConstructItem extends Item {
         stack.set(MasterworksDataComponents.CONSTRUCT.get(), construct);
         stack.set(DataComponents.MAX_STACK_SIZE, 1);
 
-        ItemAttributeProviderProperty.Builder itemAttributeProviderPropertyBuilder =
-                new ItemAttributeProviderProperty.Builder();
-        ToolRuleProviderProperty.Builder toolRuleProviderPropertyBuilder =
-                new ToolRuleProviderProperty.Builder();
-
-        PropertyTypeReferenceResourceLocation.all().forEach(reference -> {
-            try {
-                switch (reference.registered().value()) {
-                    case ItemAttributeProviderProperty.Type<?> type -> itemAttributeProviderPropertyBuilder
-                            .add(type, construct);
-                    case ToolRuleProviderProperty.Type<?> type -> toolRuleProviderPropertyBuilder
-                            .add(type, construct);
-                    case DataComponentProviderProperty.Type<?, ?> type -> type.apply(construct,
-                            stack);
-                    default -> {
-                        return;
-                    }
-                }
-            } catch (Construct.PropertyAccessException e) {
-            }
-        });
-
-        itemAttributeProviderPropertyBuilder.apply(stack);
-        toolRuleProviderPropertyBuilder.apply(stack);
+        applyDataComponents(construct, stack);
+        applyItemAttributes(construct, stack);
+        applyToolRules(construct, stack);
 
         return stack;
+    }
+
+    static void applyDataComponents(Construct construct, ItemStack stack) {
+        MasterworksTags.DATA_COMPONENT_PROVIDER_PROPERTY_TYPES.values()
+                .forEach(type -> type.apply(construct, stack));
+    }
+
+    static void applyItemAttributes(Construct construct, ItemStack stack) {
+        ItemAttributeProviderProperty.Builder builder = new ItemAttributeProviderProperty.Builder();
+        MasterworksTags.ITEM_ATTRIBUTE_PROVIDER_PROPERTY_TYPES.values()
+                .forEach(type -> builder.add(type, construct));
+        builder.apply(stack);
+    }
+
+    static void applyToolRules(Construct construct, ItemStack stack) {
+        ToolRuleProviderProperty.Builder builder = new ToolRuleProviderProperty.Builder();
+        MasterworksTags.TOOL_RULE_PROVIDER_PROPERTY_TYPES.values()
+                .forEach(type -> builder.add(type, construct));
+        builder.apply(stack);
     }
 
     /**
