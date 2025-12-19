@@ -11,14 +11,14 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Material;
-import com.masterworks.masterworks.data.property.base.ExpressionProperty;
+import com.masterworks.masterworks.data.property.base.ConstructProperty;
+import com.masterworks.masterworks.data.property.base.DataComponentProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
 import com.masterworks.masterworks.init.MasterworksDataComponents;
 import com.masterworks.masterworks.init.MasterworksItems;
-import com.masterworks.masterworks.init.MasterworksTags;
+import com.masterworks.masterworks.init.MasterworksRegistries;
 import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.PropertyTypeReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.CompositionReferenceResourceLocation;
 import com.mojang.datafixers.util.Either;
@@ -37,30 +37,11 @@ public class ConstructItem extends Item {
         stack.set(MasterworksDataComponents.CONSTRUCT.get(), construct);
         stack.set(DataComponents.MAX_STACK_SIZE, 1);
 
-        applyDataComponents(construct, stack);
-        applyItemAttributes(construct, stack);
-        applyToolRules(construct, stack);
+        DataComponentProperty.apply(construct, stack);
+        ItemAttributeProperty.apply(construct, stack);
+        ToolRuleProperty.apply(construct, stack);
 
         return stack;
-    }
-
-    static void applyDataComponents(Construct construct, ItemStack stack) {
-        MasterworksTags.DATA_COMPONENT_PROPERTY_TYPES.values()
-                .forEach(type -> type.apply(construct, stack));
-    }
-
-    static void applyItemAttributes(Construct construct, ItemStack stack) {
-        ItemAttributeProperty.Builder builder = new ItemAttributeProperty.Builder();
-        MasterworksTags.ITEM_ATTRIBUTE_PROPERTY_TYPES.values()
-                .forEach(type -> builder.add(type, construct));
-        builder.apply(stack);
-    }
-
-    static void applyToolRules(Construct construct, ItemStack stack) {
-        ToolRuleProperty.Builder builder = new ToolRuleProperty.Builder();
-        MasterworksTags.TOOL_RULE_PROPERTY_TYPES.values()
-                .forEach(type -> builder.add(type, construct));
-        builder.apply(stack);
     }
 
     /**
@@ -83,17 +64,14 @@ public class ConstructItem extends Item {
 
         adder.accept(formatConstruct(construct));
 
-        PropertyTypeReferenceResourceLocation.all().forEach(reference -> {
-            if (reference.registered().value() instanceof ExpressionProperty.Type<?> type) {
+        MasterworksRegistries.PROPERTY_TYPE.stream().forEach(propertyType -> {
+            if (propertyType instanceof ConstructProperty.Type<?, ?> constructPropertyType) {
                 try {
-                    ExpressionProperty property =
-                            construct.getPropertyOrThrow(type, RoleReferenceResourceLocation.ITEM);
+                    ConstructProperty<?> property = construct.getPropertyOrThrow(
+                            constructPropertyType, RoleReferenceResourceLocation.ITEM);
 
-                    Double value = property.evaluate(construct);
-
-                    if (value != null) {
-                        adder.accept(Component.literal(type.name() + ": " + value));
-                    }
+                    Object value = property.get(construct);
+                    adder.accept(Component.literal(constructPropertyType.name() + ": " + value));
                 } catch (Construct.PropertyAccessException e) {
                 }
             }

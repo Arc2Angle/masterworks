@@ -2,7 +2,6 @@ package com.masterworks.masterworks.resource.location;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.PropertyTypeMap;
@@ -27,11 +26,6 @@ public record PropertyTypeReferenceResourceLocation(ResourceLocation value)
 
     public Registry<Property.Type<?>> registry() {
         return MasterworksRegistries.PROPERTY_TYPE;
-    }
-
-    public static Stream<PropertyTypeReferenceResourceLocation> all() {
-        return MasterworksRegistries.PROPERTY_TYPE.keySet().stream()
-                .map(PropertyTypeReferenceResourceLocation::new);
     }
 
     public static Codec<PropertyTypeMap> typedMapCodec(

@@ -3,8 +3,6 @@ package com.masterworks.masterworks.data.property.base;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import com.masterworks.masterworks.data.Composition;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
@@ -41,7 +39,6 @@ public interface ExpressionProperty extends Property {
     }
 
 
-    @Nullable
     default Double evaluate(Construct construct) {
         Composition composition = construct.composition().registered().value();
 
@@ -52,31 +49,24 @@ public interface ExpressionProperty extends Property {
                             Optional.ofNullable(composition.components().get(key)).orElseThrow();
 
                     String argumentKey = "$" + key.value();
-                    Double argumentValue = entry.getValue().value().map(
+                    Optional<Double> argumentValue = entry.getValue().value().map(
                             material -> evaluateComponentMaterial(material),
                             componentConstruct -> evaluateComponentConstruct(componentConstruct,
                                     role));
 
-                    if (argumentValue == null) {
-                        return Stream.empty();
-                    }
-
-                    return Stream.of(Map.entry(argumentKey, argumentValue));
+                    return argumentValue.map(value -> Map.entry(argumentKey, value)).stream();
                 }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return expression().evaluate(arguments);
     }
 
-    @Nullable
-    private Double evaluateComponentMaterial(MaterialReferenceResourceLocation material) {
+    private Optional<Double> evaluateComponentMaterial(MaterialReferenceResourceLocation material) {
         PropertyTypeMap map = material.registered().value().properties();
 
-        return map.get(type()).map(property -> property.expression().evaluate(Map.of()))
-                .orElse(null);
+        return map.get(type()).map(property -> property.expression().evaluate(Map.of()));
     }
 
-    @Nullable
-    private Double evaluateComponentConstruct(Construct construct,
+    private Optional<Double> evaluateComponentConstruct(Construct construct,
             RoleReferenceResourceLocation role) {
         Composition composition = construct.composition().registered().value();
 
@@ -84,6 +74,6 @@ public interface ExpressionProperty extends Property {
                 .orElseThrow(() -> new RuntimeException(
                         "Missing role \"" + role + "\" in composition " + construct.composition()));
 
-        return properties.get(type()).map(property -> property.evaluate(construct)).orElse(null);
+        return properties.get(type()).map(property -> property.evaluate(construct));
     }
 }

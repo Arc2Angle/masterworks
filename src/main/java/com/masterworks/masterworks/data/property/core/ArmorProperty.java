@@ -1,17 +1,16 @@
 package com.masterworks.masterworks.data.property.core;
 
-import javax.annotation.Nullable;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeProperty;
 import com.masterworks.masterworks.init.MasterworksPropertyTypes;
 import com.masterworks.masterworks.util.Expression;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public record ArmorProperty(Expression expression)
@@ -19,14 +18,10 @@ public record ArmorProperty(Expression expression)
     public static final ResourceLocation ATTRIBUTE_ID =
             ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "armor");
 
-    @Override
-    @Nullable
-    public Double get(Construct construct) {
-        Double value = evaluate(construct);
-        if (value == null) {
-            return null;
-        }
-        return value;
+    public ItemAttributeModifiers.Entry get(Construct construct) {
+        return new ItemAttributeModifiers.Entry(Attributes.ARMOR,
+                new AttributeModifier(ATTRIBUTE_ID, evaluate(construct), Operation.ADD_VALUE),
+                EquipmentSlotGroup.ARMOR);
     }
 
     @Override
@@ -39,26 +34,6 @@ public record ArmorProperty(Expression expression)
         @Override
         public String name() {
             return "Armor";
-        }
-
-        @Override
-        public Holder<Attribute> attribute() {
-            return Attributes.ARMOR;
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return ATTRIBUTE_ID;
-        }
-
-        @Override
-        public Operation operation() {
-            return Operation.ADD_VALUE;
-        }
-
-        @Override
-        public EquipmentSlotGroup slot() {
-            return EquipmentSlotGroup.ARMOR;
         }
 
         @Override

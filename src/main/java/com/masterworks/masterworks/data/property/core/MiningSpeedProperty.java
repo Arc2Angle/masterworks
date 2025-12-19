@@ -1,6 +1,5 @@
 package com.masterworks.masterworks.data.property.core;
 
-import javax.annotation.Nullable;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
@@ -14,14 +13,8 @@ import net.minecraft.world.level.block.Block;
 
 public record MiningSpeedProperty(Expression expression)
         implements ExpressionProperty, ToolRuleProperty {
-    @Override
-    @Nullable
-    public Tool.Rule get(Construct construct) {
-        Double value = evaluate(construct);
-        if (value == null) {
-            return null;
-        }
 
+    public Tool.Rule get(Construct construct) {
         /*
          * Named<Block> incorrect =
          * BuiltInRegistries.BLOCK.get(BlockTags.INCORRECT_FOR_IRON_TOOL).orElseThrow();
@@ -30,7 +23,7 @@ public record MiningSpeedProperty(Expression expression)
         Named<Block> blocks =
                 BuiltInRegistries.BLOCK.get(BlockTags.MINEABLE_WITH_PICKAXE).orElseThrow();
 
-        return Tool.Rule.minesAndDrops(blocks, value.floatValue());
+        return Tool.Rule.minesAndDrops(blocks, evaluate(construct).floatValue());
     }
 
     @Override
