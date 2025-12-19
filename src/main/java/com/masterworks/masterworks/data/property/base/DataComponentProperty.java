@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.data.property.provider;
+package com.masterworks.masterworks.data.property.base;
 
 import javax.annotation.Nullable;
 import com.masterworks.masterworks.data.Construct;
@@ -7,7 +7,7 @@ import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocati
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 
-public interface DataComponentProviderProperty<T> extends Property {
+public interface DataComponentProperty<T> extends Property {
     @Nullable
     T get(Construct construct);
 
@@ -15,7 +15,7 @@ public interface DataComponentProviderProperty<T> extends Property {
     Type<?, ?> type();
 
 
-    interface Type<T, P extends DataComponentProviderProperty<T>> extends Property.Type<P> {
+    interface Type<T, P extends DataComponentProperty<T>> extends Property.Type<P> {
         DataComponentType<T> dataComponentType();
 
         default void apply(Construct construct, ItemStack stack) {

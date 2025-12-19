@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.data.property.core;
 
-import com.masterworks.masterworks.data.property.provider.DataComponentProviderProperty;
 import javax.annotation.Nullable;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.ExpressionProperty;
+import com.masterworks.masterworks.data.property.base.DataComponentProperty;
+import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.init.MasterworksPropertyTypes;
 import com.masterworks.masterworks.util.Expression;
 import net.minecraft.core.component.DataComponentType;
@@ -11,7 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 
 public record DurabilityProperty(Expression expression)
-        implements ExpressionProperty, DataComponentProviderProperty<Integer> {
+        implements ExpressionProperty, DataComponentProperty<Integer> {
 
     @Override
     @Nullable
@@ -30,7 +30,7 @@ public record DurabilityProperty(Expression expression)
     }
 
     public static class Type implements ExpressionProperty.Type<DurabilityProperty>,
-            DataComponentProviderProperty.Type<Integer, DurabilityProperty> {
+            DataComponentProperty.Type<Integer, DurabilityProperty> {
         @Override
         public String name() {
             return "Durability";
@@ -48,7 +48,7 @@ public record DurabilityProperty(Expression expression)
 
         @Override
         public void apply(Construct construct, ItemStack stack) {
-            DataComponentProviderProperty.Type.super.apply(construct, stack);
+            DataComponentProperty.Type.super.apply(construct, stack);
             stack.set(DataComponents.DAMAGE, 0);
         }
     }

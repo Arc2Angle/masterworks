@@ -11,9 +11,9 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Material;
-import com.masterworks.masterworks.data.property.ExpressionProperty;
-import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
-import com.masterworks.masterworks.data.property.provider.ToolRuleProviderProperty;
+import com.masterworks.masterworks.data.property.base.ExpressionProperty;
+import com.masterworks.masterworks.data.property.base.ItemAttributeProperty;
+import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
 import com.masterworks.masterworks.init.MasterworksDataComponents;
 import com.masterworks.masterworks.init.MasterworksItems;
 import com.masterworks.masterworks.init.MasterworksTags;
@@ -45,20 +45,20 @@ public class ConstructItem extends Item {
     }
 
     static void applyDataComponents(Construct construct, ItemStack stack) {
-        MasterworksTags.DATA_COMPONENT_PROVIDER_PROPERTY_TYPES.values()
+        MasterworksTags.DATA_COMPONENT_PROPERTY_TYPES.values()
                 .forEach(type -> type.apply(construct, stack));
     }
 
     static void applyItemAttributes(Construct construct, ItemStack stack) {
-        ItemAttributeProviderProperty.Builder builder = new ItemAttributeProviderProperty.Builder();
-        MasterworksTags.ITEM_ATTRIBUTE_PROVIDER_PROPERTY_TYPES.values()
+        ItemAttributeProperty.Builder builder = new ItemAttributeProperty.Builder();
+        MasterworksTags.ITEM_ATTRIBUTE_PROPERTY_TYPES.values()
                 .forEach(type -> builder.add(type, construct));
         builder.apply(stack);
     }
 
     static void applyToolRules(Construct construct, ItemStack stack) {
-        ToolRuleProviderProperty.Builder builder = new ToolRuleProviderProperty.Builder();
-        MasterworksTags.TOOL_RULE_PROVIDER_PROPERTY_TYPES.values()
+        ToolRuleProperty.Builder builder = new ToolRuleProperty.Builder();
+        MasterworksTags.TOOL_RULE_PROPERTY_TYPES.values()
                 .forEach(type -> builder.add(type, construct));
         builder.apply(stack);
     }

@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.data.property.provider;
+package com.masterworks.masterworks.data.property.base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,14 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.Tool;
 
-public interface ToolRuleProviderProperty extends Property {
+public interface ToolRuleProperty extends Property {
     @Nullable
     Tool.Rule get(Construct construct);
 
     @Override
     Type<?> type();
 
-    interface Type<P extends ToolRuleProviderProperty> extends Property.Type<P> {
+    interface Type<P extends ToolRuleProperty> extends Property.Type<P> {
     }
 
     class Builder {

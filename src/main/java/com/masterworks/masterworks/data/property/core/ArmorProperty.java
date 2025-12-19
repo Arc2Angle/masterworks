@@ -1,10 +1,10 @@
 package com.masterworks.masterworks.data.property.core;
 
-import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
 import javax.annotation.Nullable;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.ExpressionProperty;
+import com.masterworks.masterworks.data.property.base.ExpressionProperty;
+import com.masterworks.masterworks.data.property.base.ItemAttributeProperty;
 import com.masterworks.masterworks.init.MasterworksPropertyTypes;
 import com.masterworks.masterworks.util.Expression;
 import net.minecraft.core.Holder;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public record ArmorProperty(Expression expression)
-        implements ExpressionProperty, ItemAttributeProviderProperty {
+        implements ExpressionProperty, ItemAttributeProperty {
     public static final ResourceLocation ATTRIBUTE_ID =
             ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "armor");
 
@@ -35,7 +35,7 @@ public record ArmorProperty(Expression expression)
     }
 
     public static class Type implements ExpressionProperty.Type<ArmorProperty>,
-            ItemAttributeProviderProperty.Type<ArmorProperty> {
+            ItemAttributeProperty.Type<ArmorProperty> {
         @Override
         public String name() {
             return "Armor";

@@ -3,9 +3,9 @@ package com.masterworks.masterworks.init;
 import java.util.function.Function;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.data.property.provider.DataComponentProviderProperty;
-import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
-import com.masterworks.masterworks.data.property.provider.ToolRuleProviderProperty;
+import com.masterworks.masterworks.data.property.base.DataComponentProperty;
+import com.masterworks.masterworks.data.property.base.ItemAttributeProperty;
+import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
 import com.masterworks.masterworks.init.tag.PermissiveTypedTagKey;
 import com.masterworks.masterworks.init.tag.TypedTagKey;
 import net.minecraft.core.Registry;
@@ -32,15 +32,15 @@ public class MasterworksTags {
 
 
 
-    public static final TypedTagKey<Property.Type<?>, DataComponentProviderProperty.Type<?, ?>> DATA_COMPONENT_PROVIDER_PROPERTY_TYPES =
-            createWarningTyped(MasterworksRegistries.PROPERTY_TYPE, "data_component_providers",
-                    value -> (DataComponentProviderProperty.Type<?, ?>) value);
+    public static final TypedTagKey<Property.Type<?>, DataComponentProperty.Type<?, ?>> DATA_COMPONENT_PROPERTY_TYPES =
+            createWarningTyped(MasterworksRegistries.PROPERTY_TYPE, "data_components",
+                    value -> (DataComponentProperty.Type<?, ?>) value);
 
-    public static final TypedTagKey<Property.Type<?>, ItemAttributeProviderProperty.Type<?>> ITEM_ATTRIBUTE_PROVIDER_PROPERTY_TYPES =
-            createWarningTyped(MasterworksRegistries.PROPERTY_TYPE, "item_attribute_providers",
-                    value -> (ItemAttributeProviderProperty.Type<?>) value);
+    public static final TypedTagKey<Property.Type<?>, ItemAttributeProperty.Type<?>> ITEM_ATTRIBUTE_PROPERTY_TYPES =
+            createWarningTyped(MasterworksRegistries.PROPERTY_TYPE, "item_attributes",
+                    value -> (ItemAttributeProperty.Type<?>) value);
 
-    public static final TypedTagKey<Property.Type<?>, ToolRuleProviderProperty.Type<?>> TOOL_RULE_PROVIDER_PROPERTY_TYPES =
-            createWarningTyped(MasterworksRegistries.PROPERTY_TYPE, "tool_rule_providers",
-                    value -> (ToolRuleProviderProperty.Type<?>) value);
+    public static final TypedTagKey<Property.Type<?>, ToolRuleProperty.Type<?>> TOOL_RULE_PROPERTY_TYPES =
+            createWarningTyped(MasterworksRegistries.PROPERTY_TYPE, "tool_rules",
+                    value -> (ToolRuleProperty.Type<?>) value);
 }

@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.data.property;
+package com.masterworks.masterworks.data.property.base;
 
 import java.util.Map;
 import java.util.Optional;
@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import com.masterworks.masterworks.data.Composition;
 import com.masterworks.masterworks.data.Construct;
+import com.masterworks.masterworks.data.property.Property;
+import com.masterworks.masterworks.data.property.PropertyTypeMap;
 import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
 import com.masterworks.masterworks.util.Expression;

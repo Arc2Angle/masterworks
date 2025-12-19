@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.client.draw.PixelUtils;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.RenderProperty;
+import com.masterworks.masterworks.data.property.core.RenderProperty;
 import com.masterworks.masterworks.init.MasterworksDataComponents;
 import com.masterworks.masterworks.init.MasterworksPropertyTypes;
 import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;

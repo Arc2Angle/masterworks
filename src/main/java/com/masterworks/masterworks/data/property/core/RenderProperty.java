@@ -1,10 +1,11 @@
-package com.masterworks.masterworks.data.property;
+package com.masterworks.masterworks.data.property.core;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.data.Construct;
+import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.init.MasterworksPropertyTypes;
 import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
 import com.mojang.blaze3d.platform.NativeImage;

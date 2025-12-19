@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.data.property.provider;
+package com.masterworks.masterworks.data.property.base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 
-public interface ItemAttributeProviderProperty extends Property {
+public interface ItemAttributeProperty extends Property {
     @Nullable
     Double get(Construct construct);
 
     @Override
     Type<?> type();
 
-    interface Type<P extends ItemAttributeProviderProperty> extends Property.Type<P> {
+    interface Type<P extends ItemAttributeProperty> extends Property.Type<P> {
         Holder<Attribute> attribute();
 
         ResourceLocation id();
