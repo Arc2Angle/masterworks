@@ -6,6 +6,7 @@ import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.core.ArmorProperty;
 import com.masterworks.masterworks.data.property.core.AttackDamageProperty;
 import com.masterworks.masterworks.data.property.core.AttackSpeedProperty;
+import com.masterworks.masterworks.data.property.core.DefaultProperty;
 import com.masterworks.masterworks.data.property.core.DurabilityProperty;
 import com.masterworks.masterworks.data.property.core.MiningSpeedProperty;
 import com.masterworks.masterworks.data.property.core.RenderProperty;
@@ -27,6 +28,9 @@ public class MasterworksPropertyTypes {
     }
 
 
+
+    public static final Supplier<DefaultProperty.Type> DEFAULT =
+            register("default", DefaultProperty.Type::new);
 
     public static final Supplier<RenderProperty.Type> RENDER =
             register("render", RenderProperty.Type::new);

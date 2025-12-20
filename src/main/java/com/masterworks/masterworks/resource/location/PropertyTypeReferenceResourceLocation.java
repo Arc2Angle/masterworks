@@ -4,7 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.data.property.PropertyTypeMap;
+import com.masterworks.masterworks.data.property.PropertyContainer;
+import com.masterworks.masterworks.data.property.TransientProperty;
 import com.masterworks.masterworks.init.MasterworksRegistries;
 import com.masterworks.masterworks.util.ReferenceDispatchedMap;
 import com.mojang.serialization.Codec;
@@ -28,20 +29,24 @@ public record PropertyTypeReferenceResourceLocation(ResourceLocation value)
         return MasterworksRegistries.PROPERTY_TYPE;
     }
 
-    public static Codec<PropertyTypeMap> typedMapCodec(
+    public static Codec<PropertyContainer> typedMapCodec(
             Map<Construct.Component.Key, RoleReferenceResourceLocation> components) {
         return RegisteredReferenceResourceLocation.<Property.Type<?>, PropertyTypeReferenceResourceLocation, Property>dispatchedMapCodec(
                 CODEC, type -> type.decoder(components))
-                .<PropertyTypeMap>xmap(ReferenceDispatchedPropertyTypeMap::new,
+                .<PropertyContainer>xmap(ReferenceDispatchedPropertyTypeMap::new,
                         boxed -> ((ReferenceDispatchedPropertyTypeMap) boxed).wrapped);
     }
 
     private record ReferenceDispatchedPropertyTypeMap(
             ReferenceDispatchedMap<PropertyTypeReferenceResourceLocation, Property.Type<?>, Property> wrapped)
-            implements PropertyTypeMap {
+            implements PropertyContainer {
 
         @SuppressWarnings("unchecked")
         public <T extends Property> Optional<T> get(Property.Type<T> type) {
+            if (type instanceof TransientProperty.Type<? extends T> transientType) {
+                return Optional.of(transientType.create());
+            }
+
             return wrapped.get(type).map(value -> (T) value);
         }
     }

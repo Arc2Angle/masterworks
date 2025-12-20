@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import com.masterworks.masterworks.data.Composition;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.data.property.PropertyTypeMap;
+import com.masterworks.masterworks.data.property.PropertyContainer;
 import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
 import com.masterworks.masterworks.util.Expression;
@@ -61,7 +61,7 @@ public interface ExpressionProperty extends Property {
     }
 
     private Optional<Double> evaluateComponentMaterial(MaterialReferenceResourceLocation material) {
-        PropertyTypeMap map = material.registered().value().properties();
+        PropertyContainer map = material.registered().value().properties();
 
         return map.get(type()).map(property -> property.expression().evaluate(Map.of()));
     }
@@ -70,7 +70,7 @@ public interface ExpressionProperty extends Property {
             RoleReferenceResourceLocation role) {
         Composition composition = construct.composition().registered().value();
 
-        PropertyTypeMap properties = Optional.ofNullable(composition.properties().get(role))
+        PropertyContainer properties = Optional.ofNullable(composition.properties().get(role))
                 .orElseThrow(() -> new RuntimeException(
                         "Missing role \"" + role + "\" in composition " + construct.composition()));
 

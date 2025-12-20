@@ -1,14 +1,14 @@
 package com.masterworks.masterworks.data;
 
 import java.util.Map;
-import com.masterworks.masterworks.data.property.PropertyTypeMap;
+import com.masterworks.masterworks.data.property.PropertyContainer;
 import com.masterworks.masterworks.resource.location.PaletteReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.PropertyTypeReferenceResourceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record Material(String name, PaletteReferenceResourceLocation palette, Color color,
-        PropertyTypeMap properties) {
+        PropertyContainer properties) {
     public static final Codec<Material> CODEC =
             Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance
                     .group(Codec.STRING.fieldOf("name").forGetter(Material::name),

@@ -14,7 +14,8 @@ import net.minecraft.world.level.block.Block;
 public record MiningSpeedProperty(Expression expression)
         implements ExpressionProperty, ToolRuleProperty {
 
-    public Tool.Rule get(Construct construct) {
+    @Override
+    public Tool.Rule getToolRule(Construct construct) {
         /*
          * Named<Block> incorrect =
          * BuiltInRegistries.BLOCK.get(BlockTags.INCORRECT_FOR_IRON_TOOL).orElseThrow();

@@ -1,29 +1,20 @@
 package com.masterworks.masterworks.item;
 
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.Material;
-import com.masterworks.masterworks.data.property.base.ConstructProperty;
 import com.masterworks.masterworks.data.property.base.DataComponentProperty;
-import com.masterworks.masterworks.data.property.base.ItemAttributeProperty;
+import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
+import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
 import com.masterworks.masterworks.init.MasterworksDataComponents;
 import com.masterworks.masterworks.init.MasterworksItems;
-import com.masterworks.masterworks.init.MasterworksRegistries;
 import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.CompositionReferenceResourceLocation;
 import com.mojang.datafixers.util.Either;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ConstructItem extends Item {
@@ -35,84 +26,14 @@ public class ConstructItem extends Item {
         ItemStack stack = new ItemStack(MasterworksItems.CONSTRUCT.get());
 
         stack.set(MasterworksDataComponents.CONSTRUCT.get(), construct);
-        stack.set(DataComponents.MAX_STACK_SIZE, 1);
 
         DataComponentProperty.apply(construct, stack);
-        ItemAttributeProperty.apply(construct, stack);
+        ItemAttributeModifierProperty.apply(construct, stack);
         ToolRuleProperty.apply(construct, stack);
+        LoreComponentProperty.apply(construct, stack);
 
         return stack;
     }
-
-    /**
-     * Adds the tooltip information for this item.
-     * 
-     * Note: `appendHoverText` is currently deprecated, but no other solution exists.
-     */
-    @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull Item.TooltipContext context,
-            @Nonnull TooltipDisplay display, @Nonnull Consumer<Component> adder,
-            @Nonnull TooltipFlag flag) {
-
-        Construct construct = stack.get(MasterworksDataComponents.CONSTRUCT.get());
-
-        if (construct == null) {
-            adder.accept(Component.literal("Broken Construct")
-                    .withStyle(style -> style.withColor(0xFF0000)));
-            return;
-        }
-
-        adder.accept(formatConstruct(construct));
-
-        MasterworksRegistries.PROPERTY_TYPE.stream().forEach(propertyType -> {
-            if (propertyType instanceof ConstructProperty.Type<?, ?> constructPropertyType) {
-                try {
-                    ConstructProperty<?> property = construct.getPropertyOrThrow(
-                            constructPropertyType, RoleReferenceResourceLocation.ITEM);
-
-                    Object value = property.get(construct);
-                    adder.accept(Component.literal(constructPropertyType.name() + ": " + value));
-                } catch (Construct.PropertyAccessException e) {
-                }
-            }
-        });
-    }
-
-    private static MutableComponent formatConstruct(Construct construct) {
-        var components = construct.components();
-
-        if (components.size() == 1) {
-            return components.values().iterator().next().value().map(ConstructItem::formatMaterial,
-                    ConstructItem::formatConstruct);
-        }
-
-        return formatWrapBraces(components.entrySet().stream().map(entry -> {
-            return entry.getValue().value()
-                    .map(ConstructItem::formatMaterial, ConstructItem::formatConstruct)
-                    .append(formatComponentKey(entry.getKey()));
-        }).reduce(ConstructItem::formatJoinPlus).orElse(Component.empty()));
-    }
-
-    private static MutableComponent formatMaterial(
-            MaterialReferenceResourceLocation resourceLocation) {
-        Material material = resourceLocation.registered().value();
-        return Component.literal(material.name()).withColor(material.color().argb());
-    }
-
-    private static MutableComponent formatComponentKey(Construct.Component.Key key) {
-        return Component.literal(
-                " " + Character.toUpperCase(key.value().charAt(0)) + key.value().substring(1));
-    }
-
-    private static MutableComponent formatWrapBraces(Component value) {
-        return Component.literal("(").withColor(0xFFFFFF).append(value)
-                .append(Component.literal(")").withColor(0xFFFFFF));
-    }
-
-    private static MutableComponent formatJoinPlus(MutableComponent left, MutableComponent right) {
-        return left.append(Component.literal(" + ").withColor(0xFFFFFF)).append(right);
-    }
-
 
     public static class DisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
         static final CompositionReferenceResourceLocation rod =

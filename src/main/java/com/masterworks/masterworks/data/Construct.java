@@ -82,7 +82,6 @@ public record Construct(CompositionReferenceResourceLocation composition,
      */
     public <T extends Property> T getPropertyOrThrow(Property.Type<T> type,
             RoleReferenceResourceLocation role) {
-
         return Optional.ofNullable(composition.registered().value().properties().get(role))
                 .orElseThrow(() -> new PropertyAccessException(
                         "Construct composition " + composition + " missing " + role + " role"))
