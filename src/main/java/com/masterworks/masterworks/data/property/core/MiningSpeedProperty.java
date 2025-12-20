@@ -35,11 +35,6 @@ public record MiningSpeedProperty(Expression expression)
     public static class Type implements ExpressionProperty.Type<MiningSpeedProperty>,
             ToolRuleProperty.Type<MiningSpeedProperty> {
         @Override
-        public String name() {
-            return "Mining Speed";
-        }
-
-        @Override
         public MiningSpeedProperty create(Expression expression) {
             return new MiningSpeedProperty(expression);
         }

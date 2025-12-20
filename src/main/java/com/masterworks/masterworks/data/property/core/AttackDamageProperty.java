@@ -31,11 +31,6 @@ public record AttackDamageProperty(Expression expression)
     public static class Type implements ExpressionProperty.Type<AttackDamageProperty>,
             ItemAttributeModifierProperty.Type<AttackDamageProperty> {
         @Override
-        public String name() {
-            return "Attack Damage";
-        }
-
-        @Override
         public AttackDamageProperty create(Expression expression) {
             return new AttackDamageProperty(expression);
         }

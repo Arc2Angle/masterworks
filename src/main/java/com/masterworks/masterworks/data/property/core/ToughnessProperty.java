@@ -33,11 +33,6 @@ public record ToughnessProperty(Expression expression)
     public static class Type implements ExpressionProperty.Type<ToughnessProperty>,
             ItemAttributeModifierProperty.Type<ToughnessProperty> {
         @Override
-        public String name() {
-            return "Toughness";
-        }
-
-        @Override
         public ToughnessProperty create(Expression expression) {
             return new ToughnessProperty(expression);
         }

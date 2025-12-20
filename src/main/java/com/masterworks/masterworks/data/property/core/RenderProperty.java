@@ -40,11 +40,6 @@ public record RenderProperty(Map<Construct.Component.Key, Dynamic<?>> arguments,
 
     public static class Type implements Property.Type<RenderProperty> {
         @Override
-        public String name() {
-            return "Render";
-        }
-
-        @Override
         public Decoder<RenderProperty> decoder(
                 Map<Construct.Component.Key, RoleReferenceResourceLocation> components) {
             return Decoder.ofSimple(new Decoder.Simple<RenderProperty>() {

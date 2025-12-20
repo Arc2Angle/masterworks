@@ -12,8 +12,6 @@ public interface Property {
     Type<?> type();
 
     interface Type<T extends Property> {
-        String name();
-
         Decoder<T> decoder(Map<Construct.Component.Key, RoleReferenceResourceLocation> components);
     }
 }

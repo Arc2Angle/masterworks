@@ -85,9 +85,8 @@ public record Construct(CompositionReferenceResourceLocation composition,
         return Optional.ofNullable(composition.registered().value().properties().get(role))
                 .orElseThrow(() -> new PropertyAccessException(
                         "Construct composition " + composition + " missing " + role + " role"))
-                .get(type).orElseThrow(
-                        () -> new PropertyAccessException("Construct composition " + composition
-                                + " missing " + type.name() + " property in " + role + " role"));
+                .get(type).orElseThrow(() -> new PropertyAccessException("Construct composition "
+                        + composition + " missing " + type + " property in " + role + " role"));
     }
 
     public static class PropertyAccessException extends RuntimeException {

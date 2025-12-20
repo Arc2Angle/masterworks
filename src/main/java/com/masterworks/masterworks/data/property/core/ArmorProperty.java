@@ -33,11 +33,6 @@ public record ArmorProperty(Expression expression)
     public static class Type implements ExpressionProperty.Type<ArmorProperty>,
             ItemAttributeModifierProperty.Type<ArmorProperty> {
         @Override
-        public String name() {
-            return "Armor";
-        }
-
-        @Override
         public ArmorProperty create(Expression expression) {
             return new ArmorProperty(expression);
         }

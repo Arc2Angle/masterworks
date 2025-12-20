@@ -32,11 +32,6 @@ public record DurabilityProperty(Expression expression)
             DataComponentProperty.Type<DurabilityProperty>,
             LoreComponentProperty.Type<DurabilityProperty> {
         @Override
-        public String name() {
-            return "Durability";
-        }
-
-        @Override
         public DurabilityProperty create(Expression expression) {
             return new DurabilityProperty(expression);
         }

@@ -34,11 +34,6 @@ public final record DefaultProperty()
             DataComponentProperty.Type<DefaultProperty>,
             LoreComponentProperty.Type<DefaultProperty> {
         @Override
-        public String name() {
-            return "Default";
-        }
-
-        @Override
         public DefaultProperty create() {
             return new DefaultProperty();
         }

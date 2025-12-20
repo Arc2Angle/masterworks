@@ -31,11 +31,6 @@ public record AttackSpeedProperty(Expression expression)
     public static class Type implements ExpressionProperty.Type<AttackSpeedProperty>,
             ItemAttributeModifierProperty.Type<AttackSpeedProperty> {
         @Override
-        public String name() {
-            return "Attack Speed";
-        }
-
-        @Override
         public AttackSpeedProperty create(Expression expression) {
             return new AttackSpeedProperty(expression);
         }
