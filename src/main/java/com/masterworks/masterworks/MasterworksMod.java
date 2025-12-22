@@ -35,6 +35,7 @@ public class MasterworksMod {
         com.masterworks.masterworks.init.MasterworksCapabilities.register(bus);
 
         com.masterworks.masterworks.init.MasterworksPropertyTypes.register(bus);
+        com.masterworks.masterworks.init.MasterworksPropertyAppliers.register(bus);
         com.masterworks.masterworks.init.MasterworksRoleTypes.register(bus);
 
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);

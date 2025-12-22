@@ -18,15 +18,18 @@ public interface LoreComponentProperty extends Property {
     interface Type<P extends LoreComponentProperty> extends Property.Type<P> {
     }
 
-    static <T> void apply(Construct construct, ItemStack stack) {
-        List<Component> components = ConstructPropertyHelpers
-                .taggedProperties(MasterworksTags.LORE_COMPONENT_PROPERTY_TYPES, construct)
-                .map(property -> property.getLoreComponent(construct)).toList();
+    class Applier extends Property.Applier {
+        @Override
+        public void apply(Construct construct, ItemStack stack) {
+            List<Component> components =
+                    propertiesByTagKey(MasterworksTags.LORE_COMPONENT_PROPERTY_TYPES, construct)
+                            .map(property -> property.getLoreComponent(construct)).toList();
 
-        if (components.isEmpty()) {
-            return;
+            if (components.isEmpty()) {
+                return;
+            }
+
+            stack.set(DataComponents.LORE, new ItemLore(components));
         }
-
-        stack.set(DataComponents.LORE, new ItemLore(components));
     }
 }

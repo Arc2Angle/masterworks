@@ -17,16 +17,18 @@ public interface ToolRuleProperty extends Property {
     interface Type<P extends ToolRuleProperty> extends Property.Type<P> {
     }
 
-    static void apply(Construct construct, ItemStack stack) {
-        List<Tool.Rule> rules = ConstructPropertyHelpers
-                .taggedProperties(MasterworksTags.TOOL_RULE_PROPERTY_TYPES, construct)
-                .map(property -> property.getToolRule(construct)).toList();
+    class Applier extends Property.Applier {
+        @Override
+        public void apply(Construct construct, ItemStack stack) {
+            List<Tool.Rule> rules =
+                    propertiesByTagKey(MasterworksTags.TOOL_RULE_PROPERTY_TYPES, construct)
+                            .map(property -> property.getToolRule(construct)).toList();
 
-        if (rules.isEmpty()) {
-            return;
+            if (rules.isEmpty()) {
+                return;
+            }
+
+            stack.set(DataComponents.TOOL, new Tool(rules, 1.0f, 1, true));
         }
-
-        stack.set(DataComponents.TOOL, new Tool(rules, 1.0f, 1, true));
-
     }
 }

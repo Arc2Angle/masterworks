@@ -17,15 +17,18 @@ public interface ItemAttributeModifierProperty extends Property {
     interface Type<P extends ItemAttributeModifierProperty> extends Property.Type<P> {
     }
 
-    static void apply(Construct construct, ItemStack stack) {
-        List<ItemAttributeModifiers.Entry> entries = ConstructPropertyHelpers
-                .taggedProperties(MasterworksTags.ITEM_ATTRIBUTE_PROPERTY_TYPES, construct)
-                .map(property -> property.getItemAttributeModifier(construct)).toList();
+    class Applier extends Property.Applier {
+        @Override
+        public void apply(Construct construct, ItemStack stack) {
+            List<ItemAttributeModifiers.Entry> entries =
+                    propertiesByTagKey(MasterworksTags.ITEM_ATTRIBUTE_PROPERTY_TYPES, construct)
+                            .map(property -> property.getItemAttributeModifier(construct)).toList();
 
-        if (entries.isEmpty()) {
-            return;
+            if (entries.isEmpty()) {
+                return;
+            }
+
+            stack.set(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(entries));
         }
-
-        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(entries));
     }
 }

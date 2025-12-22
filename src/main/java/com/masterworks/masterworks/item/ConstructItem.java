@@ -5,12 +5,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.base.DataComponentProperty;
-import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
-import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
-import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
+import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.init.MasterworksDataComponents;
 import com.masterworks.masterworks.init.MasterworksItems;
+import com.masterworks.masterworks.init.MasterworksRegistries;
 import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
 import com.masterworks.masterworks.resource.location.CompositionReferenceResourceLocation;
 import com.mojang.datafixers.util.Either;
@@ -27,10 +25,10 @@ public class ConstructItem extends Item {
 
         stack.set(MasterworksDataComponents.CONSTRUCT.get(), construct);
 
-        DataComponentProperty.apply(construct, stack);
-        ItemAttributeModifierProperty.apply(construct, stack);
-        ToolRuleProperty.apply(construct, stack);
-        LoreComponentProperty.apply(construct, stack);
+        MasterworksRegistries.PROPERTY_APPLIER.entrySet().forEach(entry -> {
+            Property.Applier applier = entry.getValue();
+            applier.apply(construct, stack);
+        });
 
         return stack;
     }

@@ -15,9 +15,11 @@ public interface DataComponentProperty extends Property {
     interface Type<P extends DataComponentProperty> extends Property.Type<P> {
     }
 
-    static void apply(Construct construct, ItemStack stack) {
-        ConstructPropertyHelpers
-                .taggedProperties(MasterworksTags.DATA_COMPONENT_PROPERTY_TYPES, construct)
-                .forEach(property -> stack.set(property.getDataComponent(construct)));
+    class Applier extends Property.Applier {
+        @Override
+        public void apply(Construct construct, ItemStack stack) {
+            propertiesByTagKey(MasterworksTags.DATA_COMPONENT_PROPERTY_TYPES, construct)
+                    .forEach(property -> stack.set(property.getDataComponent(construct)));
+        }
     }
 }

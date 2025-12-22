@@ -23,5 +23,7 @@ public class MasterworksRegistries {
 
     public static final Registry<Property.Type<?>> PROPERTY_TYPE = register("property_type");
 
+    public static final Registry<Property.Applier> PROPERTY_APPLIER = register("property_applier");
+
     public static final Registry<Role.Type<?>> ROLE_TYPE = register("role_type");
 }
