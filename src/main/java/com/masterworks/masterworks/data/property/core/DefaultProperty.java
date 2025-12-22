@@ -1,12 +1,12 @@
 package com.masterworks.masterworks.data.property.core;
 
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Material;
 import com.masterworks.masterworks.data.property.TransientProperty;
 import com.masterworks.masterworks.data.property.base.DataComponentProperty;
 import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
-import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
+import com.masterworks.masterworks.location.MaterialReferenceLocation;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.network.chat.Component;
@@ -55,8 +55,7 @@ public final record DefaultProperty()
         }).reduce(DefaultProperty::formatJoinPlus).orElse(Component.empty()));
     }
 
-    private static MutableComponent formatMaterial(
-            MaterialReferenceResourceLocation resourceLocation) {
+    private static MutableComponent formatMaterial(MaterialReferenceLocation resourceLocation) {
         Material material = resourceLocation.registered().value();
         return Component.literal(material.name()).withColor(material.color().argb());
     }

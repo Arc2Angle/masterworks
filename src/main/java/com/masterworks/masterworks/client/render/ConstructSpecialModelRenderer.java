@@ -2,13 +2,13 @@ package com.masterworks.masterworks.client.render;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.client.draw.PixelUtils;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.core.RenderProperty;
-import com.masterworks.masterworks.init.MasterworksDataComponents;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
@@ -50,7 +50,7 @@ public class ConstructSpecialModelRenderer extends NativeItemSpecialModelRendere
 
         try {
             RenderProperty property = argument.getPropertyOrThrow(
-                    MasterworksPropertyTypes.RENDER.get(), RoleReferenceResourceLocation.ITEM);
+                    MasterworksPropertyTypes.RENDER.get(), RoleReferenceLocation.ITEM);
 
             return property.render(argument.components()).reduce(PixelUtils::Overlay).orElse(null);
         } catch (Construct.PropertyAccessException e) {

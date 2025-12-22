@@ -14,7 +14,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 public class MasterworksClient {
 
     public MasterworksClient(ModContainer container, IEventBus bus) {
-        com.masterworks.masterworks.init.MasterworksSpecialModelRenderers.register(bus);
+        com.masterworks.masterworks.MasterworksSpecialModelRenderers.register(bus);
 
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }

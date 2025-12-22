@@ -1,10 +1,10 @@
 package com.masterworks.masterworks.data.property.core;
 
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.DataComponentProperty;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
 import com.masterworks.masterworks.util.Expression;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.TypedDataComponent;

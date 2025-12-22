@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.data.property.core;
 
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
 import com.masterworks.masterworks.util.Expression;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;

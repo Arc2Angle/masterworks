@@ -1,18 +1,18 @@
 package com.masterworks.masterworks.client.draw;
 
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.resource.location.PaletteReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.ShapeReferenceResourceLocation;
+import com.masterworks.masterworks.location.PaletteReferenceLocation;
+import com.masterworks.masterworks.location.ShapeReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 
 public class ConstructDrawer extends CachedDrawer<ConstructDrawer.Params> {
 
-    public static final PaletteReferenceResourceLocation PALETTE_DEFAULT =
-            PaletteReferenceResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "none");
+    public static final PaletteReferenceLocation PALETTE_DEFAULT =
+            PaletteReferenceLocation.fromNamespaceAndPath(MasterworksMod.ID, "none");
 
-    public static final ShapeReferenceResourceLocation SHAPE_DEFAULT =
-            ShapeReferenceResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "orb");
+    public static final ShapeReferenceLocation SHAPE_DEFAULT =
+            ShapeReferenceLocation.fromNamespaceAndPath(MasterworksMod.ID, "orb");
 
     private ConstructDrawer() {
         preloadTexture(PALETTE_DEFAULT);
@@ -30,8 +30,7 @@ public class ConstructDrawer extends CachedDrawer<ConstructDrawer.Params> {
         return instance;
     }
 
-    public NativeImage get(PaletteReferenceResourceLocation palette,
-            ShapeReferenceResourceLocation shape) {
+    public NativeImage get(PaletteReferenceLocation palette, ShapeReferenceLocation shape) {
         return super.get(new Params(palette, shape));
     }
 
@@ -49,7 +48,6 @@ public class ConstructDrawer extends CachedDrawer<ConstructDrawer.Params> {
         }
     }
 
-    protected record Params(PaletteReferenceResourceLocation palette,
-            ShapeReferenceResourceLocation shape) {
+    protected record Params(PaletteReferenceLocation palette, ShapeReferenceLocation shape) {
     }
 }

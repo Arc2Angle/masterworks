@@ -7,8 +7,8 @@ import com.masterworks.masterworks.data.Composition;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.PropertyContainer;
-import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
+import com.masterworks.masterworks.location.MaterialReferenceLocation;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
@@ -24,8 +24,7 @@ public interface ExpressionProperty extends Property {
         P create(Expression expression);
 
         @Override
-        default Decoder<P> decoder(
-                Map<Construct.Component.Key, RoleReferenceResourceLocation> components) {
+        default Decoder<P> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
             return Decoder.ofSimple(new Decoder.Simple<P>() {
                 @Override
                 public <T> DataResult<P> decode(Dynamic<T> input) {
@@ -45,7 +44,7 @@ public interface ExpressionProperty extends Property {
         Map<String, Double> arguments =
                 construct.components().entrySet().stream().flatMap(entry -> {
                     Construct.Component.Key key = entry.getKey();
-                    RoleReferenceResourceLocation role =
+                    RoleReferenceLocation role =
                             Optional.ofNullable(composition.components().get(key)).orElseThrow();
 
                     String argumentKey = "$" + key.value();
@@ -60,14 +59,14 @@ public interface ExpressionProperty extends Property {
         return expression().evaluate(arguments);
     }
 
-    private Optional<Double> evaluateComponentMaterial(MaterialReferenceResourceLocation material) {
+    private Optional<Double> evaluateComponentMaterial(MaterialReferenceLocation material) {
         PropertyContainer map = material.registered().value().properties();
 
         return map.get(type()).map(property -> property.expression().evaluate(Map.of()));
     }
 
     private Optional<Double> evaluateComponentConstruct(Construct construct,
-            RoleReferenceResourceLocation role) {
+            RoleReferenceLocation role) {
         Composition composition = construct.composition().registered().value();
 
         PropertyContainer properties = Optional.ofNullable(composition.properties().get(role))

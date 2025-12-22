@@ -3,7 +3,7 @@ package com.masterworks.masterworks.gui.screen;
 import java.util.List;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.gui.menu.ConstructForgeContainerMenu;
-import com.masterworks.masterworks.resource.location.ShapeReferenceResourceLocation;
+import com.masterworks.masterworks.location.ShapeReferenceLocation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -69,14 +69,14 @@ public class ConstructForgeContainerScreen
             drawSlotGeneric(graphics, x, y);
 
             if (slot instanceof ConstructForgeContainerMenu.ComponentSlot componentSlot) {
-                List<ShapeReferenceResourceLocation> shapes = componentSlot.getRoles()
+                List<ShapeReferenceLocation> shapes = componentSlot.getRoles()
                         .flatMap(role -> role.registered().value().examples().stream()).toList();
 
                 if (shapes.isEmpty()) {
                     continue;
                 }
 
-                ShapeReferenceResourceLocation shape =
+                ShapeReferenceLocation shape =
                         shapes.get((currentContainerTick / TICKS_PER_SWITCH) % shapes.size());
 
                 drawSlotItem(graphics, shape.value(), x, y);

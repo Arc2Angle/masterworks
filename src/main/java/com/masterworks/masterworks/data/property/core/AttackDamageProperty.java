@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.data.property.core;
 
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
 import com.masterworks.masterworks.util.Expression;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;

@@ -3,8 +3,8 @@ package com.masterworks.masterworks.data.property;
 import java.util.Map;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.init.tag.TypedTagKey;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
+import com.masterworks.masterworks.util.tags.TypedTagKey;
 import com.mojang.serialization.Decoder;
 import net.minecraft.world.item.ItemStack;
 
@@ -12,7 +12,7 @@ public interface Property {
     Type<?> type();
 
     interface Type<T extends Property> {
-        Decoder<T> decoder(Map<Construct.Component.Key, RoleReferenceResourceLocation> components);
+        Decoder<T> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components);
     }
 
     abstract class Applier {
@@ -36,8 +36,7 @@ public interface Property {
                 Construct construct) {
             return tagKey.values().flatMap(type -> {
                 try {
-                    P property =
-                            construct.getPropertyOrThrow(type, RoleReferenceResourceLocation.ITEM);
+                    P property = construct.getPropertyOrThrow(type, RoleReferenceLocation.ITEM);
                     return Stream.of(property);
                 } catch (Construct.PropertyAccessException e) {
                     return Stream.empty();

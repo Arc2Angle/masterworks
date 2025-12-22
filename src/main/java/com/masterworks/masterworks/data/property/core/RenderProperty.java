@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -15,14 +15,14 @@ import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 
 public record RenderProperty(Map<Construct.Component.Key, Dynamic<?>> arguments,
-        Map<Construct.Component.Key, RoleReferenceResourceLocation> roles) implements Property {
+        Map<Construct.Component.Key, RoleReferenceLocation> roles) implements Property {
 
     public Stream<NativeImage> render(
             Map<Construct.Component.Key, Construct.Component> components) {
         return components.entrySet().stream().flatMap(entry -> {
             Construct.Component.Key key = entry.getKey();
             Construct.Component component = entry.getValue();
-            RoleReferenceResourceLocation role =
+            RoleReferenceLocation role =
                     Optional.ofNullable(roles.get(key)).orElseThrow(() -> new IllegalStateException(
                             "Missing role for component " + key + " in render property"));
             Dynamic<?> argument = Optional.ofNullable(arguments.get(key))
@@ -41,7 +41,7 @@ public record RenderProperty(Map<Construct.Component.Key, Dynamic<?>> arguments,
     public static class Type implements Property.Type<RenderProperty> {
         @Override
         public Decoder<RenderProperty> decoder(
-                Map<Construct.Component.Key, RoleReferenceResourceLocation> components) {
+                Map<Construct.Component.Key, RoleReferenceLocation> components) {
             return Decoder.ofSimple(new Decoder.Simple<RenderProperty>() {
                 @Override
                 public <T> DataResult<RenderProperty> decode(Dynamic<T> input) {

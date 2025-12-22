@@ -2,8 +2,8 @@ package com.masterworks.masterworks.block.entity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.masterworks.masterworks.MasterworksBlockEntityTypes;
 import com.masterworks.masterworks.gui.menu.ConstructForgeContainerMenu;
-import com.masterworks.masterworks.init.MasterworksBlockEntityTypes;
 import com.masterworks.masterworks.transfer.item.DefaultConstructForgeHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

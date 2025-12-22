@@ -2,7 +2,7 @@ package com.masterworks.masterworks.data.property;
 
 import java.util.Map;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.serialization.Decoder;
 
 public interface TransientProperty extends Property {
@@ -13,8 +13,7 @@ public interface TransientProperty extends Property {
         P create();
 
         @Override
-        default Decoder<P> decoder(
-                Map<Construct.Component.Key, RoleReferenceResourceLocation> components) {
+        default Decoder<P> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
             throw new UnsupportedOperationException(
                     "Transient properties are not decoded from data");
         }

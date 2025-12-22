@@ -4,13 +4,13 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nonnull;
+import com.masterworks.masterworks.MasterworksDataComponents;
+import com.masterworks.masterworks.MasterworksItems;
+import com.masterworks.masterworks.MasterworksRegistries;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.init.MasterworksDataComponents;
-import com.masterworks.masterworks.init.MasterworksItems;
-import com.masterworks.masterworks.init.MasterworksRegistries;
-import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.CompositionReferenceResourceLocation;
+import com.masterworks.masterworks.location.CompositionReferenceLocation;
+import com.masterworks.masterworks.location.MaterialReferenceLocation;
 import com.mojang.datafixers.util.Either;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,48 +34,44 @@ public class ConstructItem extends Item {
     }
 
     public static class DisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
-        static final CompositionReferenceResourceLocation rod =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks", "rod");
-        static final CompositionReferenceResourceLocation binding =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks", "binding");
-        static final CompositionReferenceResourceLocation pickaxe =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks", "pickaxe");
-        static final CompositionReferenceResourceLocation pickaxeHead =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
-                        "pickaxe/head");
-        static final CompositionReferenceResourceLocation broadSword =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
-                        "sword/broad");
-        static final CompositionReferenceResourceLocation broadSwordBlade =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
-                        "sword/broad/blade");
-        static final CompositionReferenceResourceLocation broadSwordBladeDual =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
-                        "sword/broad/blade/dual");
-        static final CompositionReferenceResourceLocation broadSwordBladeStraightEdge =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
+        static final CompositionReferenceLocation rod =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "rod");
+        static final CompositionReferenceLocation binding =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "binding");
+        static final CompositionReferenceLocation pickaxe =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "pickaxe");
+        static final CompositionReferenceLocation pickaxeHead =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "pickaxe/head");
+        static final CompositionReferenceLocation broadSword =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "sword/broad");
+        static final CompositionReferenceLocation broadSwordBlade = CompositionReferenceLocation
+                .fromNamespaceAndPath("masterworks", "sword/broad/blade");
+        static final CompositionReferenceLocation broadSwordBladeDual = CompositionReferenceLocation
+                .fromNamespaceAndPath("masterworks", "sword/broad/blade/dual");
+        static final CompositionReferenceLocation broadSwordBladeStraightEdge =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks",
                         "sword/broad/blade/edge/straight");
 
-        static final MaterialReferenceResourceLocation wood =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "wood");
-        static final MaterialReferenceResourceLocation stone =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "stone");
-        static final MaterialReferenceResourceLocation iron =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "iron");
-        static final MaterialReferenceResourceLocation gold =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "gold");
-        static final MaterialReferenceResourceLocation diamond =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "diamond");
-        static final MaterialReferenceResourceLocation emerald =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "emerald");
+        static final MaterialReferenceLocation wood =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "wood");
+        static final MaterialReferenceLocation stone =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "stone");
+        static final MaterialReferenceLocation iron =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "iron");
+        static final MaterialReferenceLocation gold =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "gold");
+        static final MaterialReferenceLocation diamond =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "diamond");
+        static final MaterialReferenceLocation emerald =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "emerald");
 
-        static Construct simple(CompositionReferenceResourceLocation composition,
-                MaterialReferenceResourceLocation material) {
+        static Construct simple(CompositionReferenceLocation composition,
+                MaterialReferenceLocation material) {
             return new Construct(composition, Map.of(Construct.Component.Key.DEFAULT,
                     new Construct.Component(Either.left(material))));
         }
 
-        static Construct composite(CompositionReferenceResourceLocation composition,
+        static Construct composite(CompositionReferenceLocation composition,
                 Map<String, Construct> parts) {
             return new Construct(composition,
                     parts.entrySet().stream()

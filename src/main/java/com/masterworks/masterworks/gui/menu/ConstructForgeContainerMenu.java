@@ -2,8 +2,8 @@ package com.masterworks.masterworks.gui.menu;
 
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import com.masterworks.masterworks.init.MasterworksMenuTypes;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
+import com.masterworks.masterworks.MasterworksMenuTypes;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.transfer.item.ConstructForgeHandler;
 import com.masterworks.masterworks.transfer.item.DefaultConstructForgeHandler;
 import net.minecraft.world.entity.player.Inventory;
@@ -79,7 +79,7 @@ public class ConstructForgeContainerMenu extends AbstractContainerMenu {
             this.componentIndex = componentIndex;
         }
 
-        public Stream<RoleReferenceResourceLocation> getRoles() {
+        public Stream<RoleReferenceLocation> getRoles() {
             return handler.getComponentRoles(componentIndex);
         }
     }
