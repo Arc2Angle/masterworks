@@ -9,12 +9,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.init.MasterworksDataComponents;
 import com.masterworks.masterworks.item.ConstructItem;
-import com.masterworks.masterworks.resource.location.CompositionReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
+import com.masterworks.masterworks.location.CompositionReferenceLocation;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
@@ -23,14 +23,14 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
     public static final int TEMPLATE_COUNT = 1, RESULT_COUNT = 1;
     public static final int TEMPLATE_INDEX = 0, RESULT_INDEX = 1, COMPONENTS_INDEX = 2;
 
-    public record Constraint(Construct.Component.Key key, RoleReferenceResourceLocation role) {
+    public record Constraint(Construct.Component.Key key, RoleReferenceLocation role) {
         public static Constraint of(
-                Map.Entry<Construct.Component.Key, RoleReferenceResourceLocation> entry) {
+                Map.Entry<Construct.Component.Key, RoleReferenceLocation> entry) {
             return new Constraint(entry.getKey(), entry.getValue());
         }
     }
 
-    private final Map<CompositionReferenceResourceLocation, List<Constraint>> constraints;
+    private final Map<CompositionReferenceLocation, List<Constraint>> constraints;
     private final List<Optional<Construct.Component>> components;
 
     public ConstructForgeHandler(int componentCount) {
@@ -53,7 +53,7 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
     }
 
     private void setTemplate(@Nonnull ItemStack stack) {
-        Stream<CompositionReferenceResourceLocation> compositions =
+        Stream<CompositionReferenceLocation> compositions =
                 Optional.ofNullable(stack.get(MasterworksDataComponents.TEMPLATE)).stream()
                         .flatMap(template -> template.compositions().stream());
 
@@ -85,7 +85,7 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
 
     private void setResult() {
         constraints.entrySet().stream().flatMap(entry -> {
-            CompositionReferenceResourceLocation composition = entry.getKey();
+            CompositionReferenceLocation composition = entry.getKey();
             List<Constraint> constraints = entry.getValue();
 
             Map<Construct.Component.Key, Construct.Component> constructed = new HashMap<>();
@@ -137,14 +137,14 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
         }
 
         return Construct.Component.of(stack).map(component -> {
-            Set<RoleReferenceResourceLocation> roles =
+            Set<RoleReferenceLocation> roles =
                     getComponentRoles(componentIndex).collect(Collectors.toSet());
 
             return component.roles().anyMatch(roles::contains);
         }).orElse(false);
     }
 
-    public Stream<RoleReferenceResourceLocation> getComponentRoles(int componentIndex) {
+    public Stream<RoleReferenceLocation> getComponentRoles(int componentIndex) {
         return constraints.values().stream().filter(
                 list -> list.size() > componentIndex && validateConstraints(list, componentIndex))
                 .map(list -> list.get(componentIndex).role);

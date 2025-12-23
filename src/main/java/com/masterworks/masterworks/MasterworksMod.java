@@ -18,24 +18,25 @@ public class MasterworksMod {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public MasterworksMod(IEventBus bus, ModContainer container) {
-        com.masterworks.masterworks.init.MasterworksRegistries.register(bus);
-        com.masterworks.masterworks.init.MasterworksDataPackRegistries.register(bus);
+        com.masterworks.masterworks.MasterworksRegistries.register(bus);
+        com.masterworks.masterworks.MasterworksDataPackRegistries.register(bus);
 
-        com.masterworks.masterworks.init.MasterworksDataMapTypes.register(bus);
-        com.masterworks.masterworks.init.MasterworksDataComponents.register(bus);
-        com.masterworks.masterworks.init.MasterworksMenuTypes.register(bus);
-        com.masterworks.masterworks.init.MasterworksMenuScreens.register(bus);
-        com.masterworks.masterworks.init.MasterworksItems.register(bus);
-        com.masterworks.masterworks.init.MasterworksBlocks.register(bus);
-        com.masterworks.masterworks.init.MasterworksBlockEntityTypes.register(bus);
-        com.masterworks.masterworks.init.MasterworksCreativeTabs.register(bus);
-        com.masterworks.masterworks.init.MasterworksRecipeSerializers.register(bus);
-        com.masterworks.masterworks.init.MasterworksRecipeTypes.register(bus);
-        com.masterworks.masterworks.init.MasterworksIngredientTypes.register(bus);
-        com.masterworks.masterworks.init.MasterworksCapabilities.register(bus);
+        com.masterworks.masterworks.MasterworksDataMapTypes.register(bus);
+        com.masterworks.masterworks.MasterworksDataComponents.register(bus);
+        com.masterworks.masterworks.MasterworksMenuTypes.register(bus);
+        com.masterworks.masterworks.MasterworksMenuScreens.register(bus);
+        com.masterworks.masterworks.MasterworksItems.register(bus);
+        com.masterworks.masterworks.MasterworksBlocks.register(bus);
+        com.masterworks.masterworks.MasterworksBlockEntityTypes.register(bus);
+        com.masterworks.masterworks.MasterworksCreativeTabs.register(bus);
+        com.masterworks.masterworks.MasterworksRecipeSerializers.register(bus);
+        com.masterworks.masterworks.MasterworksRecipeTypes.register(bus);
+        com.masterworks.masterworks.MasterworksIngredientTypes.register(bus);
+        com.masterworks.masterworks.MasterworksCapabilities.register(bus);
 
-        com.masterworks.masterworks.init.MasterworksPropertyTypes.register(bus);
-        com.masterworks.masterworks.init.MasterworksRoleTypes.register(bus);
+        com.masterworks.masterworks.MasterworksPropertyTypes.register(bus);
+        com.masterworks.masterworks.MasterworksPropertyAppliers.register(bus);
+        com.masterworks.masterworks.MasterworksRoleTypes.register(bus);
 
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

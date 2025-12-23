@@ -1,18 +1,18 @@
 package com.masterworks.masterworks.client.draw;
 
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.resource.location.ShapeReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.TierReferenceResourceLocation;
+import com.masterworks.masterworks.location.ShapeReferenceLocation;
+import com.masterworks.masterworks.location.TierReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 
 public class TemplateDrawer extends CachedDrawer<TemplateDrawer.Params> {
 
-    public static final TierReferenceResourceLocation TIER_DEFAULT =
-            TierReferenceResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "basic");
+    public static final TierReferenceLocation TIER_DEFAULT =
+            TierReferenceLocation.fromNamespaceAndPath(MasterworksMod.ID, "basic");
 
-    public static final ShapeReferenceResourceLocation SHAPE_DEFAULT =
-            ShapeReferenceResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "orb");
+    public static final ShapeReferenceLocation SHAPE_DEFAULT =
+            ShapeReferenceLocation.fromNamespaceAndPath(MasterworksMod.ID, "orb");
 
     private TemplateDrawer() {
         preloadTexture(TIER_DEFAULT);
@@ -30,8 +30,7 @@ public class TemplateDrawer extends CachedDrawer<TemplateDrawer.Params> {
         return instance;
     }
 
-    public NativeImage get(TierReferenceResourceLocation tier,
-            ShapeReferenceResourceLocation shape) {
+    public NativeImage get(TierReferenceLocation tier, ShapeReferenceLocation shape) {
         return super.get(new Params(tier, shape));
     }
 
@@ -48,7 +47,6 @@ public class TemplateDrawer extends CachedDrawer<TemplateDrawer.Params> {
         }
     }
 
-    protected record Params(TierReferenceResourceLocation tier,
-            ShapeReferenceResourceLocation shape) {
+    protected record Params(TierReferenceLocation tier, ShapeReferenceLocation shape) {
     }
 }

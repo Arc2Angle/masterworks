@@ -1,29 +1,18 @@
 package com.masterworks.masterworks.item;
 
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import javax.annotation.Nonnull;
+import com.masterworks.masterworks.MasterworksDataComponents;
+import com.masterworks.masterworks.MasterworksItems;
+import com.masterworks.masterworks.MasterworksRegistries;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.Material;
-import com.masterworks.masterworks.data.property.ExpressionProperty;
-import com.masterworks.masterworks.data.property.provider.DataComponentProviderProperty;
-import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
-import com.masterworks.masterworks.data.property.provider.ToolRuleProviderProperty;
-import com.masterworks.masterworks.init.MasterworksDataComponents;
-import com.masterworks.masterworks.init.MasterworksItems;
-import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.PropertyTypeReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.RoleReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.CompositionReferenceResourceLocation;
+import com.masterworks.masterworks.data.property.Property;
+import com.masterworks.masterworks.location.CompositionReferenceLocation;
+import com.masterworks.masterworks.location.MaterialReferenceLocation;
 import com.mojang.datafixers.util.Either;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ConstructItem extends Item {
@@ -35,152 +24,54 @@ public class ConstructItem extends Item {
         ItemStack stack = new ItemStack(MasterworksItems.CONSTRUCT.get());
 
         stack.set(MasterworksDataComponents.CONSTRUCT.get(), construct);
-        stack.set(DataComponents.MAX_STACK_SIZE, 1);
 
-        ItemAttributeProviderProperty.Builder itemAttributeProviderPropertyBuilder =
-                new ItemAttributeProviderProperty.Builder();
-        ToolRuleProviderProperty.Builder toolRuleProviderPropertyBuilder =
-                new ToolRuleProviderProperty.Builder();
-
-        PropertyTypeReferenceResourceLocation.all().forEach(reference -> {
-            try {
-                switch (reference.registered().value()) {
-                    case ItemAttributeProviderProperty.Type<?> type -> itemAttributeProviderPropertyBuilder
-                            .add(type, construct);
-                    case ToolRuleProviderProperty.Type<?> type -> toolRuleProviderPropertyBuilder
-                            .add(type, construct);
-                    case DataComponentProviderProperty.Type<?, ?> type -> type.apply(construct,
-                            stack);
-                    default -> {
-                        return;
-                    }
-                }
-            } catch (Construct.PropertyAccessException e) {
-            }
+        MasterworksRegistries.PROPERTY_APPLIER.entrySet().forEach(entry -> {
+            Property.Applier applier = entry.getValue();
+            applier.apply(construct, stack);
         });
-
-        itemAttributeProviderPropertyBuilder.apply(stack);
-        toolRuleProviderPropertyBuilder.apply(stack);
 
         return stack;
     }
 
-    /**
-     * Adds the tooltip information for this item.
-     * 
-     * Note: `appendHoverText` is currently deprecated, but no other solution exists.
-     */
-    @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull Item.TooltipContext context,
-            @Nonnull TooltipDisplay display, @Nonnull Consumer<Component> adder,
-            @Nonnull TooltipFlag flag) {
-
-        Construct construct = stack.get(MasterworksDataComponents.CONSTRUCT.get());
-
-        if (construct == null) {
-            adder.accept(Component.literal("Broken Construct")
-                    .withStyle(style -> style.withColor(0xFF0000)));
-            return;
-        }
-
-        adder.accept(formatConstruct(construct));
-
-        PropertyTypeReferenceResourceLocation.all().forEach(reference -> {
-            if (reference.registered().value() instanceof ExpressionProperty.Type<?> type) {
-                try {
-                    ExpressionProperty property =
-                            construct.getPropertyOrThrow(type, RoleReferenceResourceLocation.ITEM);
-
-                    Double value = property.evaluate(construct);
-
-                    if (value != null) {
-                        adder.accept(Component.literal(type.name() + ": " + value));
-                    }
-                } catch (Construct.PropertyAccessException e) {
-                }
-            }
-        });
-    }
-
-    private static MutableComponent formatConstruct(Construct construct) {
-        var components = construct.components();
-
-        if (components.size() == 1) {
-            return components.values().iterator().next().value().map(ConstructItem::formatMaterial,
-                    ConstructItem::formatConstruct);
-        }
-
-        return formatWrapBraces(components.entrySet().stream().map(entry -> {
-            return entry.getValue().value()
-                    .map(ConstructItem::formatMaterial, ConstructItem::formatConstruct)
-                    .append(formatComponentKey(entry.getKey()));
-        }).reduce(ConstructItem::formatJoinPlus).orElse(Component.empty()));
-    }
-
-    private static MutableComponent formatMaterial(
-            MaterialReferenceResourceLocation resourceLocation) {
-        Material material = resourceLocation.registered().value();
-        return Component.literal(material.name()).withColor(material.color().argb());
-    }
-
-    private static MutableComponent formatComponentKey(Construct.Component.Key key) {
-        return Component.literal(
-                " " + Character.toUpperCase(key.value().charAt(0)) + key.value().substring(1));
-    }
-
-    private static MutableComponent formatWrapBraces(Component value) {
-        return Component.literal("(").withColor(0xFFFFFF).append(value)
-                .append(Component.literal(")").withColor(0xFFFFFF));
-    }
-
-    private static MutableComponent formatJoinPlus(MutableComponent left, MutableComponent right) {
-        return left.append(Component.literal(" + ").withColor(0xFFFFFF)).append(right);
-    }
-
-
     public static class DisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
-        static final CompositionReferenceResourceLocation rod =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks", "rod");
-        static final CompositionReferenceResourceLocation binding =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks", "binding");
-        static final CompositionReferenceResourceLocation pickaxe =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks", "pickaxe");
-        static final CompositionReferenceResourceLocation pickaxeHead =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
-                        "pickaxe/head");
-        static final CompositionReferenceResourceLocation broadSword =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
-                        "sword/broad");
-        static final CompositionReferenceResourceLocation broadSwordBlade =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
-                        "sword/broad/blade");
-        static final CompositionReferenceResourceLocation broadSwordBladeDual =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
-                        "sword/broad/blade/dual");
-        static final CompositionReferenceResourceLocation broadSwordBladeStraightEdge =
-                CompositionReferenceResourceLocation.fromNamespaceAndPath("masterworks",
+        static final CompositionReferenceLocation rod =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "rod");
+        static final CompositionReferenceLocation binding =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "binding");
+        static final CompositionReferenceLocation pickaxe =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "pickaxe");
+        static final CompositionReferenceLocation pickaxeHead =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "pickaxe/head");
+        static final CompositionReferenceLocation broadSword =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "sword/broad");
+        static final CompositionReferenceLocation broadSwordBlade = CompositionReferenceLocation
+                .fromNamespaceAndPath("masterworks", "sword/broad/blade");
+        static final CompositionReferenceLocation broadSwordBladeDual = CompositionReferenceLocation
+                .fromNamespaceAndPath("masterworks", "sword/broad/blade/dual");
+        static final CompositionReferenceLocation broadSwordBladeStraightEdge =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks",
                         "sword/broad/blade/edge/straight");
 
-        static final MaterialReferenceResourceLocation wood =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "wood");
-        static final MaterialReferenceResourceLocation stone =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "stone");
-        static final MaterialReferenceResourceLocation iron =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "iron");
-        static final MaterialReferenceResourceLocation gold =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "gold");
-        static final MaterialReferenceResourceLocation diamond =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "diamond");
-        static final MaterialReferenceResourceLocation emerald =
-                MaterialReferenceResourceLocation.fromNamespaceAndPath("masterworks", "emerald");
+        static final MaterialReferenceLocation wood =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "wood");
+        static final MaterialReferenceLocation stone =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "stone");
+        static final MaterialReferenceLocation iron =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "iron");
+        static final MaterialReferenceLocation gold =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "gold");
+        static final MaterialReferenceLocation diamond =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "diamond");
+        static final MaterialReferenceLocation emerald =
+                MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "emerald");
 
-        static Construct simple(CompositionReferenceResourceLocation composition,
-                MaterialReferenceResourceLocation material) {
+        static Construct simple(CompositionReferenceLocation composition,
+                MaterialReferenceLocation material) {
             return new Construct(composition, Map.of(Construct.Component.Key.DEFAULT,
                     new Construct.Component(Either.left(material))));
         }
 
-        static Construct composite(CompositionReferenceResourceLocation composition,
+        static Construct composite(CompositionReferenceLocation composition,
                 Map<String, Construct> parts) {
             return new Construct(composition,
                     parts.entrySet().stream()

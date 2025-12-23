@@ -1,8 +1,8 @@
 package com.masterworks.masterworks.data.role;
 
 import java.util.List;
-import com.masterworks.masterworks.init.MasterworksRoleTypes;
-import com.masterworks.masterworks.resource.location.ShapeReferenceResourceLocation;
+import com.masterworks.masterworks.MasterworksRoleTypes;
+import com.masterworks.masterworks.location.ShapeReferenceLocation;
 import com.mojang.serialization.MapCodec;
 
 public record ItemRole() implements RenderPassthroughFlagRole {
@@ -14,7 +14,7 @@ public record ItemRole() implements RenderPassthroughFlagRole {
     }
 
     @Override
-    public List<ShapeReferenceResourceLocation> examples() {
+    public List<ShapeReferenceLocation> examples() {
         return List.of();
     }
 }

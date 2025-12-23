@@ -2,9 +2,9 @@ package com.masterworks.masterworks.client.render;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.client.draw.TemplateDrawer;
 import com.masterworks.masterworks.data.Template;
-import com.masterworks.masterworks.init.MasterworksDataComponents;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;

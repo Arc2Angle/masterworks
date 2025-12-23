@@ -12,7 +12,11 @@
                 "handle": true
             },
             "masterworks:durability": "$head + $handle + $binding",
-            "masterworks:mining_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2",
+            "masterworks:mining_denied": "$head",
+            "masterworks:mining_speed": {
+                "block_tag": "minecraft:mineable/pickaxe",
+                "value": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
+            },
             "masterworks:attack_damage": "$head",
             "masterworks:attack_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
         }

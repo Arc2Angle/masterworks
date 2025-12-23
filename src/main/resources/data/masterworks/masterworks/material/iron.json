@@ -4,6 +4,7 @@
     "color": "ffd8d8d8",
     "properties": {
         "masterworks:durability": 250,
+        "masterworks:mining_denied": "incorrect_for_iron_tool",
         "masterworks:mining_speed": 6.0,
         "masterworks:attack_damage": 6.0,
         "masterworks:attack_speed": 6.0,

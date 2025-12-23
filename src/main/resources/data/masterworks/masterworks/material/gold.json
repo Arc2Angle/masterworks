@@ -4,6 +4,7 @@
     "color": "ffe9b115",
     "properties": {
         "masterworks:durability": 32,
+        "masterworks:mining_denied": "incorrect_for_gold_tool",
         "masterworks:mining_speed": 12.0,
         "masterworks:attack_damage": 4.0,
         "masterworks:attack_speed": 12.0,

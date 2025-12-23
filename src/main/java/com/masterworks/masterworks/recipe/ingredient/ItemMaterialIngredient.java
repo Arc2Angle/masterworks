@@ -4,11 +4,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.masterworks.masterworks.MasterworksDataMapTypes;
+import com.masterworks.masterworks.MasterworksDataPackRegistries;
+import com.masterworks.masterworks.MasterworksIngredientTypes;
 import com.masterworks.masterworks.data.Material;
-import com.masterworks.masterworks.init.MasterworksDataMapTypes;
-import com.masterworks.masterworks.init.MasterworksDataPackRegistries;
-import com.masterworks.masterworks.init.MasterworksIngredientTypes;
-import com.masterworks.masterworks.resource.location.MaterialReferenceResourceLocation;
+import com.masterworks.masterworks.location.MaterialReferenceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -48,7 +48,7 @@ public record ItemMaterialIngredient(Optional<TagKey<Material>> materialTag)
                         holder.getData(MasterworksDataMapTypes.ITEM_MATERIAL)));
     }
 
-    boolean testMaterialReference(@Nullable MaterialReferenceResourceLocation material) {
+    boolean testMaterialReference(@Nullable MaterialReferenceLocation material) {
         if (material == null) {
             return false;
         }
