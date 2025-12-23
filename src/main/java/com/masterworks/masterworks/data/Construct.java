@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksDataComponents;
-import com.masterworks.masterworks.data.property.Property;
+import com.masterworks.masterworks.data.property.PropertyContainer;
 import com.masterworks.masterworks.location.CompositionReferenceLocation;
 import com.masterworks.masterworks.location.ItemMaterialReferenceLocation;
 import com.masterworks.masterworks.location.MaterialReferenceLocation;
@@ -72,26 +72,47 @@ public record Construct(CompositionReferenceLocation composition,
             return value.map(material -> Stream.of(RoleReferenceLocation.MATERIAL),
                     construct -> construct.composition.registered().value().properties().keySet()
                             .stream());
+            // TODO: just return a set
+        }
+
+        /**
+         * Gets the sub components of this component.
+         */
+        public Map<Key, Component> components() {
+            return value.map(material -> Map.of(), construct -> construct.components);
+        }
+
+        /**
+         * Gets the properties for the given role from this construct's composition.
+         * 
+         * @throws RuntimeException if the role is missing
+         */
+        public PropertyContainer properties(RoleReferenceLocation role) {
+            return value.map(material -> {
+                if (!role.equals(RoleReferenceLocation.MATERIAL)) {
+                    throw new RuntimeException("Material component does not have role " + role);
+                }
+
+                return material.registered().value().properties();
+            }, construct -> {
+                return construct.properties(role);
+            });
         }
     }
 
     /**
-     * A helper which gets the render property for the given role from this construct's composition.
+     * Gets the properties for the given role from this construct's composition.
      * 
-     * @throws PropertyAccessException if the role or property is missing
+     * @throws RuntimeException if the role is missing
      */
-    public <T extends Property> T getPropertyOrThrow(Property.Type<T> type,
-            RoleReferenceLocation role) {
-        return Optional.ofNullable(composition.registered().value().properties().get(role))
-                .orElseThrow(() -> new PropertyAccessException(
-                        "Construct composition " + composition + " missing " + role + " role"))
-                .get(type).orElseThrow(() -> new PropertyAccessException("Construct composition "
-                        + composition + " missing " + type + " property in " + role + " role"));
-    }
+    public PropertyContainer properties(RoleReferenceLocation role) {
+        PropertyContainer roleProperties = composition.registered().value().properties().get(role);
 
-    public static class PropertyAccessException extends RuntimeException {
-        public PropertyAccessException(String message) {
-            super(message);
+        if (roleProperties == null) {
+            throw new RuntimeException(
+                    "Construct composition " + composition + " missing " + role + " role");
         }
+
+        return roleProperties;
     }
 }

@@ -1,17 +1,21 @@
 package com.masterworks.masterworks.data.property.core;
 
+import java.util.Map;
 import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
+import com.mojang.serialization.Decoder;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 
-public record MiningSpeedProperty(Expression expression)
+public record MiningSpeedProperty(Expression expression,
+        Map<Construct.Component.Key, RoleReferenceLocation> roles)
         implements ExpressionProperty, ToolRuleProperty {
 
     @Override
@@ -24,7 +28,7 @@ public record MiningSpeedProperty(Expression expression)
         Named<Block> blocks =
                 BuiltInRegistries.BLOCK.get(BlockTags.MINEABLE_WITH_PICKAXE).orElseThrow();
 
-        return Tool.Rule.minesAndDrops(blocks, evaluate(construct).floatValue());
+        return Tool.Rule.minesAndDrops(blocks, evaluate(construct.components()).floatValue());
     }
 
     @Override
@@ -32,11 +36,12 @@ public record MiningSpeedProperty(Expression expression)
         return MasterworksPropertyTypes.MINING_SPEED.get();
     }
 
-    public static class Type implements ExpressionProperty.Type<MiningSpeedProperty>,
-            ToolRuleProperty.Type<MiningSpeedProperty> {
+    public static class Type extends ExpressionProperty.Type<MiningSpeedProperty>
+            implements ToolRuleProperty.Type<MiningSpeedProperty> {
         @Override
-        public MiningSpeedProperty create(Expression expression) {
-            return new MiningSpeedProperty(expression);
+        public Decoder<MiningSpeedProperty> decoder(
+                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            return decoder(MiningSpeedProperty::new, components);
         }
     }
 }

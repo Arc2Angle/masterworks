@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a mathematical expression that can contain positional "variables" prefixed with '$'.
+ * Represents a mathematical expression that can contain named "variables".
  * <p>
  * It can be serialized/deserialized as a string and evaluated with provided variable values.
  * <p>
  * Examples:
  * <ul>
- * <li>{@code $0 * 3}</li>
- * <li>{@code $0 * 0.5 + $1 * 0.5}</li>
+ * <li>{@code 6.7}</li>
+ * <li>{@code $value * 3}</li>
+ * <li>{@code $a * 0.5 + $b * 0.5}</li>
  * <li>{@code $2 + $0 + $1}</li>
  * </ul>
  */
@@ -32,8 +33,18 @@ public interface Expression {
      * @return The result of the expression evaluation
      * @throws IllegalArgumentException if the expression is missing required variables
      */
+    @Nonnull
     Double evaluate(@Nonnull Map<String, Double> arguments) throws IllegalArgumentException;
 
+    /**
+     * Gets the set of variable names used in this expression
+     * 
+     * @return Stream of variable names
+     */
+    @Nonnull
+    Stream<String> arguments();
+
+    @Nonnull
     String format();
 
     class Impl {
@@ -73,6 +84,11 @@ public interface Expression {
             }
 
             @Override
+            public Stream<String> arguments() {
+                return Stream.empty();
+            }
+
+            @Override
             public String format() {
                 return value.toString();
             }
@@ -93,6 +109,11 @@ public interface Expression {
             }
 
             @Override
+            public Stream<String> arguments() {
+                return Stream.of(name);
+            }
+
+            @Override
             public String format() {
                 return name;
             }
@@ -103,6 +124,11 @@ public interface Expression {
             public Double evaluate(@Nonnull Map<String, Double> arguments)
                     throws IllegalArgumentException {
                 return -child.evaluate(arguments);
+            }
+
+            @Override
+            public Stream<String> arguments() {
+                return child.arguments();
             }
 
             @Override
@@ -122,6 +148,11 @@ public interface Expression {
             default Double evaluate(@Nonnull Map<String, Double> arguments)
                     throws IllegalArgumentException {
                 return calculate(children().stream().map(child -> child.evaluate(arguments)));
+            }
+
+            @Override
+            default Stream<String> arguments() {
+                return children().stream().flatMap(Expression::arguments);
             }
 
             @Override

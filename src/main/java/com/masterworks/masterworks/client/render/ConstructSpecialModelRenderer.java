@@ -48,15 +48,15 @@ public class ConstructSpecialModelRenderer extends NativeItemSpecialModelRendere
             return null;
         }
 
-        try {
-            RenderProperty property = argument.getPropertyOrThrow(
-                    MasterworksPropertyTypes.RENDER.get(), RoleReferenceLocation.ITEM);
+        RenderProperty property = argument.properties(RoleReferenceLocation.ITEM)
+                .get(MasterworksPropertyTypes.RENDER.get()).orElse(null);
 
-            return property.render(argument.components()).reduce(PixelUtils::Overlay).orElse(null);
-        } catch (Construct.PropertyAccessException e) {
-            MasterworksMod.LOGGER.warn(e.getMessage());
+        if (property == null) {
+            MasterworksMod.LOGGER.warn("Missing render property for construct " + argument);
             return null;
         }
+
+        return property.render(argument.components()).reduce(PixelUtils::Overlay).orElse(null);
     }
 
 }

@@ -3,6 +3,7 @@ package com.masterworks.masterworks.data.role;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
+import com.masterworks.masterworks.data.property.core.RenderProperty;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Codec;
@@ -25,7 +26,12 @@ public interface RenderPassthroughFlagRole extends Role {
                                 + component))
                 .orThrow();
 
-        return construct.getPropertyOrThrow(MasterworksPropertyTypes.RENDER.get(), self)
-                .render(construct.components());
+        RenderProperty property = construct.properties(self)
+                .get(MasterworksPropertyTypes.RENDER.get())
+                .orElseThrow(() -> new RuntimeException(
+                        "RenderPassthroughFlagRole requires a RenderProperty on the construct: "
+                                + construct));
+
+        return property.render(construct.components());
     }
 }

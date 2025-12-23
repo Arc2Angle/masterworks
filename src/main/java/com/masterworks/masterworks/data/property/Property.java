@@ -34,14 +34,8 @@ public interface Property {
         protected <P extends Property> Stream<? extends P> propertiesByTagKey(
                 TypedTagKey<Property.Type<?>, ? extends Property.Type<? extends P>> tagKey,
                 Construct construct) {
-            return tagKey.values().flatMap(type -> {
-                try {
-                    P property = construct.getPropertyOrThrow(type, RoleReferenceLocation.ITEM);
-                    return Stream.of(property);
-                } catch (Construct.PropertyAccessException e) {
-                    return Stream.empty();
-                }
-            });
+            return tagKey.values().flatMap(
+                    type -> construct.properties(RoleReferenceLocation.ITEM).get(type).stream());
         }
     }
 }

@@ -2,12 +2,11 @@ package com.masterworks.masterworks.data.property.base;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import com.masterworks.masterworks.data.Composition;
+import java.util.stream.Stream;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.data.property.PropertyContainer;
-import com.masterworks.masterworks.location.MaterialReferenceLocation;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.DataResult;
@@ -15,64 +14,70 @@ import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 
 public interface ExpressionProperty extends Property {
+    static final String ARGUMENT_PREFIX = "$";
+
     Expression expression();
 
-    @Override
-    Type<?> type();
+    Map<Construct.Component.Key, RoleReferenceLocation> roles();
 
-    interface Type<P extends ExpressionProperty> extends Property.Type<P> {
-        P create(Expression expression);
+    default Double evaluate(Map<Construct.Component.Key, Construct.Component> components) {
+        Map<String, Double> arguments = components.entrySet().stream().flatMap(entry -> {
+            Construct.Component.Key key = entry.getKey();
+            Construct.Component component = entry.getValue();
 
-        @Override
-        default Decoder<P> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
-            return Decoder.ofSimple(new Decoder.Simple<P>() {
-                @Override
-                public <T> DataResult<P> decode(Dynamic<T> input) {
-                    return Expression.CODEC.parse(input).flatMap(expression -> {
-                        // TODO: validate expression against roles' keys here
-                        return DataResult.success(create(expression));
-                    });
-                }
-            });
-        }
-    }
+            RoleReferenceLocation role = Optional.ofNullable(roles().get(key))
+                    .orElseThrow(() -> new IllegalStateException(
+                            "No role mapping for component key " + key + " in property " + this));
 
+            String argumentKey = "$" + key.value();
+            Optional<Double> argumentValue = component.properties(role).get(type())
+                    .map(property -> property.evaluate(component.components()));
 
-    default Double evaluate(Construct construct) {
-        Composition composition = construct.composition().registered().value();
-
-        Map<String, Double> arguments =
-                construct.components().entrySet().stream().flatMap(entry -> {
-                    Construct.Component.Key key = entry.getKey();
-                    RoleReferenceLocation role =
-                            Optional.ofNullable(composition.components().get(key)).orElseThrow();
-
-                    String argumentKey = "$" + key.value();
-                    Optional<Double> argumentValue = entry.getValue().value().map(
-                            material -> evaluateComponentMaterial(material),
-                            componentConstruct -> evaluateComponentConstruct(componentConstruct,
-                                    role));
-
-                    return argumentValue.map(value -> Map.entry(argumentKey, value)).stream();
-                }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            return argumentValue.map(value -> Map.entry(argumentKey, value)).stream();
+        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return expression().evaluate(arguments);
     }
 
-    private Optional<Double> evaluateComponentMaterial(MaterialReferenceLocation material) {
-        PropertyContainer map = material.registered().value().properties();
+    @Override
+    Type<?> type();
 
-        return map.get(type()).map(property -> property.expression().evaluate(Map.of()));
-    }
+    public static abstract class Type<P extends ExpressionProperty> implements Property.Type<P> {
+        protected Decoder<P> decoder(
+                BiFunction<Expression, Map<Construct.Component.Key, RoleReferenceLocation>, P> constructor,
+                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            return Decoder.ofSimple(new Decoder.Simple<P>() {
+                @Override
+                public <T> DataResult<P> decode(Dynamic<T> input) {
+                    return decodeExpression(input, components)
+                            .map(expression -> constructor.apply(expression, components));
+                }
+            });
+        }
 
-    private Optional<Double> evaluateComponentConstruct(Construct construct,
-            RoleReferenceLocation role) {
-        Composition composition = construct.composition().registered().value();
+        protected <T> DataResult<Expression> decodeExpression(Dynamic<T> input,
+                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            return Expression.CODEC.parse(input)
+                    .flatMap(expression -> expression.arguments().flatMap(argument -> {
+                        if (!argument.startsWith(ARGUMENT_PREFIX)) {
+                            return Stream
+                                    .of(DataResult.<Expression>error(() -> "Invalid statement \""
+                                            + argument + "\" in expression \"" + expression
+                                            + "\": component references must start with \""
+                                            + ARGUMENT_PREFIX + "\""));
+                        }
 
-        PropertyContainer properties = Optional.ofNullable(composition.properties().get(role))
-                .orElseThrow(() -> new RuntimeException(
-                        "Missing role \"" + role + "\" in composition " + construct.composition()));
+                        Construct.Component.Key key = new Construct.Component.Key(
+                                argument.substring(ARGUMENT_PREFIX.length()));
 
-        return properties.get(type()).map(property -> property.evaluate(construct));
+                        if (!components.containsKey(key)) {
+                            return Stream.of(DataResult.<Expression>error(() -> "Expression \""
+                                    + expression + "\" references non-existent component \"" + key
+                                    + "\""));
+                        }
+
+                        return Stream.empty();
+                    }).findFirst().orElse(DataResult.success(expression)));
+        }
     }
 }
