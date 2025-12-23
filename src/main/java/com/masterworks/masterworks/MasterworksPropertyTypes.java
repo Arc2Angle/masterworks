@@ -7,6 +7,7 @@ import com.masterworks.masterworks.data.property.core.AttackDamageProperty;
 import com.masterworks.masterworks.data.property.core.AttackSpeedProperty;
 import com.masterworks.masterworks.data.property.core.DefaultProperty;
 import com.masterworks.masterworks.data.property.core.DurabilityProperty;
+import com.masterworks.masterworks.data.property.core.MiningDeniedProperty;
 import com.masterworks.masterworks.data.property.core.MiningSpeedProperty;
 import com.masterworks.masterworks.data.property.core.RenderProperty;
 import com.masterworks.masterworks.data.property.core.ToughnessProperty;
@@ -36,6 +37,9 @@ public class MasterworksPropertyTypes {
 
     public static final Supplier<DurabilityProperty.Type> DURABILITY =
             register("durability", DurabilityProperty.Type::new);
+
+    public static final Supplier<MiningDeniedProperty.Type> MINING_DENIED =
+            register("mining_denied", MiningDeniedProperty.Type::new);
 
     public static final Supplier<MiningSpeedProperty.Type> MINING_SPEED =
             register("mining_speed", MiningSpeedProperty.Type::new);

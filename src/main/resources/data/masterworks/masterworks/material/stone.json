@@ -4,6 +4,7 @@
     "color": "ff787777",
     "properties": {
         "masterworks:durability": 131,
+        "masterworks:mining_denied": "incorrect_for_stone_tool",
         "masterworks:mining_speed": 4.0,
         "masterworks:attack_damage": 4.0,
         "masterworks:attack_speed": 2.0,

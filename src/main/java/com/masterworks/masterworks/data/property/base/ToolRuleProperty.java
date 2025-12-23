@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.data.property.base;
 
 import java.util.List;
+import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.MasterworksTags;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
@@ -27,6 +28,8 @@ public interface ToolRuleProperty extends Property {
             if (rules.isEmpty()) {
                 return;
             }
+
+            MasterworksMod.LOGGER.info("Applying tool rules: {}", rules);
 
             stack.set(DataComponents.TOOL, new Tool(rules, 1.0f, 1, true));
         }
