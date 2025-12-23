@@ -4,6 +4,7 @@
     "color": "ff755821",
     "properties": {
         "masterworks:durability": 59,
+        "masterworks:mining_denied": "incorrect_for_wooden_tool",
         "masterworks:mining_speed": 2.0,
         "masterworks:attack_damage": 3.0,
         "masterworks:attack_speed": 4.0,

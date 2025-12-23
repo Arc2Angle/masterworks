@@ -1,70 +1,47 @@
 package com.masterworks.masterworks.data.property.core;
 
-import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
-import javax.annotation.Nullable;
+import java.util.Map;
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.ExpressionProperty;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
+import com.masterworks.masterworks.data.property.base.ExpressionProperty;
+import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
-import net.minecraft.core.Holder;
+import com.mojang.serialization.Decoder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-public record ArmorProperty(Expression expression)
-        implements ExpressionProperty, ItemAttributeProviderProperty {
+public record ArmorProperty(Expression expression,
+        Map<Construct.Component.Key, RoleReferenceLocation> roles)
+        implements ExpressionProperty, ItemAttributeModifierProperty {
     public static final ResourceLocation ATTRIBUTE_ID =
             ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "armor");
 
     @Override
-    @Nullable
-    public Double get(Construct construct) {
-        Double value = evaluate(construct);
-        if (value == null) {
-            return null;
-        }
-        return value;
+    public ItemAttributeModifiers.Entry getItemAttributeModifier(Construct construct) {
+        return new ItemAttributeModifiers.Entry(
+                Attributes.ARMOR, new AttributeModifier(ATTRIBUTE_ID,
+                        evaluate(construct.components()), Operation.ADD_VALUE),
+                EquipmentSlotGroup.ARMOR);
     }
 
     @Override
-    public Property.Type<ArmorProperty> type() {
+    public Type type() {
         return MasterworksPropertyTypes.ARMOR.get();
     }
 
-    public static class Type implements ExpressionProperty.Type<ArmorProperty>,
-            ItemAttributeProviderProperty.Type<ArmorProperty> {
+    public static class Type extends ExpressionProperty.Type<ArmorProperty>
+            implements ItemAttributeModifierProperty.Type<ArmorProperty> {
         @Override
-        public String name() {
-            return "Armor";
-        }
-
-        @Override
-        public Holder<Attribute> attribute() {
-            return Attributes.ARMOR;
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return ATTRIBUTE_ID;
-        }
-
-        @Override
-        public Operation operation() {
-            return Operation.ADD_VALUE;
-        }
-
-        @Override
-        public EquipmentSlotGroup slot() {
-            return EquipmentSlotGroup.ARMOR;
-        }
-
-        @Override
-        public ArmorProperty create(Expression expression) {
-            return new ArmorProperty(expression);
+        public Decoder<ArmorProperty> decoder(
+                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            return decoder(ArmorProperty::new, components);
         }
     }
+
 }

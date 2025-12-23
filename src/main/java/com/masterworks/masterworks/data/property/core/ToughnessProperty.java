@@ -1,70 +1,46 @@
 package com.masterworks.masterworks.data.property.core;
 
-import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.data.property.provider.ItemAttributeProviderProperty;
-import javax.annotation.Nullable;
+import java.util.Map;
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.ExpressionProperty;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
+import com.masterworks.masterworks.data.property.base.ExpressionProperty;
+import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
-import net.minecraft.core.Holder;
+import com.mojang.serialization.Decoder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
-public record ToughnessProperty(Expression expression)
-        implements ExpressionProperty, ItemAttributeProviderProperty {
+public record ToughnessProperty(Expression expression,
+        Map<Construct.Component.Key, RoleReferenceLocation> roles)
+        implements ExpressionProperty, ItemAttributeModifierProperty {
     public static final ResourceLocation ATTRIBUTE_ID =
             ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "armor_toughness");
 
     @Override
-    @Nullable
-    public Double get(Construct construct) {
-        Double value = evaluate(construct);
-        if (value == null) {
-            return null;
-        }
-        return value;
+    public ItemAttributeModifiers.Entry getItemAttributeModifier(Construct construct) {
+        return new ItemAttributeModifiers.Entry(
+                Attributes.ARMOR_TOUGHNESS, new AttributeModifier(ATTRIBUTE_ID,
+                        evaluate(construct.components()), Operation.ADD_VALUE),
+                EquipmentSlotGroup.ARMOR);
     }
 
     @Override
-    public Property.Type<ToughnessProperty> type() {
+    public Type type() {
         return MasterworksPropertyTypes.TOUGHNESS.get();
     }
 
-    public static class Type implements ExpressionProperty.Type<ToughnessProperty>,
-            ItemAttributeProviderProperty.Type<ToughnessProperty> {
+    public static class Type extends ExpressionProperty.Type<ToughnessProperty>
+            implements ItemAttributeModifierProperty.Type<ToughnessProperty> {
         @Override
-        public String name() {
-            return "Toughness";
-        }
-
-        @Override
-        public Holder<Attribute> attribute() {
-            return Attributes.ARMOR_TOUGHNESS;
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return ATTRIBUTE_ID;
-        }
-
-        @Override
-        public Operation operation() {
-            return Operation.ADD_VALUE;
-        }
-
-        @Override
-        public EquipmentSlotGroup slot() {
-            return EquipmentSlotGroup.ARMOR;
-        }
-
-        @Override
-        public ToughnessProperty create(Expression expression) {
-            return new ToughnessProperty(expression);
+        public Decoder<ToughnessProperty> decoder(
+                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            return decoder(ToughnessProperty::new, components);
         }
     }
 }

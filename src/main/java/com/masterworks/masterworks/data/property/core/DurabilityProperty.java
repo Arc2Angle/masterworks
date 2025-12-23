@@ -1,56 +1,46 @@
 package com.masterworks.masterworks.data.property.core;
 
-import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.data.property.provider.DataComponentProviderProperty;
-import javax.annotation.Nullable;
+import java.util.Map;
+import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.ExpressionProperty;
-import com.masterworks.masterworks.init.MasterworksPropertyTypes;
+import com.masterworks.masterworks.data.property.base.DataComponentProperty;
+import com.masterworks.masterworks.data.property.base.ExpressionProperty;
+import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
-import net.minecraft.core.component.DataComponentType;
+import com.mojang.serialization.Decoder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.network.chat.Component;
 
-public record DurabilityProperty(Expression expression)
-        implements ExpressionProperty, DataComponentProviderProperty<Integer> {
+public record DurabilityProperty(Expression expression,
+        Map<Construct.Component.Key, RoleReferenceLocation> roles)
+        implements ExpressionProperty, DataComponentProperty, LoreComponentProperty {
 
     @Override
-    @Nullable
-    public Integer get(Construct construct) {
-        Double value = evaluate(construct);
-        if (value == null) {
-            return null;
-        }
-
-        return value.intValue();
+    public TypedDataComponent<?> getDataComponent(Construct construct) {
+        return new TypedDataComponent<>(DataComponents.MAX_DAMAGE,
+                evaluate(construct.components()).intValue());
     }
 
     @Override
-    public Property.Type<DurabilityProperty> type() {
+    public Component getLoreComponent(Construct construct) {
+        return Component.literal("Durability: " + evaluate(construct.components()).intValue());
+    }
+
+    @Override
+    public Type type() {
         return MasterworksPropertyTypes.DURABILITY.get();
     }
 
-    public static class Type implements ExpressionProperty.Type<DurabilityProperty>,
-            DataComponentProviderProperty.Type<Integer, DurabilityProperty> {
+    public static class Type extends ExpressionProperty.Type<DurabilityProperty>
+            implements DataComponentProperty.Type<DurabilityProperty>,
+            LoreComponentProperty.Type<DurabilityProperty> {
         @Override
-        public String name() {
-            return "Durability";
-        }
-
-        @Override
-        public DataComponentType<Integer> dataComponentType() {
-            return DataComponents.MAX_DAMAGE;
-        }
-
-        @Override
-        public DurabilityProperty create(Expression expression) {
-            return new DurabilityProperty(expression);
-        }
-
-        @Override
-        public void apply(Construct construct, ItemStack stack) {
-            DataComponentProviderProperty.Type.super.apply(construct, stack);
-            stack.set(DataComponents.DAMAGE, 0);
+        public Decoder<DurabilityProperty> decoder(
+                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            return decoder(DurabilityProperty::new, components);
         }
     }
+
 }

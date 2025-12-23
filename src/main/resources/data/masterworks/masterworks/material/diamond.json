@@ -4,6 +4,7 @@
     "color": "ff33ebcb",
     "properties": {
         "masterworks:durability": 1561,
+        "masterworks:mining_denied": "incorrect_for_diamond_tool",
         "masterworks:mining_speed": 8.0,
         "masterworks:attack_damage": 7.0,
         "masterworks:attack_speed": 8.0,

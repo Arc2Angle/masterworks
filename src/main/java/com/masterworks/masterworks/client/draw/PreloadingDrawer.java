@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.resource.location.ResourceReferenceResourceLocation;
-import com.masterworks.masterworks.resource.location.TextureReferenceResourceLocation;
+import com.masterworks.masterworks.location.ResourceReferenceLocation;
+import com.masterworks.masterworks.location.TextureReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -15,7 +15,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 public class PreloadingDrawer implements Closeable, ResourceManagerReloadListener {
     protected ResourceManager resourceManager;
 
-    private final Map<TextureReferenceResourceLocation, NativeImage> textures = new HashMap<>();
+    private final Map<TextureReferenceLocation, NativeImage> textures = new HashMap<>();
 
     @Override
     public void onResourceManagerReload(@Nonnull ResourceManager manager) {
@@ -40,11 +40,11 @@ public class PreloadingDrawer implements Closeable, ResourceManagerReloadListene
         }
     }
 
-    protected void preloadTexture(TextureReferenceResourceLocation reference) {
+    protected void preloadTexture(TextureReferenceLocation reference) {
         textures.put(reference, null);
     }
 
-    protected NativeImage getPreloadedTexture(TextureReferenceResourceLocation reference) {
+    protected NativeImage getPreloadedTexture(TextureReferenceLocation reference) {
         NativeImage preloadedImage = textures.get(reference);
         if (preloadedImage == null) {
             throw new RuntimeException("Texture " + reference + " not preloaded");
@@ -52,13 +52,12 @@ public class PreloadingDrawer implements Closeable, ResourceManagerReloadListene
         return preloadedImage;
     }
 
-    protected NativeImage loadTextureWithPreloadedDefault(
-            TextureReferenceResourceLocation reference,
-            TextureReferenceResourceLocation defaultReference) {
+    protected NativeImage loadTextureWithPreloadedDefault(TextureReferenceLocation reference,
+            TextureReferenceLocation defaultReference) {
         try {
             return reference.texture(resourceManager);
 
-        } catch (ResourceReferenceResourceLocation.MissingResourceException | IOException e) {
+        } catch (ResourceReferenceLocation.MissingResourceException | IOException e) {
             MasterworksMod.LOGGER.warn(
                     "Substituting " + reference + " with default " + defaultReference + " due to",
                     e);
