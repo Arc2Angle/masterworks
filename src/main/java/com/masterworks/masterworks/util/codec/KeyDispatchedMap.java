@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.util;
+package com.masterworks.masterworks.util.codec;
 
 import java.util.Map;
 import java.util.Optional;
@@ -13,19 +13,11 @@ import com.mojang.serialization.Dynamic;
  * @param <K> The key generic concrete type
  * @param <V> The value type
  */
-public class ReferenceDispatchedMap<R, K, V> {
-    public static <R, K, V> Codec<ReferenceDispatchedMap<R, K, V>> codec(Codec<R> referenceCodec,
-            Function<? super R, ? extends K> toKey,
-            Function<? super K, ? extends Decoder<? extends V>> toParser) {
-        return Codec.unboundedMap(referenceCodec, Codec.PASSTHROUGH).xmap(
-                dynamics -> new ReferenceDispatchedMap<>(dynamics, toKey, toParser),
-                instance -> instance.dynamics);
-    }
+public class KeyDispatchedMap<R, K, V> {
+    protected final Map<R, Dynamic<?>> dynamics;
+    protected final Map<K, ? extends V> values;
 
-    final Map<R, Dynamic<?>> dynamics;
-    final Map<K, ? extends V> values;
-
-    ReferenceDispatchedMap(Map<R, Dynamic<?>> dynamics, Function<? super R, ? extends K> toKey,
+    protected KeyDispatchedMap(Map<R, Dynamic<?>> dynamics, Function<? super R, ? extends K> toKey,
             Function<? super K, ? extends Decoder<? extends V>> toDecoder) {
         this.dynamics = dynamics;
         this.values = dynamics.entrySet().stream().map(entry -> {
@@ -41,5 +33,13 @@ public class ReferenceDispatchedMap<R, K, V> {
 
     public Optional<V> get(K key) {
         return Optional.ofNullable(values.get(key));
+    }
+
+    public static <R, K, V> Codec<KeyDispatchedMap<R, K, V>> codec(Codec<R> referenceCodec,
+            Function<? super R, ? extends K> toKey,
+            Function<? super K, ? extends Decoder<? extends V>> toParser) {
+        return Codec.unboundedMap(referenceCodec, Codec.PASSTHROUGH).xmap(
+                dynamics -> new KeyDispatchedMap<>(dynamics, toKey, toParser),
+                instance -> instance.dynamics);
     }
 }

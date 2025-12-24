@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksDataComponents;
-import com.masterworks.masterworks.data.property.PropertyContainer;
+import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.location.CompositionReferenceLocation;
 import com.masterworks.masterworks.location.ItemMaterialReferenceLocation;
 import com.masterworks.masterworks.location.MaterialReferenceLocation;
@@ -87,7 +87,7 @@ public record Construct(CompositionReferenceLocation composition,
          * 
          * @throws RuntimeException if the role is missing
          */
-        public PropertyContainer properties(RoleReferenceLocation role) {
+        public Property.Container properties(RoleReferenceLocation role) {
             return value.map(material -> {
                 if (!role.equals(RoleReferenceLocation.MATERIAL)) {
                     throw new RuntimeException("Material component does not have role " + role);
@@ -105,8 +105,8 @@ public record Construct(CompositionReferenceLocation composition,
      * 
      * @throws RuntimeException if the role is missing
      */
-    public PropertyContainer properties(RoleReferenceLocation role) {
-        PropertyContainer roleProperties = composition.registered().value().properties().get(role);
+    public Property.Container properties(RoleReferenceLocation role) {
+        Property.Container roleProperties = composition.registered().value().properties().get(role);
 
         if (roleProperties == null) {
             throw new RuntimeException(
