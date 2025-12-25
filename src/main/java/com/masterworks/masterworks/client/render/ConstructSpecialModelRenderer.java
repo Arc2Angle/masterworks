@@ -14,7 +14,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 
-public class ConstructSpecialModelRenderer extends NativeItemSpecialModelRenderer<Construct> {
+public class ConstructSpecialModelRenderer extends NativeSpecialModelRenderer<Construct> {
     public record Unbaked() implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<ConstructSpecialModelRenderer.Unbaked> MAP_CODEC =
                 MapCodec.unit(ConstructSpecialModelRenderer.Unbaked::new);
