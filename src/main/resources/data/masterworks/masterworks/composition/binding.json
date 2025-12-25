@@ -4,25 +4,19 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render": {
-                "main": "masterworks:binding"
-            },
+            "masterworks:render": "masterworks:binding",
             "masterworks:durability": "$main * 0.3",
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"
         },
         "masterworks:component/binder/tool": {
-            "masterworks:render": {
-                "main": "masterworks:binding/tool_binder"
-            },
+            "masterworks:render": "masterworks:binding/tool_binder",
             "masterworks:durability": "$main * 0.3",
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"
         },
         "masterworks:component/guard/wide": {
-            "masterworks:render": {
-                "main": "masterworks:binding/wide_guard"
-            },
+            "masterworks:render": "masterworks:binding/wide_guard",
             "masterworks:durability": "$main * 0.3",
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"
