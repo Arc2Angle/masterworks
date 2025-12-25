@@ -3,6 +3,7 @@ package com.masterworks.masterworks.data;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.data.property.Property;
@@ -14,13 +15,18 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipProvider;
 
 public record Construct(CompositionReferenceLocation composition,
-        Map<Component.Key, Component> components) {
+        Map<Component.Key, Component> components) implements TooltipProvider {
 
     public static final Codec<Construct> CODEC =
             Codec.recursive("construct",
@@ -51,6 +57,11 @@ public record Construct(CompositionReferenceLocation composition,
                     ByteBufCodecs.STRING_UTF8.map(Key::new, Key::value);
 
             public static final Key DEFAULT = new Key("main");
+
+            MutableComponent format() {
+                return net.minecraft.network.chat.Component
+                        .literal(" " + Character.toUpperCase(value.charAt(0)) + value.substring(1));
+            }
         }
 
         public static Optional<Component> of(ItemStack stack) {
@@ -98,6 +109,14 @@ public record Construct(CompositionReferenceLocation composition,
                 return construct.properties(role);
             });
         }
+
+        MutableComponent format() {
+            return value.map(reference -> {
+                Material material = reference.registered().value();
+                return net.minecraft.network.chat.Component.literal(material.name())
+                        .withColor(material.color().argb());
+            }, Construct::format);
+        }
     }
 
     /**
@@ -114,5 +133,33 @@ public record Construct(CompositionReferenceLocation composition,
         }
 
         return roleProperties;
+    }
+
+    @Override
+    public void addToTooltip(Item.TooltipContext context,
+            Consumer<net.minecraft.network.chat.Component> adder, TooltipFlag flag,
+            DataComponentGetter getter) {
+        adder.accept(format());
+    }
+
+    MutableComponent format() {
+        if (components.size() == 1) {
+            return components.values().iterator().next().format();
+        }
+
+        return formatWrapBraces(components.entrySet().stream()
+                .map(entry -> entry.getValue().format().append(entry.getKey().format()))
+                .reduce(Construct::formatJoinPlus)
+                .orElseThrow(() -> new RuntimeException("Construct has no components")));
+    }
+
+    static MutableComponent formatWrapBraces(net.minecraft.network.chat.Component value) {
+        return net.minecraft.network.chat.Component.literal("(").withColor(0xFFFFFF).append(value)
+                .append(net.minecraft.network.chat.Component.literal(")").withColor(0xFFFFFF));
+    }
+
+    static MutableComponent formatJoinPlus(MutableComponent left, MutableComponent right) {
+        return left.append(net.minecraft.network.chat.Component.literal(" + ").withColor(0xFFFFFF))
+                .append(right);
     }
 }

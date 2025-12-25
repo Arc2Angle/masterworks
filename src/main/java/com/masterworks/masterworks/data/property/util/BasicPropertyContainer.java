@@ -23,11 +23,10 @@ public final class BasicPropertyContainer
 
     @SuppressWarnings("unchecked")
     public <T extends Property> Optional<T> get(Property.Type<T> type) {
-        if (type instanceof TransientProperty.Type<? extends T> transientType) {
-            return Optional.of(transientType.create());
-        }
-
-        return super.get(type).map(value -> (T) value);
+        return super.get(type).map(value -> (T) value)
+                .or(() -> type instanceof TransientProperty.Type<? extends T> transientType
+                        ? Optional.of(transientType.create())
+                        : Optional.empty());
     }
 
     public static Codec<BasicPropertyContainer> codec(
