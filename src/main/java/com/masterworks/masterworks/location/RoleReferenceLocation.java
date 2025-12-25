@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.location;
 
 import com.masterworks.masterworks.MasterworksDataPackRegistries;
+import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.data.role.Role;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
@@ -29,7 +30,8 @@ public record RoleReferenceLocation(ResourceLocation value)
     }
 
     public static final RoleReferenceLocation MATERIAL =
-            fromNamespaceAndPath("masterworks", "material");
+            fromNamespaceAndPath(MasterworksMod.ID, "material");
 
-    public static final RoleReferenceLocation ITEM = fromNamespaceAndPath("masterworks", "item");
+    public static final RoleReferenceLocation ITEM =
+            fromNamespaceAndPath(MasterworksMod.ID, "item");
 }

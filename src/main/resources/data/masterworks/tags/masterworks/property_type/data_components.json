@@ -1,6 +1,6 @@
 {
     "values": [
-        "masterworks:default",
+        "masterworks:max_stack_size",
         "masterworks:durability"
     ]
 }

@@ -6,11 +6,11 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render": {
-                "head": true,
-                "binding": true,
-                "handle": true
-            },
+            "masterworks:render": [
+                "head",
+                "handle",
+                "binding"
+            ],
             "masterworks:durability": "$head + $handle + $binding",
             "masterworks:mining_denied": "$head",
             "masterworks:mining_speed": {

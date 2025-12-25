@@ -5,8 +5,8 @@ import com.masterworks.masterworks.MasterworksRoleTypes;
 import com.masterworks.masterworks.location.ShapeReferenceLocation;
 import com.mojang.serialization.MapCodec;
 
-public record ItemRole() implements RenderPassthroughFlagRole {
-    public static final MapCodec<ItemRole> CODEC = MapCodec.unit(() -> new ItemRole());
+public record ItemRole() implements CompositeRole {
+    public static final MapCodec<ItemRole> CODEC = MapCodec.unit(ItemRole::new);
 
     @Override
     public Type<?> type() {

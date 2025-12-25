@@ -1,5 +1,6 @@
 package com.masterworks.masterworks.data.role;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
@@ -7,14 +8,16 @@ import com.masterworks.masterworks.data.property.core.RenderProperty;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 
-public interface RenderPassthroughFlagRole extends Role {
+public interface CompositeRole extends Role {
     @Override
     default Stream<NativeImage> render(RoleReferenceLocation self, Construct.Component component,
-            Dynamic<?> argument) {
-        boolean flag = Codec.BOOL.parse(argument).getOrThrow(
-                message -> new IllegalStateException("Failed to parse flag: " + message));
+            Optional<Dynamic<?>> argument) {
+        boolean flag = argument.map(dynamic -> Codec.BOOL.parse(dynamic))
+                .orElse(DataResult.success(true)).getOrThrow(
+                        message -> new IllegalStateException("Failed to parse flag: " + message));
 
         if (!flag) {
             return Stream.empty();

@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.data.role;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksRegistries;
 import com.masterworks.masterworks.data.Construct;
@@ -20,7 +21,7 @@ public interface Role {
     Type<?> type();
 
     Stream<NativeImage> render(RoleReferenceLocation self, Construct.Component component,
-            Dynamic<?> argument);
+            Optional<Dynamic<?>> argument);
 
     record Type<T extends Role>(MapCodec<T> codec) {
     }
