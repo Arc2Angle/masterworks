@@ -1,10 +1,15 @@
 package com.masterworks.masterworks.data.property;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.data.Construct;
+import com.masterworks.masterworks.data.property.util.BasicPropertyContainer;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.tags.TypedTagKey;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import net.minecraft.world.item.ItemStack;
 
@@ -13,6 +18,24 @@ public interface Property {
 
     interface Type<T extends Property> {
         Decoder<T> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components);
+    }
+
+    interface Container {
+        /**
+         * @param <T> The property's actual generic type
+         * @param type The property's registered type object
+         * @return The property of the given type if present. Transient properties are created on
+         *         demand.
+         */
+        <T extends Property> Optional<T> get(Property.Type<T> type);
+
+        static Codec<Container> basicCodec(
+                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            return BasicPropertyContainer.codec(components).flatComapMap(Function.identity(),
+                    container -> container instanceof BasicPropertyContainer basic
+                            ? DataResult.success(basic)
+                            : DataResult.error(() -> "Expected BasicPropertyContainer"));
+        }
     }
 
     abstract class Applier {

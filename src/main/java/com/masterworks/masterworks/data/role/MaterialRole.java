@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.data.role;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksRoleTypes;
 import com.masterworks.masterworks.client.draw.ConstructDrawer;
@@ -29,13 +30,16 @@ public record MaterialRole(List<ShapeReferenceLocation> examples) implements Rol
 
     @Override
     public Stream<NativeImage> render(RoleReferenceLocation self, Construct.Component component,
-            Dynamic<?> argument) {
+            Optional<Dynamic<?>> argument) {
         PaletteReferenceLocation palette =
                 component.value().mapRight(construct -> new IllegalStateException()).orThrow()
                         .registered().value().palette();
 
-        ShapeReferenceLocation shape = ShapeReferenceLocation.CODEC.parse(argument).getOrThrow(
-                message -> new IllegalStateException("Failed to parse shape: " + message));
+        ShapeReferenceLocation shape = ShapeReferenceLocation.CODEC
+                .parse(argument.orElseThrow(() -> new IllegalStateException(
+                        "Material rendering requires a shape reference argument")))
+                .getOrThrow(message -> new IllegalStateException(
+                        "Failed to parse argument: " + message));
 
         return Stream.of(ConstructDrawer.instance().get(palette, shape));
     }

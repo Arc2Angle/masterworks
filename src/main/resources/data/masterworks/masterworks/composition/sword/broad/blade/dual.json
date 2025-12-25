@@ -5,19 +5,19 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render": {
-                "left": true,
-                "right": true
-            },
+            "masterworks:render": [
+                "left",
+                "right"
+            ],
             "masterworks:durability": "$left + $right",
             "masterworks:attack_damage": "$left + $right",
             "masterworks:attack_speed": "$left + $right"
         },
         "masterworks:component/sword_blade/broad": {
-            "masterworks:render": {
-                "left": true,
-                "right": true
-            },
+            "masterworks:render": [
+                "left",
+                "right"
+            ],
             "masterworks:durability": "$left + $right",
             "masterworks:attack_damage": "$left + $right",
             "masterworks:attack_speed": "$left + $right"

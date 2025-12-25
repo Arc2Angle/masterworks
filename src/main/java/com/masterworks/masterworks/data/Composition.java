@@ -2,8 +2,7 @@ package com.masterworks.masterworks.data;
 
 import java.util.Map;
 import java.util.stream.Stream;
-import com.masterworks.masterworks.data.property.PropertyContainer;
-import com.masterworks.masterworks.location.PropertyTypeReferenceLocation;
+import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -13,7 +12,7 @@ import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 
 public record Composition(Map<Construct.Component.Key, RoleReferenceLocation> components,
-        Map<RoleReferenceLocation, PropertyContainer> properties) {
+        Map<RoleReferenceLocation, Property.Container> properties) {
     final static String COMPONENTS_KEY = "components";
     final static String PROPERTIES_KEY = "properties";
 
@@ -22,12 +21,10 @@ public record Composition(Map<Construct.Component.Key, RoleReferenceLocation> co
                 .fieldOf(COMPONENTS_KEY);
     }
 
-    static MapCodec<Map<RoleReferenceLocation, PropertyContainer>> propertiesMapCodec(
+    static MapCodec<Map<RoleReferenceLocation, Property.Container>> propertiesMapCodec(
             Map<Construct.Component.Key, RoleReferenceLocation> components) {
-        return Codec
-                .unboundedMap(RoleReferenceLocation.CODEC,
-                        PropertyTypeReferenceLocation.typedMapCodec(components))
-                .fieldOf(PROPERTIES_KEY);
+        return Codec.unboundedMap(RoleReferenceLocation.CODEC,
+                Property.Container.basicCodec(components)).fieldOf(PROPERTIES_KEY);
     }
 
     public static final Codec<Composition> CODEC = new MapCodec<Composition>() {

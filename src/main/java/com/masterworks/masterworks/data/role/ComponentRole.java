@@ -7,8 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public record ComponentRole(List<ShapeReferenceLocation> examples)
-        implements RenderPassthroughFlagRole {
+public record ComponentRole(List<ShapeReferenceLocation> examples) implements CompositeRole {
     public static final MapCodec<ComponentRole> CODEC =
             RecordCodecBuilder.mapCodec(instance -> instance
                     .group(Codec
