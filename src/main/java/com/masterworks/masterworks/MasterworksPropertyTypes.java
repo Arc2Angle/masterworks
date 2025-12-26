@@ -9,7 +9,8 @@ import com.masterworks.masterworks.data.property.core.DurabilityProperty;
 import com.masterworks.masterworks.data.property.core.MaxStackSizeProperty;
 import com.masterworks.masterworks.data.property.core.MiningDeniedProperty;
 import com.masterworks.masterworks.data.property.core.MiningSpeedProperty;
-import com.masterworks.masterworks.data.property.core.RenderProperty;
+import com.masterworks.masterworks.data.property.core.RenderEquipmentProperty;
+import com.masterworks.masterworks.data.property.core.RenderItemProperty;
 import com.masterworks.masterworks.data.property.core.ToughnessProperty;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -29,8 +30,11 @@ public class MasterworksPropertyTypes {
 
 
 
-    public static final Supplier<RenderProperty.Type> RENDER =
-            register("render", RenderProperty.Type::new);
+    public static final Supplier<RenderItemProperty.Type> RENDER_ITEM =
+            register("render_item", RenderItemProperty.Type::new);
+
+    public static final Supplier<RenderEquipmentProperty.Type> RENDER_EQUIPMENT =
+            register("render_equipment", RenderEquipmentProperty.Type::new);
 
     public static final Supplier<MaxStackSizeProperty.Type> MAX_STACK_SIZE =
             register("max_stack_size", MaxStackSizeProperty.Type::new);

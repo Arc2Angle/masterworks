@@ -7,7 +7,7 @@ import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.client.draw.PixelUtils;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.core.RenderProperty;
+import com.masterworks.masterworks.data.property.core.RenderItemProperty;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.MapCodec;
@@ -48,8 +48,8 @@ public class ConstructSpecialModelRenderer extends NativeSpecialModelRenderer<Co
             return null;
         }
 
-        RenderProperty property = argument.properties(RoleReferenceLocation.ITEM)
-                .get(MasterworksPropertyTypes.RENDER.get()).orElse(null);
+        RenderItemProperty property = argument.properties(RoleReferenceLocation.ITEM)
+                .get(MasterworksPropertyTypes.RENDER_ITEM.get()).orElse(null);
 
         if (property == null) {
             MasterworksMod.LOGGER.warn("Missing render property for construct " + argument);
