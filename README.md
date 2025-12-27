@@ -95,14 +95,48 @@ Think of a composition as both a recipe and a stat pipeline: it specifies what g
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render": { "main": "masterworks:rod" },
+            "masterworks:render_item": "masterworks:rod",
             "masterworks:durability": "$main * 0.2",
             ...
         },
         "masterworks:component/handle/tool": {
-            "masterworks:render": { "main": "masterworks:rod/tool_handle" },
+            "masterworks:render_item": "masterworks:rod/tool_handle",
             "masterworks:durability": "$main * 0.2",
             ...
+        },
+        "masterworks:component/handle/short": {
+            "masterworks:render_item": "masterworks:rod/short_handle",
+            "masterworks:durability": "$main * 0.15",
+            ...
+        }
+    }
+}
+```
+
+**Example:** [pickaxe.json](src/main/resources/data/masterworks/masterworks/composition/pickaxe.json) takes three components as input: a pickaxe head, a binding, and a handle. It outputs properties for the `masterworks:item` role, calculating stats based on all three inputs. The set of blocks it can mine is determined by two factors: the head component, which inherits its material's denied blocks tag, and the vanilla pickaxe mining tag defined for its mining speed property.
+
+```json
+{
+    "components": {
+        "head": "masterworks:component/pickaxe_head",
+        "binding": "masterworks:component/binder/tool",
+        "handle": "masterworks:component/handle/tool"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render_item": [
+                "head",
+                "handle",
+                "binding"
+            ],
+            "masterworks:durability": "$head + $handle + $binding",
+            "masterworks:mining_denied": "$head",
+            "masterworks:mining_speed": {
+                "block_tag": "minecraft:mineable/pickaxe",
+                "value": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
+            },
+            "masterworks:attack_damage": "$head",
+            "masterworks:attack_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
         }
     }
 }

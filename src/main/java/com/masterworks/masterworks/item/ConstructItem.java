@@ -8,7 +8,6 @@ import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksItems;
 import com.masterworks.masterworks.MasterworksRegistries;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.location.CompositionReferenceLocation;
 import com.masterworks.masterworks.location.MaterialReferenceLocation;
 import com.mojang.datafixers.util.Either;
@@ -25,10 +24,8 @@ public class ConstructItem extends Item {
 
         stack.set(MasterworksDataComponents.CONSTRUCT.get(), construct);
 
-        MasterworksRegistries.PROPERTY_APPLIER.entrySet().forEach(entry -> {
-            Property.Applier applier = entry.getValue();
-            applier.apply(construct, stack);
-        });
+        MasterworksRegistries.PROPERTY_APPLIER.entrySet()
+                .forEach(entry -> entry.getValue().apply(construct, stack));
 
         return stack;
     }
