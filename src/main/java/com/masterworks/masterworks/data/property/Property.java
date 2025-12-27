@@ -41,6 +41,11 @@ public interface Property {
     abstract class Applier {
         /**
          * Applies this property to the given item stack, based on the data in the given construct.
+         * 
+         * @param construct The construct to acquire data from
+         * @param stack The item stack to apply to
+         * @implSpec This method should be implemented such that calling it multiple times is
+         *           equivalent to it's last call.
          */
         public abstract void apply(Construct construct, ItemStack stack);
 
