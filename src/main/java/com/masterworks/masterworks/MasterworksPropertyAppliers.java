@@ -3,6 +3,7 @@ package com.masterworks.masterworks;
 import java.util.function.Supplier;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.base.DataComponentProperty;
+import com.masterworks.masterworks.data.property.base.EquippableProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
 import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
@@ -34,4 +35,7 @@ public class MasterworksPropertyAppliers {
 
     public static final Supplier<ToolRuleProperty.Applier> TOOL_RULE =
             register("tool_rule", ToolRuleProperty.Applier::new);
+
+    public static final Supplier<EquippableProperty.Applier> EQUIPPABLE =
+            register("equippable", EquippableProperty.Applier::new);
 }

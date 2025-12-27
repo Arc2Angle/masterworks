@@ -29,7 +29,7 @@ public class ConstructClientItemExtensions implements IClientItemExtensions, Clo
             ResourceLocation _default) {
         Construct construct = stack.get(MasterworksDataComponents.CONSTRUCT);
         if (construct == null) {
-            return _default;
+            return null;
         }
 
         ResourceLocation cached = locations.get(construct);
@@ -41,14 +41,14 @@ public class ConstructClientItemExtensions implements IClientItemExtensions, Clo
                 .get(MasterworksPropertyTypes.RENDER_EQUIPMENT.get()).orElse(null);
         if (property == null) {
             MasterworksMod.LOGGER.warn("Missing render property for construct " + construct);
-            return _default;
+            return null;
         }
 
         NativeImage image =
                 property.render(construct.components()).reduce(PixelUtils::Overlay).orElse(null);
         if (image == null) {
             MasterworksMod.LOGGER.warn("Failed to render image for construct " + construct);
-            return _default;
+            return null;
         }
 
         String label = UUID.randomUUID().toString();

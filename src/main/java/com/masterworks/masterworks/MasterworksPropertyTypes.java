@@ -6,6 +6,8 @@ import com.masterworks.masterworks.data.property.core.ArmorProperty;
 import com.masterworks.masterworks.data.property.core.AttackDamageProperty;
 import com.masterworks.masterworks.data.property.core.AttackSpeedProperty;
 import com.masterworks.masterworks.data.property.core.DurabilityProperty;
+import com.masterworks.masterworks.data.property.core.EquipmentSlotProperty;
+import com.masterworks.masterworks.data.property.core.EquipmentSwappableProperty;
 import com.masterworks.masterworks.data.property.core.MaxStackSizeProperty;
 import com.masterworks.masterworks.data.property.core.MiningDeniedProperty;
 import com.masterworks.masterworks.data.property.core.MiningSpeedProperty;
@@ -59,4 +61,10 @@ public class MasterworksPropertyTypes {
 
     public static final Supplier<ToughnessProperty.Type> TOUGHNESS =
             register("toughness", ToughnessProperty.Type::new);
+
+    public static final Supplier<EquipmentSlotProperty.Type> EQUIPMENT_SLOT =
+            register("equipment_slot", EquipmentSlotProperty.Type::new);
+
+    public static final Supplier<EquipmentSwappableProperty.Type> EQUIPMENT_SWAPPABLE =
+            register("equipment_swappable", EquipmentSwappableProperty.Type::new);
 }

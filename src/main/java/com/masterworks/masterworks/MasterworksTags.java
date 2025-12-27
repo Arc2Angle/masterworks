@@ -4,6 +4,7 @@ import java.util.function.Function;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
 import com.masterworks.masterworks.data.property.base.DataComponentProperty;
+import com.masterworks.masterworks.data.property.base.EquippableProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
 import com.masterworks.masterworks.util.tags.PermissiveTypedTagKey;
@@ -47,4 +48,8 @@ public class MasterworksTags {
     public static final TypedTagKey<Property.Type<?>, ToolRuleProperty.Type<?>> TOOL_RULE_PROPERTY_TYPES =
             createWarningTyped(MasterworksRegistries.PROPERTY_TYPE, "tool_rules",
                     value -> (ToolRuleProperty.Type<?>) value);
+
+    public static final TypedTagKey<Property.Type<?>, EquippableProperty.Type<?>> EQUIPPABLE_PROPERTY_TYPES =
+            createWarningTyped(MasterworksRegistries.PROPERTY_TYPE, "equippables",
+                    value -> (EquippableProperty.Type<?>) value);
 }
