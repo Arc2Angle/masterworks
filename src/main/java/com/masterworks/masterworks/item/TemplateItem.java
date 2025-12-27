@@ -41,6 +41,10 @@ public class TemplateItem extends Item {
                     "sword/broad/blade/dual")));
             output.accept(stack(
                     template("basic", "edge/straight/left", "sword/broad/blade/edge/straight")));
+            output.accept(stack(template("basic", "equipment/helmet", "equipment/helmet")));
+            output.accept(stack(template("basic", "equipment/chestplate", "equipment/chestplate")));
+            output.accept(stack(template("basic", "equipment/leggings", "equipment/leggings")));
+            output.accept(stack(template("basic", "equipment/boots", "equipment/boots")));
         }
 
         private static Template template(String tier, String shape, String... compositions) {
