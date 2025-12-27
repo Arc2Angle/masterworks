@@ -10,7 +10,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 
-public class TemplateSpecialModelRenderer extends NativeItemSpecialModelRenderer<Template> {
+public class TemplateSpecialModelRenderer extends NativeSpecialModelRenderer<Template> {
     public record Unbaked() implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<TemplateSpecialModelRenderer.Unbaked> MAP_CODEC =
                 MapCodec.unit(TemplateSpecialModelRenderer.Unbaked::new);

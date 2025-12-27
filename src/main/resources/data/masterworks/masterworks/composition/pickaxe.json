@@ -6,7 +6,7 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render": [
+            "masterworks:render_item": [
                 "head",
                 "handle",
                 "binding"

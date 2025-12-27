@@ -1,11 +1,10 @@
 package com.masterworks.masterworks.data.role;
 
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
-import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.core.RenderProperty;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
+import com.masterworks.masterworks.data.property.base.RenderProperty;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -13,8 +12,8 @@ import com.mojang.serialization.Dynamic;
 
 public interface CompositeRole extends Role {
     @Override
-    default Stream<NativeImage> render(RoleReferenceLocation self, Construct.Component component,
-            Optional<Dynamic<?>> argument) {
+    default Stream<NativeImage> render(Function<Construct, RenderProperty> forward,
+            Construct.Component component, Optional<Dynamic<?>> argument) {
         boolean flag = argument.map(dynamic -> Codec.BOOL.parse(dynamic))
                 .orElse(DataResult.success(true)).getOrThrow(
                         message -> new IllegalStateException("Failed to parse flag: " + message));
@@ -25,16 +24,9 @@ public interface CompositeRole extends Role {
 
         Construct construct = component.value().swap()
                 .mapRight(material -> new IllegalStateException(
-                        "RenderPassthroughFlagRole cannot render a material component: "
-                                + component))
+                        "CompositeRole cannot render a material component: " + component))
                 .orThrow();
 
-        RenderProperty property = construct.properties(self)
-                .get(MasterworksPropertyTypes.RENDER.get())
-                .orElseThrow(() -> new RuntimeException(
-                        "RenderPassthroughFlagRole requires a RenderProperty on the construct: "
-                                + construct));
-
-        return property.render(construct.components());
+        return forward.apply(construct).render(construct.components());
     }
 }
