@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -100,7 +99,7 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
 
                 Construct.Component component = optionalComponent.orElseThrow();
 
-                if (component.roles().noneMatch(role -> role.equals(constraint.role))) {
+                if (!component.roles().contains(constraint.role)) {
                     return Stream.of();
                 }
 
@@ -136,12 +135,9 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
             return false;
         }
 
-        return Construct.Component.of(stack).map(component -> {
-            Set<RoleReferenceLocation> roles =
-                    getComponentRoles(componentIndex).collect(Collectors.toSet());
-
-            return component.roles().anyMatch(roles::contains);
-        }).orElse(false);
+        return Construct.Component.of(stack).map(component -> 
+            getComponentRoles(componentIndex).anyMatch(component.roles()::contains)
+        ).orElse(false);
     }
 
     public Stream<RoleReferenceLocation> getComponentRoles(int componentIndex) {
@@ -163,7 +159,7 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
             Constraint constraint = constraints.get(index);
 
             boolean emptyOrMatching = components.get(index).map(
-                    component -> component.roles().anyMatch(role -> role.equals(constraint.role)))
+                    component -> component.roles().contains(constraint.role))
                     .orElse(true);
 
             if (!emptyOrMatching) {

@@ -3,8 +3,8 @@ package com.masterworks.masterworks.data;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.location.CompositionReferenceLocation;
@@ -79,11 +79,9 @@ public record Construct(CompositionReferenceLocation composition,
                     .map(material -> new Component(Either.left(material)));
         }
 
-        public Stream<RoleReferenceLocation> roles() {
-            return value.map(material -> Stream.of(RoleReferenceLocation.MATERIAL),
-                    construct -> construct.composition.registered().value().properties().keySet()
-                            .stream());
-            // TODO: just return a set
+        public Set<RoleReferenceLocation> roles() {
+            return value.map(material -> Set.of(RoleReferenceLocation.MATERIAL),
+                    construct -> construct.composition.registered().value().properties().keySet());
         }
 
         /**
