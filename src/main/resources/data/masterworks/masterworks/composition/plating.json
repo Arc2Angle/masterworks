@@ -1,0 +1,43 @@
+{
+    "components": {
+        "main": "masterworks:material"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render_item": "masterworks:plating",
+            "masterworks:durability": "$main"
+        },
+        "masterworks:component/plating": {
+            "masterworks:render_item": "masterworks:plating",
+            "masterworks:durability": "$main"
+        },
+        "masterworks:component/plating/segmented": {
+            "masterworks:render_item": "masterworks:plating/segmented",
+            "masterworks:durability": "$main"
+        },
+        "masterworks:component/plating/composed/inner": {
+            "masterworks:render_item": "masterworks:plating/composed/inner",
+            "masterworks:durability": "$main"
+        },
+        "masterworks:component/plating/composed/outer": {
+            "masterworks:render_item": "masterworks:plating/composed/outer",
+            "masterworks:durability": "$main"
+        },
+        "masterworks:component/plating/heavy": {
+            "masterworks:render_item": "masterworks:plating/heavy",
+            "masterworks:durability": "$main"
+        },
+        "masterworks:component/plating/stacked/front": {
+            "masterworks:render_item": "masterworks:plating/stacked/front",
+            "masterworks:durability": "$main"
+        },
+        "masterworks:component/plating/stacked/mid": {
+            "masterworks:render_item": "masterworks:plating/stacked/mid",
+            "masterworks:durability": "$main"
+        },
+        "masterworks:component/plating/stacked/back": {
+            "masterworks:render_item": "masterworks:plating/stacked/back",
+            "masterworks:durability": "$main"
+        }
+    }
+}

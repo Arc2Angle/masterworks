@@ -1,0 +1,17 @@
+{
+    "components": {
+        "front": "masterworks:component/plating",
+        "mid": "masterworks:component/plating",
+        "back": "masterworks:component/plating"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render_item": "masterworks:plating",
+            "masterworks:durability": "$front + $mid + $back"
+        },
+        "masterworks:component/plating/heavy": {
+            "masterworks:render_item": "masterworks:plating",
+            "masterworks:durability": "$front + $mid + $back"
+        }
+    }
+}

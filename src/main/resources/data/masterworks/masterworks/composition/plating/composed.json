@@ -1,0 +1,16 @@
+{
+    "components": {
+        "inner": "masterworks:component/plating",
+        "outer": "masterworks:component/plating"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render_item": "masterworks:plating",
+            "masterworks:durability": "$inner + $outer"
+        },
+        "masterworks:component/plating/heavy": {
+            "masterworks:render_item": "masterworks:plating",
+            "masterworks:durability": "$inner + $outer"
+        }
+    }
+}
