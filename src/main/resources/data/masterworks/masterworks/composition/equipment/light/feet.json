@@ -1,0 +1,17 @@
+{
+    "components": {
+        "harness": "masterworks:component/armor/harness/feet/minimal",
+        "shell": "masterworks:component/armor/lightweight_shell",
+        "lining": "masterworks:component/armor/lining/thin"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render_item": "masterworks:equipment/boots",
+            "masterworks:render_equipment": "masterworks:equipment",
+            "masterworks:equipment_slot": "feet",
+            "masterworks:durability": "100",
+            "masterworks:armor": "2.0",
+            "masterworks:toughness": "2.0"
+        }
+    }
+}

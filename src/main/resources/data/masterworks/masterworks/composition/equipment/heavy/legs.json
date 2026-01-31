@@ -1,0 +1,18 @@
+{
+    "components": {
+        "harness": "masterworks:component/armor/harness/legs/robust",
+        "frame": "masterworks:component/armor/rigid_frame",
+        "plating": "masterworks:component/plating/heavy",
+        "lining": "masterworks:component/armor/lining/thick"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render_item": "masterworks:equipment/leggings",
+            "masterworks:render_equipment": "masterworks:equipment",
+            "masterworks:equipment_slot": "legs",
+            "masterworks:durability": "100",
+            "masterworks:armor": "2.0",
+            "masterworks:toughness": "2.0"
+        }
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "components": {
+        "harness": "masterworks:component/armor/harness/legs/minimal",
+        "shell": "masterworks:component/armor/lightweight_shell",
+        "lining": "masterworks:component/armor/lining/thin"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render_item": "masterworks:equipment/leggings",
+            "masterworks:render_equipment": "masterworks:equipment",
+            "masterworks:equipment_slot": "legs",
+            "masterworks:durability": "100",
+            "masterworks:armor": "2.0",
+            "masterworks:toughness": "2.0"
+        }
+    }
+}

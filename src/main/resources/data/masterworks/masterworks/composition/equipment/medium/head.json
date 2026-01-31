@@ -1,0 +1,18 @@
+{
+    "components": {
+        "harness": "masterworks:component/armor/harness/head/flexible",
+        "webbing": "masterworks:component/armor/elastic_webbing",
+        "plating": "masterworks:component/plating/segmented",
+        "lining": "masterworks:component/armor/lining/comfy"
+    },
+    "properties": {
+        "masterworks:item": {
+            "masterworks:render_item": "masterworks:equipment/helmet",
+            "masterworks:render_equipment": "masterworks:equipment",
+            "masterworks:equipment_slot": "head",
+            "masterworks:durability": "100",
+            "masterworks:armor": "2.0",
+            "masterworks:toughness": "2.0"
+        }
+    }
+}
