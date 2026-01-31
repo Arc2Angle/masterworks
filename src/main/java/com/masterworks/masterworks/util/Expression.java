@@ -1,11 +1,11 @@
 package com.masterworks.masterworks.util;
 
 import com.mojang.serialization.Codec;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a mathematical expression that can contain named "variables".
@@ -21,13 +21,12 @@ import java.util.Map;
  * </ul>
  */
 public interface Expression {
-    static final Codec<Expression> CODEC =
-            Codec.withAlternative(Codec.STRING.xmap(Expression.Impl::parse, Expression::format),
-                    Codec.DOUBLE, Impl.Constant::new);
+    static final Codec<Expression> CODEC = Codec.withAlternative(
+            Codec.STRING.xmap(Expression.Impl::parse, Expression::format), Codec.DOUBLE, Impl.Constant::new);
 
     /**
      * Evaluates the expression with the provided arguments
-     * 
+     *
      * @param arguments to be used as variable values. Unused variables will be ignored, and can be
      *        left null
      * @return The result of the expression evaluation
@@ -38,7 +37,7 @@ public interface Expression {
 
     /**
      * Gets the set of variable names used in this expression
-     * 
+     *
      * @return Stream of variable names
      */
     @Nonnull
@@ -56,7 +55,8 @@ public interface Expression {
             }
 
             if (format.contains("*")) {
-                return new Product(Stream.of(format.split("\\*")).map(Impl::parse).toList());
+                return new Product(
+                        Stream.of(format.split("\\*")).map(Impl::parse).toList());
             }
 
             if (format.startsWith("-")) {
@@ -96,13 +96,11 @@ public interface Expression {
 
         record Variable(String name) implements Expression {
             @Override
-            public Double evaluate(@Nonnull Map<String, Double> arguments)
-                    throws IllegalArgumentException {
+            public Double evaluate(@Nonnull Map<String, Double> arguments) throws IllegalArgumentException {
                 Double value = arguments.get(name);
 
                 if (value == null) {
-                    throw new IllegalArgumentException(
-                            "Variable \"" + name + "\" not found in arguments");
+                    throw new IllegalArgumentException("Variable \"" + name + "\" not found in arguments");
                 }
 
                 return value;
@@ -121,8 +119,7 @@ public interface Expression {
 
         record Negation(Expression child) implements Expression {
             @Override
-            public Double evaluate(@Nonnull Map<String, Double> arguments)
-                    throws IllegalArgumentException {
+            public Double evaluate(@Nonnull Map<String, Double> arguments) throws IllegalArgumentException {
                 return -child.evaluate(arguments);
             }
 
@@ -145,8 +142,7 @@ public interface Expression {
             String symbol();
 
             @Override
-            default Double evaluate(@Nonnull Map<String, Double> arguments)
-                    throws IllegalArgumentException {
+            default Double evaluate(@Nonnull Map<String, Double> arguments) throws IllegalArgumentException {
                 return calculate(children().stream().map(child -> child.evaluate(arguments)));
             }
 
@@ -157,7 +153,8 @@ public interface Expression {
 
             @Override
             default String format() {
-                return String.join(" " + symbol() + " ",
+                return String.join(
+                        " " + symbol() + " ",
                         children().stream().map(Expression::format).toArray(String[]::new));
             }
         }
@@ -185,6 +182,5 @@ public interface Expression {
                 return "*";
             }
         }
-
     }
 }

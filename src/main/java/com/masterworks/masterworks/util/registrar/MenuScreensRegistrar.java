@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.util.registrar;
 
+import com.mojang.datafixers.util.Unit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
-import com.mojang.datafixers.util.Unit;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -21,8 +21,7 @@ public class MenuScreensRegistrar {
     }
 
     public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> Unit registerMenuScreen(
-            Supplier<? extends MenuType<? extends T>> menuType,
-            MenuScreens.ScreenConstructor<T, U> screenConstructor) {
+            Supplier<? extends MenuType<? extends T>> menuType, MenuScreens.ScreenConstructor<T, U> screenConstructor) {
         entries.add(new Entry<>(menuType, screenConstructor));
         return Unit.INSTANCE;
     }
@@ -38,8 +37,7 @@ public class MenuScreensRegistrar {
     }
 
     record Entry<T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>>(
-            Supplier<? extends MenuType<? extends T>> menuType,
-            MenuScreens.ScreenConstructor<T, U> screenConstructor) {
+            Supplier<? extends MenuType<? extends T>> menuType, MenuScreens.ScreenConstructor<T, U> screenConstructor) {
         void apply(RegisterMenuScreensEvent event) {
             event.register(menuType.get(), screenConstructor);
         }

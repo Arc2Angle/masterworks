@@ -18,8 +18,8 @@ public abstract class StrictTypedTagKey<T, U extends T> extends TypedTagKey<T, U
         return registry.getOrThrow(untyped).stream().map(holder -> cast(holder.value()));
     }
 
-    public static <T, U extends T> TypedTagKey<T, U> create(TagKey<T> untyped, Registry<T> registry,
-            Function<? super T, ? extends U> cast) {
+    public static <T, U extends T> TypedTagKey<T, U> create(
+            TagKey<T> untyped, Registry<T> registry, Function<? super T, ? extends U> cast) {
         return new StrictTypedTagKey<T, U>(untyped, registry) {
             @Override
             protected U cast(T value) {

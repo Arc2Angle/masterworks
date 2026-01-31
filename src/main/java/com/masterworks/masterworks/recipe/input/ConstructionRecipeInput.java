@@ -4,8 +4,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 
-public record ConstructionRecipeInput(ItemStack template, NonNullList<ItemStack> components)
-        implements RecipeInput {
+public record ConstructionRecipeInput(ItemStack template, NonNullList<ItemStack> components) implements RecipeInput {
 
     @Override
     public ItemStack getItem(int slot) {

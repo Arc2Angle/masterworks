@@ -1,5 +1,6 @@
 package com.masterworks.masterworks.util.stream;
 
+import com.mojang.datafixers.util.Either;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Spliterator;
@@ -7,11 +8,9 @@ import java.util.Spliterators;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import com.mojang.datafixers.util.Either;
 
 public interface EitherStream<T1, T2> {
-    <R> Stream<? extends R> map(Function<? super T1, ? extends R> on1,
-            Function<? super T2, ? extends R> on2);
+    <R> Stream<? extends R> map(Function<? super T1, ? extends R> on1, Function<? super T2, ? extends R> on2);
 
     default <R> Stream<? extends R> flatMap(
             Function<? super T1, ? extends Stream<? extends R>> onFirst,
@@ -22,13 +21,13 @@ public interface EitherStream<T1, T2> {
     static <T1, T2> EitherStream<T1, T2> from(Stream<Either<T1, T2>> stream) {
         return new EitherStream<>() {
             @Override
-            public <R> Stream<R> map(Function<? super T1, ? extends R> on1,
-                    Function<? super T2, ? extends R> on2) {
+            public <R> Stream<R> map(Function<? super T1, ? extends R> on1, Function<? super T2, ? extends R> on2) {
                 return stream.map(either -> either.map(on1, on2));
             }
 
             @Override
-            public <R> Stream<R> flatMap(Function<? super T1, ? extends Stream<? extends R>> on1,
+            public <R> Stream<R> flatMap(
+                    Function<? super T1, ? extends Stream<? extends R>> on1,
                     Function<? super T2, ? extends Stream<? extends R>> on2) {
                 return stream.flatMap(either -> either.map(on1, on2));
             }
@@ -38,13 +37,11 @@ public interface EitherStream<T1, T2> {
     static <T1, T2, U> EitherStream<T1, T2> pick(Stream<Optional<T1>> stream1, Stream<T2> stream2) {
         return new EitherStream<>() {
             @Override
-            public <R> Stream<? extends R> map(Function<? super T1, ? extends R> on1,
-                    Function<? super T2, ? extends R> on2) {
-                var picker =
-                        new Impl.PickIterator<>(stream1.iterator(), stream2.iterator(), on1, on2);
+            public <R> Stream<? extends R> map(
+                    Function<? super T1, ? extends R> on1, Function<? super T2, ? extends R> on2) {
+                var picker = new Impl.PickIterator<>(stream1.iterator(), stream2.iterator(), on1, on2);
 
-                Spliterator<R> spliterator =
-                        Spliterators.spliteratorUnknownSize(picker, Spliterator.NONNULL);
+                Spliterator<R> spliterator = Spliterators.spliteratorUnknownSize(picker, Spliterator.NONNULL);
                 Stream<R> result = StreamSupport.stream(spliterator, false);
 
                 result = result.onClose(stream1::close).onClose(stream2::close);
@@ -54,8 +51,11 @@ public interface EitherStream<T1, T2> {
     }
 
     class Impl {
-        private record PickIterator<T1, T2, R>(Iterator<Optional<T1>> iter1, Iterator<T2> iter2,
-                Function<? super T1, ? extends R> on1, Function<? super T2, ? extends R> on2)
+        private record PickIterator<T1, T2, R>(
+                Iterator<Optional<T1>> iter1,
+                Iterator<T2> iter2,
+                Function<? super T1, ? extends R> on1,
+                Function<? super T2, ? extends R> on2)
                 implements Iterator<R> {
 
             @Override
@@ -79,7 +79,6 @@ public interface EitherStream<T1, T2> {
                     return on2.apply(value2);
                 }
             }
-
         }
     }
 }

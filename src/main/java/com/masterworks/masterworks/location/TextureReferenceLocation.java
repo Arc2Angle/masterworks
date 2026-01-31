@@ -1,8 +1,8 @@
 package com.masterworks.masterworks.location;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.io.InputStream;
-import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 

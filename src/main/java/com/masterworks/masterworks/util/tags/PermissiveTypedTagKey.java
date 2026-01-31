@@ -17,12 +17,13 @@ public abstract class PermissiveTypedTagKey<T, U extends T> extends TypedTagKey<
 
     @Override
     public Stream<U> values() {
-        return registry.getOrThrow(untyped).stream().map(holder -> cast(holder.value()))
+        return registry.getOrThrow(untyped).stream()
+                .map(holder -> cast(holder.value()))
                 .flatMap(Optional::stream);
     }
 
-    public static <T, U extends T> TypedTagKey<T, U> create(TagKey<T> untyped, Registry<T> registry,
-            Function<? super T, Optional<? extends U>> cast) {
+    public static <T, U extends T> TypedTagKey<T, U> create(
+            TagKey<T> untyped, Registry<T> registry, Function<? super T, Optional<? extends U>> cast) {
         return new PermissiveTypedTagKey<T, U>(untyped, registry) {
             @Override
             protected Optional<? extends U> cast(T value) {
@@ -31,8 +32,10 @@ public abstract class PermissiveTypedTagKey<T, U extends T> extends TypedTagKey<
         };
     }
 
-    public static <T, U extends T> TypedTagKey<T, U> createSuppressing(TagKey<T> untyped,
-            Registry<T> registry, Function<? super T, ? extends U> cast,
+    public static <T, U extends T> TypedTagKey<T, U> createSuppressing(
+            TagKey<T> untyped,
+            Registry<T> registry,
+            Function<? super T, ? extends U> cast,
             Consumer<ClassCastException> suppress) {
         return new PermissiveTypedTagKey<T, U>(untyped, registry) {
             @Override

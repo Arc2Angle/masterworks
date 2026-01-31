@@ -1,11 +1,5 @@
 package com.masterworks.masterworks.data.property.base;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
@@ -16,6 +10,12 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface RenderProperty extends Property {
     List<Construct.Component.Key> keys();
@@ -24,50 +24,54 @@ public interface RenderProperty extends Property {
 
     Map<Construct.Component.Key, RoleReferenceLocation> roles();
 
-    default Stream<NativeImage> render(
-            Map<Construct.Component.Key, Construct.Component> components) {
+    default Stream<NativeImage> render(Map<Construct.Component.Key, Construct.Component> components) {
         return keys().stream().flatMap(key -> {
             Construct.Component component = Optional.ofNullable(components.get(key))
-                    .orElseThrow(() -> new IllegalStateException(
-                            "Missing component " + key + " in render property"));
+                    .orElseThrow(() -> new IllegalStateException("Missing component " + key + " in render property"));
 
             RoleReferenceLocation role = Optional.ofNullable(roles().get(key))
-                    .orElseThrow(() -> new IllegalStateException(
-                            "Missing role for component " + key + " in render property"));
+                    .orElseThrow(() ->
+                            new IllegalStateException("Missing role for component " + key + " in render property"));
 
             Optional<Dynamic<?>> argument = Optional.ofNullable(arguments().get(key))
-                    .orElseThrow(() -> new IllegalStateException(
-                            "Missing argument for component " + key + " in render property"));
+                    .orElseThrow(() ->
+                            new IllegalStateException("Missing argument for component " + key + " in render property"));
 
-            return role.registered().value().render(
-                    construct -> construct.properties(role).get(type())
-                            .orElseThrow(() -> new IllegalStateException(
-                                    "RenderProperty not found on construct " + construct)),
-                    component, argument);
+            return role.registered()
+                    .value()
+                    .render(
+                            construct -> construct
+                                    .properties(role)
+                                    .get(type())
+                                    .orElseThrow(() -> new IllegalStateException(
+                                            "RenderProperty not found on construct " + construct)),
+                            component,
+                            argument);
         });
     }
 
     @Override
     Type<?> type();
 
-    public static abstract class Type<P extends RenderProperty> implements Property.Type<P> {
+    public abstract static class Type<P extends RenderProperty> implements Property.Type<P> {
         @FunctionalInterface
         protected interface Factory<P extends RenderProperty> {
-            P create(List<Construct.Component.Key> keys,
+            P create(
+                    List<Construct.Component.Key> keys,
                     Map<Construct.Component.Key, Optional<Dynamic<?>>> arguments,
                     Map<Construct.Component.Key, RoleReferenceLocation> roles);
         }
 
-        protected Decoder<P> decoder(Factory<P> factory,
-                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        protected Decoder<P> decoder(
+                Factory<P> factory, Map<Construct.Component.Key, RoleReferenceLocation> components) {
             return Decoder.ofSimple(new Decoder.Simple<P>() {
                 @Override
                 public <T> DataResult<P> decode(Dynamic<T> input) {
-                    return Impl.parseSingleMaterialShorthand(factory, components, input).mapOrElse(
-                            DataResult::success,
-                            error -> Codec.list(Codec.PASSTHROUGH).parse(input)
-                                    .flatMap(unkeyedArguments -> Impl.parseUnkeyedArguments(factory,
-                                            components, unkeyedArguments)));
+                    return Impl.parseSingleMaterialShorthand(factory, components, input)
+                            .mapOrElse(DataResult::success, error -> Codec.list(Codec.PASSTHROUGH)
+                                    .parse(input)
+                                    .flatMap(unkeyedArguments ->
+                                            Impl.parseUnkeyedArguments(factory, components, unkeyedArguments)));
                 }
             });
         }
@@ -76,7 +80,8 @@ public interface RenderProperty extends Property {
     class Impl {
         static <P extends RenderProperty> DataResult<P> parseSingleMaterialShorthand(
                 Type.Factory<P> factory,
-                Map<Construct.Component.Key, RoleReferenceLocation> components, Dynamic<?> input) {
+                Map<Construct.Component.Key, RoleReferenceLocation> components,
+                Dynamic<?> input) {
             return ShapeReferenceLocation.CODEC.parse(input).flatMap(shape -> {
                 if (components.size() != 1) {
                     return DataResult.error(
@@ -88,8 +93,10 @@ public interface RenderProperty extends Property {
                             + Construct.Component.Key.DEFAULT + " component is missing");
                 }
 
-                return DataResult.success(factory.create(List.of(Construct.Component.Key.DEFAULT),
-                        Map.of(Construct.Component.Key.DEFAULT, Optional.of(input)), components));
+                return DataResult.success(factory.create(
+                        List.of(Construct.Component.Key.DEFAULT),
+                        Map.of(Construct.Component.Key.DEFAULT, Optional.of(input)),
+                        components));
             });
         }
 
@@ -107,13 +114,13 @@ public interface RenderProperty extends Property {
                         Optional<Dynamic<?>> value = success.value().value();
 
                         if (arguments.containsKey(key)) {
-                            return DataResult.error(() -> "Duplicate component key " + key
-                                    + " in render property arguments");
+                            return DataResult.error(
+                                    () -> "Duplicate component key " + key + " in render property arguments");
                         }
 
                         if (!components.containsKey(key)) {
-                            return DataResult.error(() -> "Unknown component key " + key
-                                    + " in render property arguments");
+                            return DataResult.error(
+                                    () -> "Unknown component key " + key + " in render property arguments");
                         }
 
                         keys.add(key);
@@ -130,17 +137,17 @@ public interface RenderProperty extends Property {
         }
 
         static record Argument(Construct.Component.Key component, Optional<Dynamic<?>> value) {
-            public static final Codec<Argument> CODEC =
-                    RecordCodecBuilder.create(instance -> instance.group(
-                            Construct.Component.Key.CODEC.fieldOf("component")
-                                    .forGetter(Argument::component),
+            public static final Codec<Argument> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                            Construct.Component.Key.CODEC.fieldOf("component").forGetter(Argument::component),
                             Codec.PASSTHROUGH.optionalFieldOf("value").forGetter(Argument::value))
-                            .apply(instance, Argument::new));
+                    .apply(instance, Argument::new));
 
             public static DataResult<Argument> parse(Dynamic<?> input) {
-                return Construct.Component.Key.CODEC.parse(input).mapOrElse(
-                        component -> DataResult.success(new Argument(component, Optional.empty())),
-                        error -> Argument.CODEC.parse(input));
+                return Construct.Component.Key.CODEC
+                        .parse(input)
+                        .mapOrElse(
+                                component -> DataResult.success(new Argument(component, Optional.empty())),
+                                error -> Argument.CODEC.parse(input));
             }
         }
     }

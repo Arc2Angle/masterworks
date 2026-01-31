@@ -1,8 +1,8 @@
 package com.masterworks.masterworks;
 
+import com.masterworks.masterworks.recipe.ConstructionRecipe;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import com.masterworks.masterworks.recipe.ConstructionRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
@@ -18,12 +18,10 @@ public class MasterworksRecipeTypes {
         REGISTRAR.register(bus);
     }
 
-    static <T extends Recipe<?>> Supplier<RecipeType<T>> register(String name,
-            Function<ResourceLocation, ? extends RecipeType<T>> factory) {
+    static <T extends Recipe<?>> Supplier<RecipeType<T>> register(
+            String name, Function<ResourceLocation, ? extends RecipeType<T>> factory) {
         return REGISTRAR.register(name, factory);
     }
-
-
 
     public static final Supplier<RecipeType<ConstructionRecipe>> CONSTRUCTION =
             register("construction", RecipeType::simple);

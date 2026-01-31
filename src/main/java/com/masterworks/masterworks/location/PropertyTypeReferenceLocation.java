@@ -13,12 +13,12 @@ import net.minecraft.resources.ResourceLocation;
 public record PropertyTypeReferenceLocation(String unvalidated)
         implements RegisteredReferenceLocation<Property.Type<?>> {
 
-    public static final Codec<PropertyTypeReferenceLocation> CODEC = Codec.STRING
-            .xmap(PropertyTypeReferenceLocation::new, PropertyTypeReferenceLocation::unvalidated);
+    public static final Codec<PropertyTypeReferenceLocation> CODEC =
+            Codec.STRING.xmap(PropertyTypeReferenceLocation::new, PropertyTypeReferenceLocation::unvalidated);
 
     public static final StreamCodec<ByteBuf, PropertyTypeReferenceLocation> STREAM_CODEC =
-            ByteBufCodecs.STRING_UTF8.map(PropertyTypeReferenceLocation::new,
-                    PropertyTypeReferenceLocation::unvalidated);
+            ByteBufCodecs.STRING_UTF8.map(
+                    PropertyTypeReferenceLocation::new, PropertyTypeReferenceLocation::unvalidated);
 
     static final String EXTENDS = "masterworks:*";
 

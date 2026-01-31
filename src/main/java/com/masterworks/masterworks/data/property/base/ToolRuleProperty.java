@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.data.property.base;
 
-import java.util.List;
 import com.masterworks.masterworks.MasterworksTags;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
+import java.util.List;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.Tool;
@@ -14,15 +14,14 @@ public interface ToolRuleProperty extends Property {
     @Override
     Type<?> type();
 
-    interface Type<P extends ToolRuleProperty> extends Property.Type<P> {
-    }
+    interface Type<P extends ToolRuleProperty> extends Property.Type<P> {}
 
     class Applier extends Property.Applier {
         @Override
         public void apply(Construct construct, ItemStack stack) {
-            List<Tool.Rule> rules =
-                    propertiesByTagKey(MasterworksTags.TOOL_RULE_PROPERTY_TYPES, construct)
-                            .map(property -> property.getToolRule(construct)).toList();
+            List<Tool.Rule> rules = propertiesByTagKey(MasterworksTags.TOOL_RULE_PROPERTY_TYPES, construct)
+                    .map(property -> property.getToolRule(construct))
+                    .toList();
 
             if (rules.isEmpty()) {
                 return;

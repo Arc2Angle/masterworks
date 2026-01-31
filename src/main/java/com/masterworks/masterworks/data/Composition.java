@@ -1,7 +1,5 @@
 package com.masterworks.masterworks.data;
 
-import java.util.Map;
-import java.util.stream.Stream;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.serialization.Codec;
@@ -10,11 +8,14 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
+import java.util.Map;
+import java.util.stream.Stream;
 
-public record Composition(Map<Construct.Component.Key, RoleReferenceLocation> components,
+public record Composition(
+        Map<Construct.Component.Key, RoleReferenceLocation> components,
         Map<RoleReferenceLocation, Property.Container> properties) {
-    final static String COMPONENTS_KEY = "components";
-    final static String PROPERTIES_KEY = "properties";
+    static final String COMPONENTS_KEY = "components";
+    static final String PROPERTIES_KEY = "properties";
 
     static MapCodec<Map<Construct.Component.Key, RoleReferenceLocation>> componentsMapCodec() {
         return Codec.unboundedMap(Construct.Component.Key.CODEC, RoleReferenceLocation.CODEC)
@@ -23,8 +24,8 @@ public record Composition(Map<Construct.Component.Key, RoleReferenceLocation> co
 
     static MapCodec<Map<RoleReferenceLocation, Property.Container>> propertiesMapCodec(
             Map<Construct.Component.Key, RoleReferenceLocation> components) {
-        return Codec.unboundedMap(RoleReferenceLocation.CODEC,
-                Property.Container.basicCodec(components)).fieldOf(PROPERTIES_KEY);
+        return Codec.unboundedMap(RoleReferenceLocation.CODEC, Property.Container.basicCodec(components))
+                .fieldOf(PROPERTIES_KEY);
     }
 
     public static final Codec<Composition> CODEC = new MapCodec<Composition>() {
@@ -35,14 +36,13 @@ public record Composition(Map<Construct.Component.Key, RoleReferenceLocation> co
 
         @Override
         public <T> DataResult<Composition> decode(DynamicOps<T> ops, MapLike<T> input) {
-            return componentsMapCodec().decode(ops, input)
-                    .flatMap(components -> propertiesMapCodec(components).decode(ops, input)
-                            .map(properties -> new Composition(components, properties)));
+            return componentsMapCodec().decode(ops, input).flatMap(components -> propertiesMapCodec(components)
+                    .decode(ops, input)
+                    .map(properties -> new Composition(components, properties)));
         }
 
         @Override
-        public <T> RecordBuilder<T> encode(Composition input, DynamicOps<T> ops,
-                RecordBuilder<T> prefix) {
+        public <T> RecordBuilder<T> encode(Composition input, DynamicOps<T> ops, RecordBuilder<T> prefix) {
             componentsMapCodec().encode(input.components(), ops, prefix);
             propertiesMapCodec(input.components()).encode(input.properties(), ops, prefix);
             return prefix;

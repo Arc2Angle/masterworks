@@ -1,10 +1,10 @@
 package com.masterworks.masterworks.block.entity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.masterworks.masterworks.MasterworksBlockEntityTypes;
 import com.masterworks.masterworks.gui.menu.ConstructForgeContainerMenu;
 import com.masterworks.masterworks.transfer.item.DefaultConstructForgeHandler;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -50,8 +50,8 @@ public class ConstructForgeBlockEntity extends BlockEntity implements MenuProvid
 
     @Override
     @Nullable
-    public AbstractContainerMenu createMenu(int containerId, @Nonnull Inventory playerInventory,
-            @Nonnull Player player) {
+    public AbstractContainerMenu createMenu(
+            int containerId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
         return new ConstructForgeContainerMenu(containerId, playerInventory, inventory);
     }
 

@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.util.registrar;
 
+import com.mojang.datafixers.util.Unit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
-import com.mojang.datafixers.util.Unit;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -19,8 +19,10 @@ public class CapabilitiesRegistrar {
         this.namespace = namespace;
     }
 
-    public <T, C, BE extends BlockEntity> Unit registerBlockEntity(BlockCapability<T, C> capability,
-            Supplier<BlockEntityType<BE>> blockEntityType, ICapabilityProvider<BE, C, T> provider) {
+    public <T, C, BE extends BlockEntity> Unit registerBlockEntity(
+            BlockCapability<T, C> capability,
+            Supplier<BlockEntityType<BE>> blockEntityType,
+            ICapabilityProvider<BE, C, T> provider) {
         entries.add(new Entry<>(capability, blockEntityType, provider));
         return Unit.INSTANCE;
     }
@@ -35,8 +37,10 @@ public class CapabilitiesRegistrar {
         }
     }
 
-    record Entry<T, C, BE extends BlockEntity>(BlockCapability<T, C> capability,
-            Supplier<BlockEntityType<BE>> blockEntityType, ICapabilityProvider<BE, C, T> provider) {
+    record Entry<T, C, BE extends BlockEntity>(
+            BlockCapability<T, C> capability,
+            Supplier<BlockEntityType<BE>> blockEntityType,
+            ICapabilityProvider<BE, C, T> provider) {
         void apply(RegisterCapabilitiesEvent event) {
             event.registerBlockEntity(capability, blockEntityType.get(), provider);
         }

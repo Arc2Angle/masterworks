@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.data.role;
 
-import java.util.List;
 import com.masterworks.masterworks.MasterworksRoleTypes;
 import com.masterworks.masterworks.location.ShapeReferenceLocation;
 import com.mojang.serialization.MapCodec;
+import java.util.List;
 
 public record ItemRole() implements CompositeRole {
     public static final MapCodec<ItemRole> CODEC = MapCodec.unit(ItemRole::new);

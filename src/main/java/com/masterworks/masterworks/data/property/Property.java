@@ -1,9 +1,5 @@
 package com.masterworks.masterworks.data.property;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.util.BasicPropertyContainer;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
@@ -11,6 +7,10 @@ import com.masterworks.masterworks.util.tags.TypedTagKey;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import net.minecraft.world.item.ItemStack;
 
 public interface Property {
@@ -29,19 +29,20 @@ public interface Property {
          */
         <T extends Property> Optional<T> get(Property.Type<T> type);
 
-        static Codec<Container> basicCodec(
-                Map<Construct.Component.Key, RoleReferenceLocation> components) {
-            return BasicPropertyContainer.codec(components).flatComapMap(Function.identity(),
-                    container -> container instanceof BasicPropertyContainer basic
-                            ? DataResult.success(basic)
-                            : DataResult.error(() -> "Expected BasicPropertyContainer"));
+        static Codec<Container> basicCodec(Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            return BasicPropertyContainer.codec(components)
+                    .flatComapMap(
+                            Function.identity(),
+                            container -> container instanceof BasicPropertyContainer basic
+                                    ? DataResult.success(basic)
+                                    : DataResult.error(() -> "Expected BasicPropertyContainer"));
         }
     }
 
     abstract class Applier {
         /**
          * Applies this property to the given item stack, based on the data in the given construct.
-         * 
+         *
          * @param construct The construct to acquire data from
          * @param stack The item stack to apply to
          * @implSpec This method should be implemented such that calling it multiple times is
@@ -51,7 +52,7 @@ public interface Property {
 
         /**
          * Gets all properties of the given tag key from the given construct.
-         * 
+         *
          * @param <P> The property type
          * @param tagKey The tag key
          * @param construct The construct to acquire properties from
@@ -60,10 +61,8 @@ public interface Property {
          * @apiNote Use it to implement extensible property application based on tags.
          */
         protected <P extends Property> Stream<? extends P> propertiesByTagKey(
-                TypedTagKey<Property.Type<?>, ? extends Property.Type<? extends P>> tagKey,
-                Construct construct) {
-            return tagKey.values().flatMap(
-                    type -> construct.properties(RoleReferenceLocation.ITEM).get(type).stream());
+                TypedTagKey<Property.Type<?>, ? extends Property.Type<? extends P>> tagKey, Construct construct) {
+            return tagKey.values().flatMap(type -> construct.properties(RoleReferenceLocation.ITEM).get(type).stream());
         }
     }
 }

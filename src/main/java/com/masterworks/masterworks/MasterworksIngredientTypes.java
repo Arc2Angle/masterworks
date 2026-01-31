@@ -1,9 +1,9 @@
 package com.masterworks.masterworks;
 
-import java.util.function.Supplier;
 import com.masterworks.masterworks.recipe.ingredient.ItemConstructIngredient;
 import com.masterworks.masterworks.recipe.ingredient.ItemMaterialIngredient;
 import com.mojang.serialization.MapCodec;
+import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
@@ -18,12 +18,9 @@ public class MasterworksIngredientTypes {
         REGISTRAR.register(bus);
     }
 
-    static <T extends ICustomIngredient> Supplier<IngredientType<T>> register(String name,
-            MapCodec<T> codec) {
+    static <T extends ICustomIngredient> Supplier<IngredientType<T>> register(String name, MapCodec<T> codec) {
         return REGISTRAR.register(name, () -> new IngredientType<T>(codec));
     }
-
-
 
     public static final Supplier<IngredientType<ItemMaterialIngredient>> ITEM_MATERIAL =
             register("item_material", ItemMaterialIngredient.CODEC);

@@ -11,8 +11,7 @@ import java.util.stream.StreamSupport;
 public interface BiStream<T1, T2> {
     <R> Stream<R> map(BiFunction<? super T1, ? super T2, ? extends R> mapper);
 
-    default <R> Stream<R> flatMap(
-            BiFunction<? super T1, ? super T2, ? extends Stream<? extends R>> mapper) {
+    default <R> Stream<R> flatMap(BiFunction<? super T1, ? super T2, ? extends Stream<? extends R>> mapper) {
         return map(mapper).flatMap(Function.identity());
     }
 
@@ -36,8 +35,8 @@ public interface BiStream<T1, T2> {
         return new BiStream<>() {
             @Override
             public <R> Stream<R> map(BiFunction<? super Integer, ? super T, ? extends R> mapper) {
-                var zipper = new Impl.ZipIterator<>(Stream.iterate(0, i -> i + 1).iterator(),
-                        stream.iterator(), mapper);
+                var zipper =
+                        new Impl.ZipIterator<>(Stream.iterate(0, i -> i + 1).iterator(), stream.iterator(), mapper);
 
                 Spliterator<R> spliterator = Spliterators.spliteratorUnknownSize(zipper, 0);
                 Stream<R> result = StreamSupport.stream(spliterator, false);
@@ -49,8 +48,9 @@ public interface BiStream<T1, T2> {
     }
 
     class Impl {
-        private record ZipIterator<T1, T2, R>(Iterator<T1> iter1, Iterator<T2> iter2,
-                BiFunction<? super T1, ? super T2, ? extends R> mapper) implements Iterator<R> {
+        private record ZipIterator<T1, T2, R>(
+                Iterator<T1> iter1, Iterator<T2> iter2, BiFunction<? super T1, ? super T2, ? extends R> mapper)
+                implements Iterator<R> {
 
             @Override
             public boolean hasNext() {

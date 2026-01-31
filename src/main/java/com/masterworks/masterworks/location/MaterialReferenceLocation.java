@@ -12,19 +12,17 @@ import net.minecraft.resources.ResourceLocation;
 public record MaterialReferenceLocation(ResourceLocation value)
         implements DataPackRegisteredReferenceLocation<Material> {
 
-    public static final Codec<MaterialReferenceLocation> CODEC = ResourceLocation.CODEC
-            .xmap(MaterialReferenceLocation::new, MaterialReferenceLocation::value);
+    public static final Codec<MaterialReferenceLocation> CODEC =
+            ResourceLocation.CODEC.xmap(MaterialReferenceLocation::new, MaterialReferenceLocation::value);
 
     public static final StreamCodec<ByteBuf, MaterialReferenceLocation> STREAM_CODEC =
-            ResourceLocation.STREAM_CODEC.map(MaterialReferenceLocation::new,
-                    MaterialReferenceLocation::value);
+            ResourceLocation.STREAM_CODEC.map(MaterialReferenceLocation::new, MaterialReferenceLocation::value);
 
     public ResourceKey<? extends Registry<Material>> registryKey() {
         return MasterworksDataPackRegistries.MATERIAL;
     }
 
     public static MaterialReferenceLocation fromNamespaceAndPath(String namespace, String path) {
-        return new MaterialReferenceLocation(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+        return new MaterialReferenceLocation(ResourceLocation.fromNamespaceAndPath(namespace, path));
     }
 }

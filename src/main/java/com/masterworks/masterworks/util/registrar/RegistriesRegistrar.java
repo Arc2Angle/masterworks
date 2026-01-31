@@ -17,10 +17,9 @@ public class RegistriesRegistrar {
         this.namespace = namespace;
     }
 
-    public <T> Registry<T> registerRegistry(String name,
-            Function<ResourceKey<Registry<T>>, Registry<T>> factory) {
-        ResourceKey<Registry<T>> key = ResourceKey
-                .createRegistryKey(ResourceLocation.fromNamespaceAndPath(namespace, name));
+    public <T> Registry<T> registerRegistry(String name, Function<ResourceKey<Registry<T>>, Registry<T>> factory) {
+        ResourceKey<Registry<T>> key =
+                ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(namespace, name));
         Registry<T> registry = factory.apply(key);
         entries.add(registry);
         return registry;

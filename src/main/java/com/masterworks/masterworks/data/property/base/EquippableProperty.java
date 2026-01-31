@@ -21,23 +21,23 @@ public interface EquippableProperty extends Property {
     @Override
     Type<?> type();
 
-    interface Type<P extends EquippableProperty> extends Property.Type<P> {
-    }
+    interface Type<P extends EquippableProperty> extends Property.Type<P> {}
 
     class Applier extends Property.Applier {
-        static final ResourceKey<EquipmentAsset> ASSET_KEY =
-                ResourceKey.create(EquipmentAssets.ROOT_ID,
-                        ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "construct"));
+        static final ResourceKey<EquipmentAsset> ASSET_KEY = ResourceKey.create(
+                EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "construct"));
 
         @Override
         public void apply(Construct construct, ItemStack stack) {
-            EquipmentSlotProperty equipmentSlotProperty =
-                    construct.properties(RoleReferenceLocation.ITEM)
-                            .get(MasterworksPropertyTypes.EQUIPMENT_SLOT.get()).orElse(null);
+            EquipmentSlotProperty equipmentSlotProperty = construct
+                    .properties(RoleReferenceLocation.ITEM)
+                    .get(MasterworksPropertyTypes.EQUIPMENT_SLOT.get())
+                    .orElse(null);
 
             if (equipmentSlotProperty == null) {
                 if (propertiesByTagKey(MasterworksTags.EQUIPPABLE_PROPERTY_TYPES, construct)
-                        .count() > 1) {
+                                .count()
+                        > 1) {
                     MasterworksMod.LOGGER.warn(
                             "Construct {} has multiple EquippableProperties but is missing an EquipmentSlotProperty; cannot determine equipment slot for equippable",
                             construct);

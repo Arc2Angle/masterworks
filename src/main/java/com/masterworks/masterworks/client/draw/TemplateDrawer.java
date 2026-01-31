@@ -36,17 +36,14 @@ public class TemplateDrawer extends CachedDrawer<TemplateDrawer.Params> {
 
     @Override
     protected NativeImage generate(Params params) {
-        MasterworksMod.LOGGER.info("Drawing template with tier {} and shape {}", params.tier(),
-                params.shape());
+        MasterworksMod.LOGGER.info("Drawing template with tier {} and shape {}", params.tier(), params.shape());
 
         try (NativeImage tier = loadTextureWithPreloadedDefault(params.tier(), TIER_DEFAULT);
-                NativeImage shape =
-                        loadTextureWithPreloadedDefault(params.shape(), SHAPE_DEFAULT)) {
+                NativeImage shape = loadTextureWithPreloadedDefault(params.shape(), SHAPE_DEFAULT)) {
 
             return PixelUtils.Shadow(tier, shape, 0.5f);
         }
     }
 
-    protected record Params(TierReferenceLocation tier, ShapeReferenceLocation shape) {
-    }
+    protected record Params(TierReferenceLocation tier, ShapeReferenceLocation shape) {}
 }

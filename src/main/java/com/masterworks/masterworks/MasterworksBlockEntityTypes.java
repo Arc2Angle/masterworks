@@ -1,10 +1,10 @@
 package com.masterworks.masterworks;
 
+import com.masterworks.masterworks.block.entity.ConstructForgeBlockEntity;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import com.masterworks.masterworks.block.entity.ConstructForgeBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,21 +21,20 @@ public class MasterworksBlockEntityTypes {
         REGISTRAR.register(bus);
     }
 
-    static <T extends BlockEntity> Supplier<BlockEntityType<T>> register(String name,
-            BlockEntitySupplier<T> factory,
-            Stream<? extends Supplier<? extends Block>> validBlocks) {
-        return REGISTRAR.register(name, () -> new BlockEntityType<>(factory,
-                validBlocks.map(Supplier::get).collect(Collectors.toSet())));
+    static <T extends BlockEntity> Supplier<BlockEntityType<T>> register(
+            String name, BlockEntitySupplier<T> factory, Stream<? extends Supplier<? extends Block>> validBlocks) {
+        return REGISTRAR.register(
+                name,
+                () -> new BlockEntityType<>(
+                        factory, validBlocks.map(Supplier::get).collect(Collectors.toSet())));
     }
 
     @SafeVarargs
-    static <T extends BlockEntity> Supplier<BlockEntityType<T>> register(String name,
-            BlockEntitySupplier<T> factory, Supplier<? extends Block>... validBlocks) {
+    static <T extends BlockEntity> Supplier<BlockEntityType<T>> register(
+            String name, BlockEntitySupplier<T> factory, Supplier<? extends Block>... validBlocks) {
         return register(name, factory, Arrays.stream(validBlocks));
     }
 
-
     public static final Supplier<BlockEntityType<ConstructForgeBlockEntity>> CONSTRUCT_FORGE =
-            register("construct_forge", ConstructForgeBlockEntity::new,
-                    MasterworksBlocks.CONSTRUCT_FORGE);
+            register("construct_forge", ConstructForgeBlockEntity::new, MasterworksBlocks.CONSTRUCT_FORGE);
 }

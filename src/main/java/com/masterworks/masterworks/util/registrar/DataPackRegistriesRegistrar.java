@@ -1,8 +1,8 @@
 package com.masterworks.masterworks.util.registrar;
 
+import com.mojang.serialization.Codec;
 import java.util.LinkedList;
 import java.util.List;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,8 +18,8 @@ public class DataPackRegistriesRegistrar {
     }
 
     public <T> ResourceKey<Registry<T>> registerDataPackRegistry(String name, Codec<T> codec) {
-        ResourceKey<Registry<T>> key = ResourceKey
-                .createRegistryKey(ResourceLocation.fromNamespaceAndPath(namespace, name));
+        ResourceKey<Registry<T>> key =
+                ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(namespace, name));
         entries.add(new Entry<T>(key, codec));
         return key;
     }

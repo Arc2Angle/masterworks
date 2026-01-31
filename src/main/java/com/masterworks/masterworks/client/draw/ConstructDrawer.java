@@ -36,18 +36,14 @@ public class ConstructDrawer extends CachedDrawer<ConstructDrawer.Params> {
 
     @Override
     protected NativeImage generate(Params params) {
-        MasterworksMod.LOGGER.info("Drawing model with palette {} and shape {}", params.palette(),
-                params.shape());
+        MasterworksMod.LOGGER.info("Drawing model with palette {} and shape {}", params.palette(), params.shape());
 
-        try (NativeImage palette =
-                loadTextureWithPreloadedDefault(params.palette(), PALETTE_DEFAULT);
-                NativeImage shape =
-                        loadTextureWithPreloadedDefault(params.shape(), SHAPE_DEFAULT)) {
+        try (NativeImage palette = loadTextureWithPreloadedDefault(params.palette(), PALETTE_DEFAULT);
+                NativeImage shape = loadTextureWithPreloadedDefault(params.shape(), SHAPE_DEFAULT)) {
 
             return shape.mappedCopy(new PixelUtils.GrayscaleColorer(palette));
         }
     }
 
-    protected record Params(PaletteReferenceLocation palette, ShapeReferenceLocation shape) {
-    }
+    protected record Params(PaletteReferenceLocation palette, ShapeReferenceLocation shape) {}
 }

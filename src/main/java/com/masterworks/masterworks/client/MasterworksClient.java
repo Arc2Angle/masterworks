@@ -27,8 +27,12 @@ public class MasterworksClient {
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
-        event.getItemStack().addToTooltip(MasterworksDataComponents.CONSTRUCT.get(),
-                event.getContext(), event.getToolTip()::add, event.getFlags());
+        event.getItemStack()
+                .addToTooltip(
+                        MasterworksDataComponents.CONSTRUCT.get(),
+                        event.getContext(),
+                        event.getToolTip()::add,
+                        event.getFlags());
     }
 
     @SubscribeEvent

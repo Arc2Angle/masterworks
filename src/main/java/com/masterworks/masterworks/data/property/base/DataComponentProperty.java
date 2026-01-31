@@ -12,8 +12,7 @@ public interface DataComponentProperty extends Property {
     @Override
     Type<?> type();
 
-    interface Type<P extends DataComponentProperty> extends Property.Type<P> {
-    }
+    interface Type<P extends DataComponentProperty> extends Property.Type<P> {}
 
     class Applier extends Property.Applier {
         @Override
