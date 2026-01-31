@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.block;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.masterworks.masterworks.block.entity.ConstructForgeBlockEntity;
 import com.mojang.serialization.MapCodec;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -34,8 +34,12 @@ public class ConstructForgeBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(@Nonnull BlockState state, @Nonnull Level level,
-            @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull BlockHitResult hitResult) {
+    protected InteractionResult useWithoutItem(
+            @Nonnull BlockState state,
+            @Nonnull Level level,
+            @Nonnull BlockPos pos,
+            @Nonnull Player player,
+            @Nonnull BlockHitResult hitResult) {
         if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             serverPlayer.openMenu(state.getMenuProvider(level, pos));
         }
@@ -45,8 +49,7 @@ public class ConstructForgeBlock extends Block implements EntityBlock {
 
     @Override
     @Nullable
-    protected MenuProvider getMenuProvider(@Nonnull BlockState state, @Nonnull Level level,
-            @Nonnull BlockPos pos) {
+    protected MenuProvider getMenuProvider(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
         return new ConstructForgeBlockEntity(pos, state);
     }
 }

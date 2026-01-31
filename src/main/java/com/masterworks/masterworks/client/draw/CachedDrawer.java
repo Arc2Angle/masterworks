@@ -1,9 +1,9 @@
 package com.masterworks.masterworks.client.draw;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 public abstract class CachedDrawer<T> extends PreloadingDrawer {

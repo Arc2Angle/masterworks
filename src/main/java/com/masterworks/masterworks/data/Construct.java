@@ -1,10 +1,5 @@
 package com.masterworks.masterworks.data;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.location.CompositionReferenceLocation;
@@ -15,6 +10,11 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
@@ -25,31 +25,34 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
 
-public record Construct(CompositionReferenceLocation composition,
-        Map<Component.Key, Component> components) implements TooltipProvider {
+public record Construct(CompositionReferenceLocation composition, Map<Component.Key, Component> components)
+        implements TooltipProvider {
 
-    public static final Codec<Construct> CODEC =
-            Codec.recursive("construct",
-                    self -> RecordCodecBuilder.create(instance -> instance
-                            .group(CompositionReferenceLocation.CODEC.fieldOf("composition")
+    public static final Codec<Construct> CODEC = Codec.recursive(
+            "construct",
+            self -> RecordCodecBuilder.create(instance -> instance.group(
+                            CompositionReferenceLocation.CODEC
+                                    .fieldOf("composition")
                                     .forGetter(Construct::composition),
-                                    Codec.unboundedMap(Component.Key.CODEC, Component.CODEC)
-                                            .fieldOf("components").forGetter(Construct::components))
-                            .apply(instance, Construct::new)));
+                            Codec.unboundedMap(Component.Key.CODEC, Component.CODEC)
+                                    .fieldOf("components")
+                                    .forGetter(Construct::components))
+                    .apply(instance, Construct::new)));
 
-    public static final StreamCodec<ByteBuf, Construct> STREAM_CODEC = StreamCodec
-            .recursive(self -> StreamCodec.composite(CompositionReferenceLocation.STREAM_CODEC,
-                    Construct::composition, ByteBufCodecs.map(HashMap::new,
-                            Component.Key.STREAM_CODEC, Component.STREAM_CODEC),
-                    Construct::components, Construct::new));
+    public static final StreamCodec<ByteBuf, Construct> STREAM_CODEC =
+            StreamCodec.recursive(self -> StreamCodec.composite(
+                    CompositionReferenceLocation.STREAM_CODEC,
+                    Construct::composition,
+                    ByteBufCodecs.map(HashMap::new, Component.Key.STREAM_CODEC, Component.STREAM_CODEC),
+                    Construct::components,
+                    Construct::new));
 
     public record Component(Either<MaterialReferenceLocation, Construct> value) {
         public static final Codec<Component> CODEC =
-                Codec.either(MaterialReferenceLocation.CODEC, Construct.CODEC).xmap(Component::new,
-                        Component::value);
-        public static final StreamCodec<ByteBuf, Component> STREAM_CODEC =
-                ByteBufCodecs.either(MaterialReferenceLocation.STREAM_CODEC, Construct.STREAM_CODEC)
-                        .map(Component::new, Component::value);
+                Codec.either(MaterialReferenceLocation.CODEC, Construct.CODEC).xmap(Component::new, Component::value);
+        public static final StreamCodec<ByteBuf, Component> STREAM_CODEC = ByteBufCodecs.either(
+                        MaterialReferenceLocation.STREAM_CODEC, Construct.STREAM_CODEC)
+                .map(Component::new, Component::value);
 
         public record Key(String value) {
             public static final Codec<Key> CODEC = Codec.STRING.xmap(Key::new, Key::value);
@@ -59,8 +62,8 @@ public record Construct(CompositionReferenceLocation composition,
             public static final Key DEFAULT = new Key("main");
 
             MutableComponent format() {
-                return net.minecraft.network.chat.Component
-                        .literal(" " + Character.toUpperCase(value.charAt(0)) + value.substring(1));
+                return net.minecraft.network.chat.Component.literal(
+                        " " + Character.toUpperCase(value.charAt(0)) + value.substring(1));
             }
         }
 
@@ -79,11 +82,13 @@ public record Construct(CompositionReferenceLocation composition,
                     .map(material -> new Component(Either.left(material)));
         }
 
-        public Stream<RoleReferenceLocation> roles() {
-            return value.map(material -> Stream.of(RoleReferenceLocation.MATERIAL),
-                    construct -> construct.composition.registered().value().properties().keySet()
-                            .stream());
-            // TODO: just return a set
+        public Set<RoleReferenceLocation> roles() {
+            return value.map(material -> Set.of(RoleReferenceLocation.MATERIAL), construct -> construct
+                    .composition
+                    .registered()
+                    .value()
+                    .properties()
+                    .keySet());
         }
 
         /**
@@ -95,49 +100,55 @@ public record Construct(CompositionReferenceLocation composition,
 
         /**
          * Gets the properties for the given role from this construct's composition.
-         * 
+         *
          * @throws RuntimeException if the role is missing
          */
         public Property.Container properties(RoleReferenceLocation role) {
-            return value.map(material -> {
-                if (!role.equals(RoleReferenceLocation.MATERIAL)) {
-                    throw new RuntimeException("Material component does not have role " + role);
-                }
+            return value.map(
+                    material -> {
+                        if (!role.equals(RoleReferenceLocation.MATERIAL)) {
+                            throw new RuntimeException("Material component does not have role " + role);
+                        }
 
-                return material.registered().value().properties();
-            }, construct -> {
-                return construct.properties(role);
-            });
+                        return material.registered().value().properties();
+                    },
+                    construct -> {
+                        return construct.properties(role);
+                    });
         }
 
         MutableComponent format() {
-            return value.map(reference -> {
-                Material material = reference.registered().value();
-                return net.minecraft.network.chat.Component.literal(material.name())
-                        .withColor(material.color().argb());
-            }, Construct::format);
+            return value.map(
+                    reference -> {
+                        Material material = reference.registered().value();
+                        return net.minecraft.network.chat.Component.literal(material.name())
+                                .withColor(material.color().argb());
+                    },
+                    Construct::format);
         }
     }
 
     /**
      * Gets the properties for the given role from this construct's composition.
-     * 
+     *
      * @throws RuntimeException if the role is missing
      */
     public Property.Container properties(RoleReferenceLocation role) {
-        Property.Container roleProperties = composition.registered().value().properties().get(role);
+        Property.Container roleProperties =
+                composition.registered().value().properties().get(role);
 
         if (roleProperties == null) {
-            throw new RuntimeException(
-                    "Construct composition " + composition + " missing " + role + " role");
+            throw new RuntimeException("Construct composition " + composition + " missing " + role + " role");
         }
 
         return roleProperties;
     }
 
     @Override
-    public void addToTooltip(Item.TooltipContext context,
-            Consumer<net.minecraft.network.chat.Component> adder, TooltipFlag flag,
+    public void addToTooltip(
+            Item.TooltipContext context,
+            Consumer<net.minecraft.network.chat.Component> adder,
+            TooltipFlag flag,
             DataComponentGetter getter) {
         adder.accept(format());
     }
@@ -154,7 +165,9 @@ public record Construct(CompositionReferenceLocation composition,
     }
 
     static MutableComponent formatWrapBraces(net.minecraft.network.chat.Component value) {
-        return net.minecraft.network.chat.Component.literal("(").withColor(0xFFFFFF).append(value)
+        return net.minecraft.network.chat.Component.literal("(")
+                .withColor(0xFFFFFF)
+                .append(value)
                 .append(net.minecraft.network.chat.Component.literal(")").withColor(0xFFFFFF));
     }
 

@@ -19,5 +19,4 @@ public record ItemMaterialReferenceLocation(ResourceLocation value)
     public DataMapType<Item, MaterialReferenceLocation> dataMapType() {
         return MasterworksDataMapTypes.ITEM_MATERIAL;
     }
-
 }

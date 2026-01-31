@@ -1,6 +1,5 @@
 package com.masterworks.masterworks.data.property.core;
 
-import java.util.Map;
 import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
@@ -12,6 +11,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Map;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -20,8 +20,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 
-public record MiningSpeedProperty(TagKey<Block> blocks, Expression expression,
-        Map<Construct.Component.Key, RoleReferenceLocation> roles)
+public record MiningSpeedProperty(
+        TagKey<Block> blocks, Expression expression, Map<Construct.Component.Key, RoleReferenceLocation> roles)
         implements ExpressionProperty, ToolRuleProperty {
 
     @Override
@@ -39,24 +39,23 @@ public record MiningSpeedProperty(TagKey<Block> blocks, Expression expression,
             implements ToolRuleProperty.Type<MiningSpeedProperty> {
         record Data(TagKey<Block> blockTag, Dynamic<?> value) {
             static final Codec<Data> CODEC = Codec.withAlternative(
-                    RecordCodecBuilder.create(instance -> instance
-                            .group(TagKey.codec(Registries.BLOCK).fieldOf("block_tag")
-                                    .forGetter(Data::blockTag),
+                    RecordCodecBuilder.create(instance -> instance.group(
+                                    TagKey.codec(Registries.BLOCK)
+                                            .fieldOf("block_tag")
+                                            .forGetter(Data::blockTag),
                                     Codec.PASSTHROUGH.fieldOf("value").forGetter(Data::value))
                             .apply(instance, Data::new)),
-                    Codec.PASSTHROUGH, value -> new Data(BlockTags.AIR, value));
+                    Codec.PASSTHROUGH,
+                    value -> new Data(BlockTags.AIR, value));
         }
 
         @Override
-        public Decoder<MiningSpeedProperty> decoder(
-                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        public Decoder<MiningSpeedProperty> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
             return Decoder.ofSimple(new Decoder.Simple<>() {
                 @Override
                 public <T> DataResult<MiningSpeedProperty> decode(Dynamic<T> input) {
-                    return Data.CODEC.parse(input)
-                            .flatMap(data -> decodeExpression(data.value(), components)
-                                    .map(expression -> new MiningSpeedProperty(data.blockTag(),
-                                            expression, components)));
+                    return Data.CODEC.parse(input).flatMap(data -> decodeExpression(data.value(), components)
+                            .map(expression -> new MiningSpeedProperty(data.blockTag(), expression, components)));
                 }
             });
         }

@@ -1,8 +1,8 @@
 package com.masterworks.masterworks;
 
-import java.util.function.Supplier;
 import com.masterworks.masterworks.recipe.ConstructionRecipe;
 import com.masterworks.masterworks.recipe.serializer.ConstructionRecipeSerializer;
+import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -17,12 +17,10 @@ public class MasterworksRecipeSerializers {
         REGISTRAR.register(bus);
     }
 
-    static <T extends Recipe<?>> Supplier<RecipeSerializer<T>> register(String name,
-            Supplier<? extends RecipeSerializer<T>> factory) {
+    static <T extends Recipe<?>> Supplier<RecipeSerializer<T>> register(
+            String name, Supplier<? extends RecipeSerializer<T>> factory) {
         return REGISTRAR.register(name, factory);
     }
-
-
 
     public static final Supplier<RecipeSerializer<ConstructionRecipe>> CONSTRUCTION =
             register("construction", ConstructionRecipeSerializer::new);

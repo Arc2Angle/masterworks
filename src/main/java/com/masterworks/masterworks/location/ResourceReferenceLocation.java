@@ -6,10 +6,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 public interface ResourceReferenceLocation extends ReferenceLocation {
 
-    public default Resource resource(ResourceManager resourceManager)
-            throws MissingResourceException {
-        return resourceManager.getResource(value())
-                .orElseThrow(() -> new MissingResourceException(value()));
+    public default Resource resource(ResourceManager resourceManager) throws MissingResourceException {
+        return resourceManager.getResource(value()).orElseThrow(() -> new MissingResourceException(value()));
     }
 
     public static class MissingResourceException extends Exception {

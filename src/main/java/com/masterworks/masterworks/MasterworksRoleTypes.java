@@ -1,11 +1,11 @@
 package com.masterworks.masterworks;
 
-import java.util.function.Supplier;
-import com.masterworks.masterworks.data.role.ItemRole;
 import com.masterworks.masterworks.data.role.ComponentRole;
+import com.masterworks.masterworks.data.role.ItemRole;
 import com.masterworks.masterworks.data.role.MaterialRole;
 import com.masterworks.masterworks.data.role.Role;
 import com.mojang.serialization.MapCodec;
+import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -22,13 +22,9 @@ public class MasterworksRoleTypes {
         return REGISTRAR.register(path, () -> new Role.Type<>(codec));
     }
 
+    public static final Supplier<Role.Type<MaterialRole>> MATERIAL = register("material", MaterialRole.CODEC);
 
-
-    public static final Supplier<Role.Type<MaterialRole>> MATERIAL =
-            register("material", MaterialRole.CODEC);
-
-    public static final Supplier<Role.Type<ComponentRole>> COMPONENT =
-            register("component", ComponentRole.CODEC);
+    public static final Supplier<Role.Type<ComponentRole>> COMPONENT = register("component", ComponentRole.CODEC);
 
     public static final Supplier<Role.Type<ItemRole>> ITEM = register("item", ItemRole.CODEC);
 }

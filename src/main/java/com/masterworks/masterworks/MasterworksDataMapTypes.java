@@ -17,13 +17,10 @@ public class MasterworksDataMapTypes {
         REGISTRAR.register(bus);
     }
 
-    static <K, V> DataMapType<K, V> register(String name, ResourceKey<Registry<K>> registry,
-            Codec<V> codec) {
-        return REGISTRAR.registerDataMapType(name,
-                key -> DataMapType.builder(key, registry, codec).build());
+    static <K, V> DataMapType<K, V> register(String name, ResourceKey<Registry<K>> registry, Codec<V> codec) {
+        return REGISTRAR.registerDataMapType(
+                name, key -> DataMapType.builder(key, registry, codec).build());
     }
-
-
 
     public static final DataMapType<Item, MaterialReferenceLocation> ITEM_MATERIAL =
             register("item_material", Registries.ITEM, MaterialReferenceLocation.CODEC);

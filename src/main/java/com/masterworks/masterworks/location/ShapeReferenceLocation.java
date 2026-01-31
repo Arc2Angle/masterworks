@@ -5,15 +5,13 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
-public record ShapeReferenceLocation(ResourceLocation unqualified)
-        implements TextureReferenceLocation {
+public record ShapeReferenceLocation(ResourceLocation unqualified) implements TextureReferenceLocation {
 
-    public static final Codec<ShapeReferenceLocation> CODEC = ResourceLocation.CODEC
-            .xmap(ShapeReferenceLocation::new, ShapeReferenceLocation::unqualified);
+    public static final Codec<ShapeReferenceLocation> CODEC =
+            ResourceLocation.CODEC.xmap(ShapeReferenceLocation::new, ShapeReferenceLocation::unqualified);
 
     public static final StreamCodec<ByteBuf, ShapeReferenceLocation> STREAM_CODEC =
-            ResourceLocation.STREAM_CODEC.map(ShapeReferenceLocation::new,
-                    ShapeReferenceLocation::unqualified);
+            ResourceLocation.STREAM_CODEC.map(ShapeReferenceLocation::new, ShapeReferenceLocation::unqualified);
 
     @Override
     public ResourceLocation value() {

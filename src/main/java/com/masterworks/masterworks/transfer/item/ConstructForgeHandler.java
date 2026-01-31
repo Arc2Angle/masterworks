@@ -1,20 +1,19 @@
 package com.masterworks.masterworks.transfer.item;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.annotation.Nonnull;
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.item.ConstructItem;
 import com.masterworks.masterworks.location.CompositionReferenceLocation;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
@@ -24,8 +23,7 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
     public static final int TEMPLATE_INDEX = 0, RESULT_INDEX = 1, COMPONENTS_INDEX = 2;
 
     public record Constraint(Construct.Component.Key key, RoleReferenceLocation role) {
-        public static Constraint of(
-                Map.Entry<Construct.Component.Key, RoleReferenceLocation> entry) {
+        public static Constraint of(Map.Entry<Construct.Component.Key, RoleReferenceLocation> entry) {
             return new Constraint(entry.getKey(), entry.getValue());
         }
     }
@@ -38,9 +36,9 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
 
         this.constraints = new HashMap<>();
         this.components = Stream.generate(Optional::<Construct.Component>empty)
-                .limit(componentCount).collect(Collectors.toCollection(ArrayList::new));
+                .limit(componentCount)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
-
 
     @Override
     protected void onContentsChanged(int index, @Nonnull ItemStack previousContents) {
@@ -64,7 +62,9 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
             if (entries.size() > components.size()) {
                 MasterworksMod.LOGGER.warn(
                         "Skipping composition {} as it has more components than the construct forge can handle ({} > {})",
-                        reference, entries.size(), components.size());
+                        reference,
+                        entries.size(),
+                        components.size());
                 return;
             }
 
@@ -84,37 +84,41 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
     }
 
     private void setResult() {
-        constraints.entrySet().stream().flatMap(entry -> {
-            CompositionReferenceLocation composition = entry.getKey();
-            List<Constraint> constraints = entry.getValue();
+        constraints.entrySet().stream()
+                .flatMap(entry -> {
+                    CompositionReferenceLocation composition = entry.getKey();
+                    List<Constraint> constraints = entry.getValue();
 
-            Map<Construct.Component.Key, Construct.Component> constructed = new HashMap<>();
+                    Map<Construct.Component.Key, Construct.Component> constructed = new HashMap<>();
 
-            for (int index = 0; index < constraints.size(); index++) {
-                Constraint constraint = constraints.get(index);
-                Optional<Construct.Component> optionalComponent = components.get(index);
+                    for (int index = 0; index < constraints.size(); index++) {
+                        Constraint constraint = constraints.get(index);
+                        Optional<Construct.Component> optionalComponent = components.get(index);
 
-                if (optionalComponent.isEmpty()) {
-                    return Stream.of();
-                }
+                        if (optionalComponent.isEmpty()) {
+                            return Stream.of();
+                        }
 
-                Construct.Component component = optionalComponent.orElseThrow();
+                        Construct.Component component = optionalComponent.orElseThrow();
 
-                if (component.roles().noneMatch(role -> role.equals(constraint.role))) {
-                    return Stream.of();
-                }
+                        if (!component.roles().contains(constraint.role)) {
+                            return Stream.of();
+                        }
 
-                constructed.put(constraint.key, component);
-            }
+                        constructed.put(constraint.key, component);
+                    }
 
-            return Stream.of(new Construct(composition, constructed));
-        }).findFirst().ifPresentOrElse(construct -> {
-            set(RESULT_INDEX, ItemResource.of(ConstructItem.stack(construct)), 1);
-        }, () -> {
-            set(RESULT_INDEX, ItemResource.EMPTY, 0);
-        });
+                    return Stream.of(new Construct(composition, constructed));
+                })
+                .findFirst()
+                .ifPresentOrElse(
+                        construct -> {
+                            set(RESULT_INDEX, ItemResource.of(ConstructItem.stack(construct)), 1);
+                        },
+                        () -> {
+                            set(RESULT_INDEX, ItemResource.EMPTY, 0);
+                        });
     }
-
 
     @Override
     public boolean isValid(int index, @Nonnull ItemResource resource) {
@@ -136,17 +140,14 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
             return false;
         }
 
-        return Construct.Component.of(stack).map(component -> {
-            Set<RoleReferenceLocation> roles =
-                    getComponentRoles(componentIndex).collect(Collectors.toSet());
-
-            return component.roles().anyMatch(roles::contains);
-        }).orElse(false);
+        return Construct.Component.of(stack)
+                .map(component -> getComponentRoles(componentIndex).anyMatch(component.roles()::contains))
+                .orElse(false);
     }
 
     public Stream<RoleReferenceLocation> getComponentRoles(int componentIndex) {
-        return constraints.values().stream().filter(
-                list -> list.size() > componentIndex && validateConstraints(list, componentIndex))
+        return constraints.values().stream()
+                .filter(list -> list.size() > componentIndex && validateConstraints(list, componentIndex))
                 .map(list -> list.get(componentIndex).role);
     }
 
@@ -162,8 +163,9 @@ public class ConstructForgeHandler extends ItemStacksResourceHandler {
 
             Constraint constraint = constraints.get(index);
 
-            boolean emptyOrMatching = components.get(index).map(
-                    component -> component.roles().anyMatch(role -> role.equals(constraint.role)))
+            boolean emptyOrMatching = components
+                    .get(index)
+                    .map(component -> component.roles().contains(constraint.role))
                     .orElse(true);
 
             if (!emptyOrMatching) {

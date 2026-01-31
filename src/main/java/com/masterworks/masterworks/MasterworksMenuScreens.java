@@ -1,9 +1,9 @@
 package com.masterworks.masterworks;
 
-import java.util.function.Supplier;
 import com.masterworks.masterworks.gui.screen.ConstructForgeContainerScreen;
 import com.masterworks.masterworks.util.registrar.MenuScreensRegistrar;
 import com.mojang.datafixers.util.Unit;
+import java.util.function.Supplier;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -19,14 +19,10 @@ public class MasterworksMenuScreens {
     }
 
     static <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> Unit register(
-            Supplier<? extends MenuType<? extends T>> menuType,
-            MenuScreens.ScreenConstructor<T, U> factory) {
+            Supplier<? extends MenuType<? extends T>> menuType, MenuScreens.ScreenConstructor<T, U> factory) {
         return REGISTRAR.registerMenuScreen(menuType, factory);
     }
 
-
-
     public static final Unit CONSTRUCT_FORGE =
             register(MasterworksMenuTypes.CONSTRUCT_FORGE, ConstructForgeContainerScreen::new);
-
 }

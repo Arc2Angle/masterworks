@@ -1,20 +1,23 @@
 package com.masterworks.masterworks.client.render.geometry;
 
-import javax.annotation.Nonnull;
-import org.joml.Vector3f;
-import org.joml.Vector3i;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.ARGB;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 public record Voxels(int[] colors, Vector3i count, Vector3f size, Vector3f offset) {
 
     private enum Direction {
-        BACK(new Vector3f(0, 0, -1)), FRONT(new Vector3f(0, 0, 1)), LEFT(
-                new Vector3f(-1, 0, 0)), RIGHT(new Vector3f(1, 0, 0)), BOTTOM(
-                        new Vector3f(0, -1, 0)), TOP(new Vector3f(0, 1, 0));
+        BACK(new Vector3f(0, 0, -1)),
+        FRONT(new Vector3f(0, 0, 1)),
+        LEFT(new Vector3f(-1, 0, 0)),
+        RIGHT(new Vector3f(1, 0, 0)),
+        BOTTOM(new Vector3f(0, -1, 0)),
+        TOP(new Vector3f(0, 1, 0));
 
         public final Vector3f normal;
 
@@ -28,10 +31,12 @@ public record Voxels(int[] colors, Vector3i count, Vector3f size, Vector3f offse
             @Override
             public void render(PoseStack.Pose pose, VertexConsumer consumer) {
                 var wrapper = new Object() {
-                    public void addVertex(float x, float y, float z, int color,
-                            Direction direction) {
-                        consumer.addVertex(pose.pose(), x, y, z).setColor(color).setUv(0, 0)
-                                .setOverlay(packedOverlay).setLight(packedLight)
+                    public void addVertex(float x, float y, float z, int color, Direction direction) {
+                        consumer.addVertex(pose.pose(), x, y, z)
+                                .setColor(color)
+                                .setUv(0, 0)
+                                .setOverlay(packedOverlay)
+                                .setLight(packedLight)
                                 .setNormal(pose, direction.normal.mul(pose.normal()));
                     }
                 };

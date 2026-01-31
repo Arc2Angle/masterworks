@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.client.draw;
 
-import java.util.function.IntUnaryOperator;
 import com.mojang.blaze3d.platform.NativeImage;
+import java.util.function.IntUnaryOperator;
 import net.minecraft.util.ARGB;
 
 public class PixelUtils {
@@ -31,8 +31,7 @@ public class PixelUtils {
     // Each pixel in 'image' is scaled by either 100% (if the corresponding pixel
     // in 'silhouette' is fully transparent) or 'normalizedShadowScale' (if the
     // corresponding pixel in 'silhouette' is opaque)
-    public static NativeImage Shadow(NativeImage image, NativeImage silhouette,
-            float normalizedShadowScale) {
+    public static NativeImage Shadow(NativeImage image, NativeImage silhouette, float normalizedShadowScale) {
         int width = image.getWidth();
         int height = image.getHeight();
         int shadowScale = (int) (normalizedShadowScale * 0xFF);

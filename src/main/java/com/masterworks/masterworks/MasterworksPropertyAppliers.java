@@ -1,12 +1,12 @@
 package com.masterworks.masterworks;
 
-import java.util.function.Supplier;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.base.DataComponentProperty;
 import com.masterworks.masterworks.data.property.base.EquippableProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
 import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
+import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -21,8 +21,6 @@ public class MasterworksPropertyAppliers {
     static <T extends Property.Applier> Supplier<T> register(String path, Supplier<T> type) {
         return REGISTRAR.register(path, type);
     }
-
-
 
     public static final Supplier<DataComponentProperty.Applier> DATA_COMPONENT =
             register("data_component", DataComponentProperty.Applier::new);

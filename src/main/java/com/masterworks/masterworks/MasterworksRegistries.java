@@ -18,8 +18,6 @@ public class MasterworksRegistries {
         return REGISTRAR.registerRegistry(name, key -> new RegistryBuilder<T>(key).create());
     }
 
-
-
     public static final Registry<Property.Type<?>> PROPERTY_TYPE = register("property_type");
 
     public static final Registry<Property.Applier> PROPERTY_APPLIER = register("property_applier");

@@ -16,8 +16,8 @@ public class DataMapTypesRegistrar {
         this.namespace = namespace;
     }
 
-    public <K, V> DataMapType<K, V> registerDataMapType(String name,
-            Function<ResourceLocation, DataMapType<K, V>> factory) {
+    public <K, V> DataMapType<K, V> registerDataMapType(
+            String name, Function<ResourceLocation, DataMapType<K, V>> factory) {
         ResourceLocation key = ResourceLocation.fromNamespaceAndPath(namespace, name);
         DataMapType<K, V> dataMapType = factory.apply(key);
         entries.add(dataMapType);

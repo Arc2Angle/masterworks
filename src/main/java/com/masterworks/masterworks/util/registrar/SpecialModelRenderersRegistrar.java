@@ -1,8 +1,8 @@
 package com.masterworks.masterworks.util.registrar;
 
+import com.mojang.serialization.MapCodec;
 import java.util.LinkedList;
 import java.util.List;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -33,8 +33,7 @@ public class SpecialModelRenderersRegistrar {
         }
     }
 
-    record Entry<T extends SpecialModelRenderer.Unbaked>(ResourceLocation resourceLocation,
-            MapCodec<T> codec) {
+    record Entry<T extends SpecialModelRenderer.Unbaked>(ResourceLocation resourceLocation, MapCodec<T> codec) {
         void apply(RegisterSpecialModelRendererEvent event) {
             event.register(resourceLocation, codec);
         }

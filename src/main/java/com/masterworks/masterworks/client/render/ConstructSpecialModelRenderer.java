@@ -1,7 +1,5 @@
 package com.masterworks.masterworks.client.render;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.MasterworksPropertyTypes;
@@ -11,6 +9,8 @@ import com.masterworks.masterworks.data.property.core.RenderItemProperty;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.MapCodec;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 
@@ -49,14 +49,16 @@ public class ConstructSpecialModelRenderer extends NativeSpecialModelRenderer<Co
         }
 
         RenderItemProperty property = argument.properties(RoleReferenceLocation.ITEM)
-                .get(MasterworksPropertyTypes.RENDER_ITEM.get()).orElse(null);
+                .get(MasterworksPropertyTypes.RENDER_ITEM.get())
+                .orElse(null);
 
         if (property == null) {
             MasterworksMod.LOGGER.warn("Missing render property for construct " + argument);
             return null;
         }
 
-        return property.render(argument.components()).reduce(PixelUtils::Overlay).orElse(null);
+        return property.render(argument.components())
+                .reduce(PixelUtils::Overlay)
+                .orElse(null);
     }
-
 }

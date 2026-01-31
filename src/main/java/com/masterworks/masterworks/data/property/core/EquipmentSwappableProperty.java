@@ -1,12 +1,12 @@
 package com.masterworks.masterworks.data.property.core;
 
-import java.util.Map;
 import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.EquippableProperty;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Decoder;
+import java.util.Map;
 import net.minecraft.world.item.equipment.Equippable.Builder;
 
 public record EquipmentSwappableProperty(boolean value) implements EquippableProperty {
@@ -24,8 +24,7 @@ public record EquipmentSwappableProperty(boolean value) implements EquippablePro
         @Override
         public Decoder<EquipmentSwappableProperty> decoder(
                 Map<Construct.Component.Key, RoleReferenceLocation> components) {
-            return Codec.BOOL.xmap(EquipmentSwappableProperty::new,
-                    EquipmentSwappableProperty::value);
+            return Codec.BOOL.xmap(EquipmentSwappableProperty::new, EquipmentSwappableProperty::value);
         }
     }
 }

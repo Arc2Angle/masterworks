@@ -1,11 +1,11 @@
 package com.masterworks.masterworks.gui.menu;
 
-import java.util.stream.Stream;
-import javax.annotation.Nonnull;
 import com.masterworks.masterworks.MasterworksMenuTypes;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.transfer.item.ConstructForgeHandler;
 import com.masterworks.masterworks.transfer.item.DefaultConstructForgeHandler;
+import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -17,8 +17,8 @@ public class ConstructForgeContainerMenu extends AbstractContainerMenu {
         this(containerId, playerInventory, new DefaultConstructForgeHandler());
     }
 
-    public ConstructForgeContainerMenu(int containerId, Inventory playerInventory,
-            DefaultConstructForgeHandler handler) {
+    public ConstructForgeContainerMenu(
+            int containerId, Inventory playerInventory, DefaultConstructForgeHandler handler) {
         super(MasterworksMenuTypes.CONSTRUCT_FORGE.get(), containerId);
 
         int centerX = 45, centerY = 45, radiusX = 60, radiusY = 45;
@@ -50,8 +50,7 @@ public class ConstructForgeContainerMenu extends AbstractContainerMenu {
     public static class ConstructForgeSlot extends ResourceHandlerSlot {
         protected final DefaultConstructForgeHandler handler;
 
-        public ConstructForgeSlot(DefaultConstructForgeHandler handler, int index, int xPosition,
-                int yPosition) {
+        public ConstructForgeSlot(DefaultConstructForgeHandler handler, int index, int xPosition, int yPosition) {
             super(handler, handler::set, index, xPosition, yPosition);
             this.handler = handler;
         }
@@ -72,10 +71,8 @@ public class ConstructForgeContainerMenu extends AbstractContainerMenu {
     public static class ComponentSlot extends ConstructForgeSlot {
         private final int componentIndex;
 
-        public ComponentSlot(DefaultConstructForgeHandler handler, int componentIndex,
-                int xPosition, int yPosition) {
-            super(handler, ConstructForgeHandler.COMPONENTS_INDEX + componentIndex, xPosition,
-                    yPosition);
+        public ComponentSlot(DefaultConstructForgeHandler handler, int componentIndex, int xPosition, int yPosition) {
+            super(handler, ConstructForgeHandler.COMPONENTS_INDEX + componentIndex, xPosition, yPosition);
             this.componentIndex = componentIndex;
         }
 
