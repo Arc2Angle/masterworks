@@ -1,5 +1,6 @@
 package com.masterworks.masterworks;
 
+import com.masterworks.masterworks.client.resource.manager.PaletteManager;
 import com.masterworks.masterworks.client.resource.manager.VoxFileManager;
 import com.masterworks.masterworks.util.registrar.PreparableReloadListenersRegistrar;
 import java.util.function.Supplier;
@@ -19,4 +20,6 @@ public class MasterworksPreparableReloadListeners {
     }
 
     public static final Supplier<VoxFileManager> VOX_FILE_MANAGER = register("voxels", VoxFileManager::new);
+
+    public static final Supplier<PaletteManager> PALETTE_MANAGER = register("textures/palette", PaletteManager::new);
 }

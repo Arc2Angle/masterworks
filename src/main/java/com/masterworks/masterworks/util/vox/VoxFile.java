@@ -1,5 +1,6 @@
 package com.masterworks.masterworks.util.vox;
 
+import com.masterworks.masterworks.util.palette.Palette;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.BufferUnderflowException;
@@ -57,7 +58,7 @@ public class VoxFile {
         return new VoxFile(version, chunks);
     }
 
-    public Voxels get(int[] palette) {
+    public Voxels get(Palette palette) {
         if (chunks.stream()
                 .filter(chunk -> chunk instanceof VoxChunk.Pack)
                 .findFirst()
@@ -96,7 +97,7 @@ public class VoxFile {
             int i = (positioner >>> 24) & 0xFF;
 
             int index = x + (y * size.x()) + (z * size.x() * size.y());
-            colors[index] = palette[i - 1];
+            colors[index] = palette.getColorByVoxIndex(i);
         }
 
         return new Voxels(
@@ -113,6 +114,6 @@ public class VoxFile {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No RGBA chunk found in VOX file"));
 
-        return get(rgba.colors());
+        return get(new Palette(rgba.colors()));
     }
 }
