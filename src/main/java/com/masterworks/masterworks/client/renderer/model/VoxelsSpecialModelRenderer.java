@@ -1,7 +1,7 @@
-package com.masterworks.masterworks.client.render;
+package com.masterworks.masterworks.client.renderer.model;
 
-import com.masterworks.masterworks.client.render.geometry.Voxels;
-import com.mojang.blaze3d.platform.NativeImage;
+import com.masterworks.masterworks.client.renderer.geometry.VoxelsCustomGeometryRenderer;
+import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -12,10 +12,10 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.joml.Vector3f;
 
-public abstract class NativeSpecialModelRenderer<T> implements SpecialModelRenderer<T> {
+public abstract class VoxelsSpecialModelRenderer<T> implements SpecialModelRenderer<T> {
 
     @Nullable
-    protected abstract NativeImage getImage(@Nullable T argument);
+    protected abstract Voxels getVoxels(@Nullable T argument);
 
     @Override
     public void getExtents(@Nonnull Set<Vector3f> output) {
@@ -23,7 +23,8 @@ public abstract class NativeSpecialModelRenderer<T> implements SpecialModelRende
         output.add(extent);
     }
 
-    private static final float THICKNESS = 0.0625f;
+    public static final Vector3f MODEL_SIZE = new Vector3f(1f, 1f, 1f / 16f);
+    public static final Vector3f MODEL_OFFSET = new Vector3f(0f, 0f, 0.5f - 1f / 32f);
 
     @Override
     public void submit(
@@ -36,13 +37,13 @@ public abstract class NativeSpecialModelRenderer<T> implements SpecialModelRende
             boolean hasFoil,
             int outlineColor) {
 
-        NativeImage image = getImage(argument);
-        if (image == null) {
+        Voxels voxels = getVoxels(argument);
+        if (voxels == null) {
             return;
         }
 
         SubmitNodeCollector.CustomGeometryRenderer renderer =
-                Voxels.fromNativeImage(image, THICKNESS).renderer(packedLight, packedOverlay);
+                new VoxelsCustomGeometryRenderer(voxels, packedLight, packedOverlay);
 
         poseStack.pushPose();
         poseStack.translate(0, 1, 0);

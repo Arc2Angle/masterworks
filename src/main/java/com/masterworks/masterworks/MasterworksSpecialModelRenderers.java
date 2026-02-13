@@ -1,7 +1,7 @@
 package com.masterworks.masterworks;
 
-import com.masterworks.masterworks.client.render.ConstructSpecialModelRenderer;
-import com.masterworks.masterworks.client.render.TemplateSpecialModelRenderer;
+import com.masterworks.masterworks.client.renderer.model.ConstructSpecialModelRenderer;
+import com.masterworks.masterworks.client.renderer.model.TemplateSpecialModelRenderer;
 import com.masterworks.masterworks.util.registrar.SpecialModelRenderersRegistrar;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;

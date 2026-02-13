@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.client.render;
+package com.masterworks.masterworks.client.renderer.model;
 
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.client.draw.TemplateDrawer;
@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 
-public class TemplateSpecialModelRenderer extends NativeSpecialModelRenderer<Template> {
+public class TemplateSpecialModelRenderer extends NativeImageSpecialModelRenderer<Template> {
     public record Unbaked() implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<TemplateSpecialModelRenderer.Unbaked> MAP_CODEC =
                 MapCodec.unit(TemplateSpecialModelRenderer.Unbaked::new);
