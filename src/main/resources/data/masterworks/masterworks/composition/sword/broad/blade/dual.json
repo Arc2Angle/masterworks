@@ -5,7 +5,7 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render_item": [
+            "masterworks:render": [
                 "left",
                 "right"
             ],
@@ -14,7 +14,7 @@
             "masterworks:attack_speed": "$left + $right"
         },
         "masterworks:component/sword_blade/broad": {
-            "masterworks:render_item": [
+            "masterworks:render": [
                 "left",
                 "right"
             ],

@@ -1,19 +1,23 @@
 package com.masterworks.masterworks.data.role;
 
+import com.masterworks.masterworks.MasterworksPreparableReloadListeners;
 import com.masterworks.masterworks.MasterworksRoleTypes;
-import com.masterworks.masterworks.client.draw.ConstructDrawer;
+import com.masterworks.masterworks.client.resource.manager.PaletteManager;
+import com.masterworks.masterworks.client.resource.manager.VoxFileManager;
+import com.masterworks.masterworks.client.resource.reference.PaletteResourceReference;
+import com.masterworks.masterworks.client.resource.reference.VoxFileResourceReference;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.base.RenderProperty;
-import com.masterworks.masterworks.location.PaletteReferenceLocation;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.location.ShapeReferenceLocation;
-import com.mojang.blaze3d.platform.NativeImage;
+import com.masterworks.masterworks.util.palette.Palette;
+import com.masterworks.masterworks.util.vox.VoxFile;
+import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public record MaterialRole(List<ShapeReferenceLocation> examples) implements Role {
@@ -27,21 +31,28 @@ public record MaterialRole(List<ShapeReferenceLocation> examples) implements Rol
     }
 
     @Override
-    public Stream<NativeImage> render(
-            Function<Construct, RenderProperty> forward, Construct.Component component, Optional<Dynamic<?>> argument) {
-        PaletteReferenceLocation palette = component
+    public Stream<Voxels> render(
+            RoleReferenceLocation reference, Construct.Component component, Optional<Dynamic<?>> argument) {
+        PaletteManager paletteManager = MasterworksPreparableReloadListeners.PALETTE_MANAGER.get();
+        VoxFileManager voxFileManager = MasterworksPreparableReloadListeners.VOX_FILE_MANAGER.get();
+
+        PaletteResourceReference paletteReference = component
                 .value()
-                .mapRight(construct -> new IllegalStateException())
+                .mapRight(construct ->
+                        new IllegalStateException("MaterialRole cannot render a construct component: " + component))
                 .orThrow()
                 .registered()
                 .value()
                 .palette();
 
-        ShapeReferenceLocation shape = ShapeReferenceLocation.CODEC
-                .parse(argument.orElseThrow(
-                        () -> new IllegalStateException("Material rendering requires a shape reference argument")))
+        VoxFileResourceReference voxFileReference = VoxFileResourceReference.CODEC
+                .parse(argument.orElseThrow(() ->
+                        new IllegalStateException("Material rendering requires a vox file reference: " + argument)))
                 .getOrThrow(message -> new IllegalStateException("Failed to parse argument: " + message));
 
-        return Stream.of(ConstructDrawer.instance().get(palette, shape));
+        Palette palette = paletteManager.getOrThrow(paletteReference);
+        VoxFile voxFile = voxFileManager.getOrThrow(voxFileReference);
+
+        return Stream.of(voxFile.get(palette));
     }
 }

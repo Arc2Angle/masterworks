@@ -4,8 +4,7 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render_item": "masterworks:equipment/helmet",
-            "masterworks:render_equipment": "masterworks:equipment",
+            "masterworks:render": "masterworks:equipment/helmet",
             "masterworks:equipment_slot": "head",
             "masterworks:durability": "$main",
             "masterworks:armor": "$main",

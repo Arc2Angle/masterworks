@@ -2,15 +2,14 @@ package com.masterworks.masterworks.data.role;
 
 import com.masterworks.masterworks.MasterworksRegistries;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.base.RenderProperty;
+import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.location.ShapeReferenceLocation;
-import com.mojang.blaze3d.platform.NativeImage;
+import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface Role {
@@ -21,8 +20,8 @@ public interface Role {
 
     Type<?> type();
 
-    Stream<NativeImage> render(
-            Function<Construct, RenderProperty> forward, Construct.Component component, Optional<Dynamic<?>> argument);
+    Stream<Voxels> render(
+            RoleReferenceLocation reference, Construct.Component component, Optional<Dynamic<?>> argument);
 
     record Type<T extends Role>(MapCodec<T> codec) {}
 }

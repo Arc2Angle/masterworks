@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 /**
- * A native 3D voxel model.
+ * A native 3D dense voxels object.
  *
  * @param colors A dense array of ARGB color values for each voxel in the model.
  *     Invisible voxels (alpha = 0) are considered empty, even if they have
@@ -117,11 +117,15 @@ public record Voxels(int[] colors, Vector3i count, Vector3f size, Vector3f offse
     }
 
     /**
-     * Overlays another {@code Voxels} on top of this one, such the fully transparent voxels in the other one reveal the corresponding voxels from this one.
-     * @param other The voxel model to overlay on top of this one.
-     * @throws IllegalArgumentException if the two voxel models have different counts, sizes, or offsets.
+     * Overlays another {@code Voxels} on top of this one, such the fully
+     * transparent voxels in the other one reveal the corresponding voxels from
+     * this one.
+     * @param other The {@code Voxels} object to overlay on top of this one.
+     * @return This {@code Voxels} object.
+     * @throws IllegalArgumentException if the two {@code Voxels} objects have
+     *     different counts, sizes, or offsets.
      */
-    public void overlay(Voxels other) {
+    public Voxels overlay(Voxels other) {
         if (!count.equals(other.count)) {
             throw new IllegalArgumentException(
                     "Cannot overlay voxels with different counts: " + count + " vs " + other.count);
@@ -143,5 +147,7 @@ public record Voxels(int[] colors, Vector3i count, Vector3f size, Vector3f offse
                 colors[i] = overlayed;
             }
         }
+
+        return this;
     }
 }

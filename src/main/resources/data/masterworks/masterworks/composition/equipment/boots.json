@@ -4,8 +4,7 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render_item": "masterworks:equipment/boots",
-            "masterworks:render_equipment": "masterworks:equipment",
+            "masterworks:render": "masterworks:equipment/boots",
             "masterworks:equipment_slot": "feet",
             "masterworks:durability": "$main",
             "masterworks:armor": "$main",

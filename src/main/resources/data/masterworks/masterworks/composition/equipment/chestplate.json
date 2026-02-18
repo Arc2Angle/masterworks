@@ -4,8 +4,7 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render_item": "masterworks:equipment/chestplate",
-            "masterworks:render_equipment": "masterworks:equipment",
+            "masterworks:render": "masterworks:equipment/chestplate",
             "masterworks:equipment_slot": "chest",
             "masterworks:durability": "$main",
             "masterworks:armor": "$main",

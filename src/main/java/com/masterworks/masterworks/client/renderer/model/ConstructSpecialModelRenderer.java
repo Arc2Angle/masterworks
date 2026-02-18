@@ -3,18 +3,19 @@ package com.masterworks.masterworks.client.renderer.model;
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.MasterworksPropertyTypes;
-import com.masterworks.masterworks.client.draw.PixelUtils;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.core.RenderItemProperty;
+import com.masterworks.masterworks.data.property.core.RenderProperty;
 import com.masterworks.masterworks.location.RoleReferenceLocation;
-import com.mojang.blaze3d.platform.NativeImage;
+import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.serialization.MapCodec;
+import java.util.Map;
+import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 
-public class ConstructSpecialModelRenderer extends NativeImageSpecialModelRenderer<Construct> {
+public class ConstructSpecialModelRenderer extends VoxelsSpecialModelRenderer<Construct> {
     public record Unbaked() implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<ConstructSpecialModelRenderer.Unbaked> MAP_CODEC =
                 MapCodec.unit(ConstructSpecialModelRenderer.Unbaked::new);
@@ -41,15 +42,22 @@ public class ConstructSpecialModelRenderer extends NativeImageSpecialModelRender
         return stack.get(MasterworksDataComponents.CONSTRUCT.get());
     }
 
+    private Map<Construct, Voxels> cache = new WeakHashMap<>();
+
     @Override
     @Nullable
-    protected NativeImage getImage(@Nullable Construct argument) {
+    protected Voxels getVoxels(@Nullable Construct argument) {
         if (argument == null) {
             return null;
         }
 
-        RenderItemProperty property = argument.properties(RoleReferenceLocation.ITEM)
-                .get(MasterworksPropertyTypes.RENDER_ITEM.get())
+        Voxels cached = cache.get(argument);
+        if (cached != null) {
+            return cached;
+        }
+
+        RenderProperty property = argument.properties(RoleReferenceLocation.ITEM)
+                .get(MasterworksPropertyTypes.RENDER.get())
                 .orElse(null);
 
         if (property == null) {
@@ -57,8 +65,16 @@ public class ConstructSpecialModelRenderer extends NativeImageSpecialModelRender
             return null;
         }
 
-        return property.render(argument.components())
-                .reduce(PixelUtils::Overlay)
-                .orElse(null);
+        try {
+            Voxels voxels = property.render(argument.components())
+                    .reduce(Voxels::overlay)
+                    .orElseThrow()
+                    .compact();
+
+            cache.put(argument, voxels);
+            return voxels;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to render composition " + argument.composition(), e);
+        }
     }
 }
