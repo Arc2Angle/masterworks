@@ -1,5 +1,6 @@
 package com.masterworks.masterworks.client.resource.manager;
 
+import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.client.resource.reference.ResourceReference;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +17,7 @@ public abstract class MappedResourceManager<R extends ResourceReference, T>
     @Override
     protected void apply(Map<ResourceLocation, T> prepared, ResourceManager resourceManager, ProfilerFiller profiler) {
         values = Map.copyOf(prepared);
+        MasterworksMod.LOGGER.info("Applied {} resources to {}", values.size(), this.getClass());
     }
 
     public Set<ResourceLocation> keySet() {

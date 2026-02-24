@@ -28,7 +28,26 @@ public class MasterworksItems {
 
     public static final DeferredItem<ConstructItem> CONSTRUCT = register("construct", ConstructItem::new);
 
-    public static final DeferredItem<TemplateItem> TEMPLATE = register("template", TemplateItem::new);
+    public static final DeferredItem<TemplateItem> ROD_TEMPLATE = register("rod_template", TemplateItem::new);
+
+    public static final DeferredItem<TemplateItem> BINDING_TEMPLATE = register("binding_template", TemplateItem::new);
+
+    public static final DeferredItem<TemplateItem> PICKAXE_HEAD_TEMPLATE =
+            register("pickaxe_head_template", TemplateItem::new);
+
+    public static final DeferredItem<TemplateItem> PICKAXE_TEMPLATE = register("pickaxe_template", TemplateItem::new);
+
+    public static final DeferredItem<TemplateItem> BROAD_STRAIGHT_EDGE_TEMPLATE =
+            register("broad_straight_edge_template", TemplateItem::new);
+
+    public static final DeferredItem<TemplateItem> BROAD_SIRRATED_EDGE_TEMPLATE =
+            register("broad_sirrated_edge_template", TemplateItem::new);
+
+    public static final DeferredItem<TemplateItem> BROAD_BLADE_TEMPLATE =
+            register("broad_blade_template", TemplateItem::new);
+
+    public static final DeferredItem<TemplateItem> BROADSWORD_TEMPLATE =
+            register("broadsword_template", TemplateItem::new);
 
     public static final DeferredItem<BlockItem> CONSTRUCT_FORGE =
             registerBlockItem("construct_forge", MasterworksBlocks.CONSTRUCT_FORGE);

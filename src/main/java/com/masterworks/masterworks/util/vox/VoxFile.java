@@ -58,7 +58,7 @@ public class VoxFile {
         return new VoxFile(version, chunks);
     }
 
-    public Voxels get(Palette palette) {
+    public Voxels voxels(Palette palette) {
         if (chunks.stream()
                 .filter(chunk -> chunk instanceof VoxChunk.Pack)
                 .findFirst()
@@ -104,7 +104,7 @@ public class VoxFile {
                 colors, new Vector3i(size.x(), size.y(), size.z()), new Vector3f(1f, 1f, 1f), new Vector3f(0f, 0f, 0f));
     }
 
-    public Voxels get() {
+    public Palette palette() {
         VoxChunk.Rgba rgba = chunks.stream()
                 .map(chunk -> switch (chunk) {
                     case VoxChunk.Rgba it -> it;
@@ -114,6 +114,6 @@ public class VoxFile {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No RGBA chunk found in VOX file"));
 
-        return get(new Palette(rgba.colors()));
+        return Palette.fromRGBA(rgba.colors());
     }
 }

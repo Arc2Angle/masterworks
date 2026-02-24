@@ -38,7 +38,7 @@ public class MasterworksCreativeTabs {
     }
 
     public static final Supplier<CreativeModeTab> TEMPLATES =
-            register("templates", MasterworksItems.TEMPLATE, new TemplateItem.DisplayItemsGenerator());
+            register("templates", MasterworksItems.ROD_TEMPLATE, new TemplateItem.DisplayItemsGenerator());
 
     public static final Supplier<CreativeModeTab> CONSTRUCTS =
             register("constructs", MasterworksItems.CONSTRUCT, new ConstructItem.DisplayItemsGenerator());

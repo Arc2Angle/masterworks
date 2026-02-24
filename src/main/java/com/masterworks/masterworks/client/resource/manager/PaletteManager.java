@@ -39,6 +39,7 @@ public final class PaletteManager extends MappedResourceManager<PaletteResourceR
             MasterworksMod.LOGGER.info("Loaded palette: {}", id);
         }
 
+        apply(prepared, null, null); // TODO: burn this abomination
         return prepared;
     }
 }

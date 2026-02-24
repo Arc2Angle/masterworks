@@ -35,6 +35,7 @@ public final class VoxFileManager extends MappedResourceManager<VoxFileResourceR
             MasterworksMod.LOGGER.info("Loaded vox shape: {}", id);
         }
 
+        apply(prepared, null, null); // TODO: burn this abomination
         return prepared;
     }
 }

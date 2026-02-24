@@ -3,7 +3,9 @@
         "type": "minecraft:special",
         "base": "minecraft:item/generated",
         "model": {
-            "type": "masterworks:template"
+            "type": "masterworks:template",
+            "tier": "masterworks:basic",
+            "shape": "masterworks:binding"
         }
     }
 }

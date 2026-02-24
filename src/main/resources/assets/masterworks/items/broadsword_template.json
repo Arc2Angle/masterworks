@@ -1,0 +1,15 @@
+{
+    "model": {
+        "type": "minecraft:special",
+        "base": "minecraft:item/generated",
+        "model": {
+            "type": "masterworks:template",
+            "tier": "masterworks:basic",
+            "shape": [
+                "masterworks:sword/broad/handle",
+                "masterworks:sword/broad/guard",
+                "masterworks:sword/broad/blade"
+            ]
+        }
+    }
+}

@@ -39,12 +39,18 @@ public sealed interface VoxChunk permits VoxChunk.Main, VoxChunk.Pack, VoxChunk.
     }
 
     record Rgba(int[] colors) implements VoxChunk {
+        // the contents of this chunk is big endian (those its headers are little endian)
+
         static Rgba parse(ByteBuffer buffer) {
             int[] colors = new int[256];
+
+            buffer.order(ByteOrder.BIG_ENDIAN);
 
             for (int i = 0; i < 256; i++) {
                 colors[i] = buffer.getInt();
             }
+
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
 
             return new Rgba(colors);
         }

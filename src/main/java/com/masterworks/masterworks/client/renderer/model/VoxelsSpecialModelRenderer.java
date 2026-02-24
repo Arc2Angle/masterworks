@@ -23,9 +23,6 @@ public abstract class VoxelsSpecialModelRenderer<T> implements SpecialModelRende
         output.add(extent);
     }
 
-    public static final Vector3f MODEL_SIZE = new Vector3f(1f, 1f, 1f / 16f);
-    public static final Vector3f MODEL_OFFSET = new Vector3f(0f, 0f, 0.5f - 1f / 32f);
-
     @Override
     public void submit(
             @Nullable T argument,
@@ -46,11 +43,8 @@ public abstract class VoxelsSpecialModelRenderer<T> implements SpecialModelRende
                 new VoxelsCustomGeometryRenderer(voxels, packedLight, packedOverlay);
 
         poseStack.pushPose();
-        poseStack.translate(0, 1, 0);
-        poseStack.scale(1, -1, 1);
 
         nodeCollector.submitCustomGeometry(poseStack, RenderType.debugQuads(), renderer);
-
         if (hasFoil) {
             nodeCollector.submitCustomGeometry(poseStack, RenderType.entityGlint(), renderer);
         }

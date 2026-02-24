@@ -53,6 +53,6 @@ public record MaterialRole(List<ShapeReferenceLocation> examples) implements Rol
         Palette palette = paletteManager.getOrThrow(paletteReference);
         VoxFile voxFile = voxFileManager.getOrThrow(voxFileReference);
 
-        return Stream.of(voxFile.get(palette));
+        return Stream.of(voxFile.voxels(palette));
     }
 }

@@ -1,7 +1,5 @@
 package com.masterworks.masterworks.util.vox;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import javax.annotation.Nonnull;
 import net.minecraft.util.ARGB;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -25,12 +23,6 @@ public record Voxels(int[] colors, Vector3i count, Vector3f size, Vector3f offse
         return new Voxels(new int[0], new Vector3i(0, 0, 0), new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, 0f));
     }
 
-    public static Voxels copyFromImage(@Nonnull NativeImage image, Vector3f size, Vector3f offset) {
-        int[] colors = image.getPixels();
-        Vector3i count = new Vector3i(image.getWidth(), image.getHeight(), 1);
-        return new Voxels(colors, count, size, offset);
-    }
-
     /**
      * Compacts a voxel model by trimming empty space around it.
      * @return A new {@code Voxels} instance with tight bounds.
@@ -42,10 +34,7 @@ public record Voxels(int[] colors, Vector3i count, Vector3f size, Vector3f offse
         for (int x = 0; x < count.x; x++) {
             for (int y = 0; y < count.y; y++) {
                 for (int z = 0; z < count.z; z++) {
-                    int index = x + (y * count.x) + (z * count.x * count.y);
-                    int color = colors[index];
-
-                    if (ARGB.alpha(color) == 0) {
+                    if (!hasColorAt(x, y, z)) {
                         continue;
                     }
 
@@ -78,8 +67,7 @@ public record Voxels(int[] colors, Vector3i count, Vector3f size, Vector3f offse
         for (int x = 0; x < count.x; x++) {
             for (int y = 0; y < count.y; y++) {
                 for (int z = 0; z < count.z; z++) {
-                    int index = x + (y * count.x) + (z * count.x * count.y);
-                    int color = colors[index];
+                    int color = getColorAt(x, y, z);
 
                     if (ARGB.alpha(color) == 0) {
                         continue;
@@ -149,5 +137,38 @@ public record Voxels(int[] colors, Vector3i count, Vector3f size, Vector3f offse
         }
 
         return this;
+    }
+
+    /**
+     * Checks the color at the given coordinates.
+     * @return True if the alpha value of the color is not zero, false otherwise.
+     */
+    public boolean hasColorAt(int x, int y, int z) {
+        return ARGB.alpha(getColorAt(x, y, z)) != 0;
+    }
+
+    /**
+     * Gets the color at the given coordinates.
+     * @return The color's ARGB value.
+     */
+    public int getColorAt(int x, int y, int z) {
+        return colors[x + (y * count.x) + (z * count.x * count.y)];
+    }
+
+    /**
+     * Sets the color at the given coordinates.
+     * @param color The color's ARGB value. Fully transparent colors (alpha = 0) are considered empty, even if they have non-zero RGB values.
+     */
+    public void setColorAt(int x, int y, int z, int color) {
+        colors[x + (y * count.x) + (z * count.x * count.y)] = color;
+    }
+
+    /**
+     * Scales the RGB values of the color at the given coordinates by the given factor, leaving the alpha value unchanged.
+     * @param scale The scaling factor, between 0 and 255, where 0 means the RGB values are completely removed, and 255 means the RGB values are unchanged.
+     */
+    public void scaleColorAt(int x, int y, int z, int scale) {
+        int index = x + (y * count.x) + (z * count.x * count.y);
+        colors[index] = ARGB.scaleRGB(colors[index], scale);
     }
 }
