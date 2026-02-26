@@ -1,8 +1,8 @@
 {
     "components": {
-        "head": "masterworks:component/pickaxe_head",
-        "binding": "masterworks:component/binder/tool",
-        "handle": "masterworks:component/handle/tool"
+        "head": "masterworks:component/pickaxe/head",
+        "binding": "masterworks:component/pickaxe/binding",
+        "handle": "masterworks:component/pickaxe/handle"
     },
     "properties": {
         "masterworks:item": {

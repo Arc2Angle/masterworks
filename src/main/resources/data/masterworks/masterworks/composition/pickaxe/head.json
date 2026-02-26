@@ -4,14 +4,14 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render": "masterworks:pickaxe/head",
+            "masterworks:render": "masterworks:pickaxe_head",
             "masterworks:durability": "$main * 0.5",
             "masterworks:mining_denied": "$main",
             "masterworks:mining_speed": "$main * 0.3",
             "masterworks:attack_damage": "$main + -2",
             "masterworks:attack_speed": "$main * 0.3"
         },
-        "masterworks:component/pickaxe_head": {
+        "masterworks:component/pickaxe/head": {
             "masterworks:render": "masterworks:pickaxe/head",
             "masterworks:durability": "$main * 0.5",
             "masterworks:mining_denied": "$main",

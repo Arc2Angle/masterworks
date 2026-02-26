@@ -1,8 +1,8 @@
 {
     "components": {
-        "blade": "masterworks:component/sword_blade/broad",
-        "guard": "masterworks:component/guard/wide",
-        "handle": "masterworks:component/handle/short"
+        "blade": "masterworks:component/sword/broad/blade",
+        "guard": "masterworks:component/sword/broad/guard",
+        "handle": "masterworks:component/sword/broad/handle"
     },
     "properties": {
         "masterworks:item": {

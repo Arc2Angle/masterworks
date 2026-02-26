@@ -4,19 +4,19 @@
     },
     "properties": {
         "masterworks:item": {
-            "masterworks:render": "masterworks:edge/straight/left",
+            "masterworks:render": "masterworks:edge/broad/sirrated",
             "masterworks:durability": "$main * 0.25",
             "masterworks:attack_damage": "$main * 0.5",
             "masterworks:attack_speed": "$main * 0.5"
         },
-        "masterworks:component/sword_blade/broad/edge/left": {
-            "masterworks:render": "masterworks:edge/straight/left",
+        "masterworks:component/blade/broad/dual/left": {
+            "masterworks:render": "masterworks:sword/broad/blade/dual/left/sirrated",
             "masterworks:durability": "$main * 0.25",
             "masterworks:attack_damage": "$main * 0.5",
             "masterworks:attack_speed": "$main * 0.5"
         },
-        "masterworks:component/sword_blade/broad/edge/right": {
-            "masterworks:render": "masterworks:edge/straight/right",
+        "masterworks:component/blade/broad/dual/right": {
+            "masterworks:render": "masterworks:sword/broad/blade/dual/right/sirrated",
             "masterworks:durability": "$main * 0.25",
             "masterworks:attack_damage": "$main * 0.5",
             "masterworks:attack_speed": "$main * 0.5"

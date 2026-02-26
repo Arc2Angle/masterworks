@@ -1,7 +1,7 @@
 {
     "components": {
-        "left": "masterworks:component/sword_blade/broad/edge/left",
-        "right": "masterworks:component/sword_blade/broad/edge/right"
+        "left": "masterworks:component/blade/broad/dual/left",
+        "right": "masterworks:component/blade/broad/dual/right"
     },
     "properties": {
         "masterworks:item": {
@@ -13,7 +13,7 @@
             "masterworks:attack_damage": "$left + $right",
             "masterworks:attack_speed": "$left + $right"
         },
-        "masterworks:component/sword_blade/broad": {
+        "masterworks:component/sword/broad/blade": {
             "masterworks:render": [
                 "left",
                 "right"

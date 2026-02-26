@@ -9,14 +9,14 @@
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"
         },
-        "masterworks:component/binder/tool": {
-            "masterworks:render": "masterworks:binding/tool_binder",
+        "masterworks:component/pickaxe/binding": {
+            "masterworks:render": "masterworks:pickaxe/binding",
             "masterworks:durability": "$main * 0.3",
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"
         },
-        "masterworks:component/guard/wide": {
-            "masterworks:render": "masterworks:binding/wide_guard",
+        "masterworks:component/sword/broad/guard": {
+            "masterworks:render": "masterworks:sword/broad/guard",
             "masterworks:durability": "$main * 0.3",
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"

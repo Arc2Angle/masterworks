@@ -1,9 +1,12 @@
 # IDE files
-.vscode
-.idea
-.eclipse
+.vscode/
+.idea/
+.eclipse/
 
 # build
-build
-bin
-.gradle
+build/
+bin/
+.gradle/
+
+# run
+run/

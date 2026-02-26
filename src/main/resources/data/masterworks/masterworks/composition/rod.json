@@ -9,14 +9,14 @@
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"
         },
-        "masterworks:component/handle/tool": {
-            "masterworks:render": "masterworks:rod/tool_handle",
+        "masterworks:component/pickaxe/handle": {
+            "masterworks:render": "masterworks:pickaxe/handle",
             "masterworks:durability": "$main * 0.2",
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"
         },
-        "masterworks:component/handle/short": {
-            "masterworks:render": "masterworks:rod/short_handle",
+        "masterworks:component/sword/broad/handle": {
+            "masterworks:render": "masterworks:sword/broad/handle",
             "masterworks:durability": "$main * 0.2",
             "masterworks:mining_speed": "$main",
             "masterworks:attack_speed": "$main"
