@@ -39,14 +39,16 @@ public class ConstructItem extends Item {
                 CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "pickaxe");
         static final CompositionReferenceLocation pickaxeHead =
                 CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "pickaxe/head");
-        static final CompositionReferenceLocation broadSword =
+        static final CompositionReferenceLocation swordBroad =
                 CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "sword/broad");
-        static final CompositionReferenceLocation broadSwordBlade =
-                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "sword/broad/blade");
-        static final CompositionReferenceLocation broadSwordBladeDual =
-                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "sword/broad/blade/dual");
-        static final CompositionReferenceLocation broadSwordBladeStraightEdge =
-                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "sword/broad/blade/edge/straight");
+        static final CompositionReferenceLocation bladeBroad =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "blade/broad");
+        static final CompositionReferenceLocation bladeBroadDual =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "blade/broad/dual");
+        static final CompositionReferenceLocation edgeBroadStraight =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "edge/broad/straight");
+        static final CompositionReferenceLocation edgeBroadSirrated =
+                CompositionReferenceLocation.fromNamespaceAndPath("masterworks", "edge/broad/sirrated");
 
         static final MaterialReferenceLocation wood =
                 MaterialReferenceLocation.fromNamespaceAndPath("masterworks", "wood");
@@ -91,11 +93,11 @@ public class ConstructItem extends Item {
             Construct stonePickaxeHead = simple(pickaxeHead, stone);
             Construct goldPickaxeHead = simple(pickaxeHead, gold);
 
-            Construct ironSwordBlade = simple(broadSwordBlade, iron);
-            Construct diamondEdgeStraight = simple(broadSwordBladeStraightEdge, diamond);
-            Construct emeraldEdgeStraight = simple(broadSwordBladeStraightEdge, emerald);
-            Construct diamondEmeraldSwordBlade =
-                    composite(broadSwordBladeDual, Map.of("left", diamondEdgeStraight, "right", emeraldEdgeStraight));
+            Construct ironBladeBroad = simple(bladeBroad, iron);
+            Construct diamondEdgeBroadSirrated = simple(edgeBroadSirrated, diamond);
+            Construct emeraldEdgeBroadStraight = simple(edgeBroadStraight, emerald);
+            Construct diamondEmeraldBladeBroad = composite(
+                    bladeBroadDual, Map.of("left", diamondEdgeBroadSirrated, "right", emeraldEdgeBroadStraight));
 
             output.accept(stack(stonePickaxeHead));
             output.accept(stack(ironRod));
@@ -103,19 +105,19 @@ public class ConstructItem extends Item {
             output.accept(stack(
                     composite(pickaxe, Map.of("head", goldPickaxeHead, "handle", ironRod, "binding", emeraldBinding))));
 
-            output.accept(stack(ironSwordBlade));
+            output.accept(stack(ironBladeBroad));
             output.accept(stack(diamondRod));
             output.accept(stack(stoneBinding));
             output.accept(stack(composite(
-                    broadSword, Map.of("blade", ironSwordBlade, "handle", diamondRod, "guard", stoneBinding))));
+                    swordBroad, Map.of("blade", ironBladeBroad, "handle", diamondRod, "guard", stoneBinding))));
 
-            output.accept(stack(diamondEdgeStraight));
-            output.accept(stack(emeraldEdgeStraight));
-            output.accept(stack(diamondEmeraldSwordBlade));
+            output.accept(stack(diamondEdgeBroadSirrated));
+            output.accept(stack(emeraldEdgeBroadStraight));
+            output.accept(stack(diamondEmeraldBladeBroad));
             output.accept(stack(woodRod));
             output.accept(stack(ironBinding));
             output.accept(stack(composite(
-                    broadSword, Map.of("blade", diamondEmeraldSwordBlade, "handle", woodRod, "guard", ironBinding))));
+                    swordBroad, Map.of("blade", diamondEmeraldBladeBroad, "handle", woodRod, "guard", ironBinding))));
         }
     }
 }

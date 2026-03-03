@@ -1,0 +1,32 @@
+{
+    "components": [
+        "main"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:edge/broad/straight"
+        },
+        "masterworks:component/blade/broad/dual/left": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:blade/broad/dual/left/straight"
+        },
+        "masterworks:component/blade/broad/dual/right": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:blade/broad/dual/right/straight"
+        },
+        "masterworks:component/sword/broad/blade/dual/left": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:sword/broad/blade/dual/left/straight"
+        },
+        "masterworks:component/sword/broad/blade/dual/right": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:sword/broad/blade/dual/right/straight"
+        }
+    },
+    "properties": {
+        "masterworks:durability": "$main * 0.25",
+        "masterworks:attack_damage": "$main * 0.5",
+        "masterworks:attack_speed": "$main * 0.5"
+    }
+}

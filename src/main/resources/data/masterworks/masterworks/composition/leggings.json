@@ -1,0 +1,16 @@
+{
+    "components": [
+        "main"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:materializer"
+        }
+    },
+    "properties": {
+        "masterworks:equipment_slot": "legs",
+        "masterworks:durability": "$main",
+        "masterworks:armor": "$main",
+        "masterworks:toughness": "$main"
+    }
+}

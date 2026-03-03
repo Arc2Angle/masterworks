@@ -11,13 +11,14 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
 public class MasterworksDataMapTypes {
-    static DataMapTypesRegistrar REGISTRAR = new DataMapTypesRegistrar(MasterworksMod.ID);
+    private static DataMapTypesRegistrar REGISTRAR = new DataMapTypesRegistrar(MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <K, V> DataMapType<K, V> register(String name, ResourceKey<Registry<K>> registry, Codec<V> codec) {
+    @SuppressWarnings("unused")
+    private static <K, V> DataMapType<K, V> register(String name, ResourceKey<Registry<K>> registry, Codec<V> codec) {
         return REGISTRAR.registerDataMapType(
                 name, key -> DataMapType.builder(key, registry, codec).build());
     }

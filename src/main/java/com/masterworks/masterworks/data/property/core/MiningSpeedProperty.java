@@ -4,14 +4,13 @@ import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -20,8 +19,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 
-public record MiningSpeedProperty(
-        TagKey<Block> blocks, Expression expression, Map<Construct.Component.Key, RoleReferenceLocation> roles)
+public record MiningSpeedProperty(TagKey<Block> blocks, Expression expression)
         implements ExpressionProperty, ToolRuleProperty {
 
     @Override
@@ -50,12 +48,12 @@ public record MiningSpeedProperty(
         }
 
         @Override
-        public Decoder<MiningSpeedProperty> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        public Decoder<MiningSpeedProperty> decoder(Set<Construct.Component.Key> components) {
             return Decoder.ofSimple(new Decoder.Simple<>() {
                 @Override
                 public <T> DataResult<MiningSpeedProperty> decode(Dynamic<T> input) {
                     return Data.CODEC.parse(input).flatMap(data -> decodeExpression(data.value(), components)
-                            .map(expression -> new MiningSpeedProperty(data.blockTag(), expression, components)));
+                            .map(expression -> new MiningSpeedProperty(data.blockTag(), expression)));
                 }
             });
         }

@@ -1,0 +1,20 @@
+{
+    "components": [
+        "main"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:blade/broad"
+        },
+        "masterworks:component/sword/broad/blade": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:sword/broad/blade"
+        }
+    },
+    "properties": {
+        "masterworks:durability": "$main * 0.5",
+        "masterworks:attack_damage": "$main",
+        "masterworks:attack_speed": "$main"
+    }
+}

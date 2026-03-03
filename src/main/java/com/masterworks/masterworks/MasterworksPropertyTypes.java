@@ -10,30 +10,23 @@ import com.masterworks.masterworks.data.property.core.EquipmentSwappableProperty
 import com.masterworks.masterworks.data.property.core.MaxStackSizeProperty;
 import com.masterworks.masterworks.data.property.core.MiningDeniedProperty;
 import com.masterworks.masterworks.data.property.core.MiningSpeedProperty;
-import com.masterworks.masterworks.data.property.core.RenderEquipmentProperty;
-import com.masterworks.masterworks.data.property.core.RenderItemProperty;
 import com.masterworks.masterworks.data.property.core.ToughnessProperty;
 import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MasterworksPropertyTypes {
-    static final DeferredRegister<Property.Type<?>> REGISTRAR =
+    private static final DeferredRegister<Property.Type<?>> REGISTRAR =
             DeferredRegister.create(MasterworksRegistries.PROPERTY_TYPE, MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <P extends Property, T extends Property.Type<P>> Supplier<T> register(String path, Supplier<T> type) {
+    private static <P extends Property, T extends Property.Type<P>> Supplier<T> register(
+            String path, Supplier<T> type) {
         return REGISTRAR.register(path, type);
     }
-
-    public static final Supplier<RenderItemProperty.Type> RENDER_ITEM =
-            register("render_item", RenderItemProperty.Type::new);
-
-    public static final Supplier<RenderEquipmentProperty.Type> RENDER_EQUIPMENT =
-            register("render_equipment", RenderEquipmentProperty.Type::new);
 
     public static final Supplier<MaxStackSizeProperty.Type> MAX_STACK_SIZE =
             register("max_stack_size", MaxStackSizeProperty.Type::new);

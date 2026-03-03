@@ -1,0 +1,23 @@
+{
+    "components": [
+        "left",
+        "right"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:compositor",
+            "left": "masterworks:component/blade/broad/dual/left",
+            "right": "masterworks:component/blade/broad/dual/right"
+        },
+        "masterworks:component/sword/broad/blade": {
+            "type": "masterworks:compositor",
+            "left": "masterworks:component/sword/broad/blade/dual/left",
+            "right": "masterworks:component/sword/broad/blade/dual/right"
+        }
+    },
+    "properties": {
+        "masterworks:durability": "$left + $right",
+        "masterworks:attack_damage": "$left + $right",
+        "masterworks:attack_speed": "$left + $right"
+    }
+}

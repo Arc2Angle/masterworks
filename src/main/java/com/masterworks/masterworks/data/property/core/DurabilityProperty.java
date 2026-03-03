@@ -5,15 +5,14 @@ import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.DataComponentProperty;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Decoder;
-import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.network.chat.Component;
 
-public record DurabilityProperty(Expression expression, Map<Construct.Component.Key, RoleReferenceLocation> roles)
+public record DurabilityProperty(Expression expression)
         implements ExpressionProperty, DataComponentProperty, LoreComponentProperty {
 
     @Override
@@ -36,7 +35,7 @@ public record DurabilityProperty(Expression expression, Map<Construct.Component.
     public static class Type extends ExpressionProperty.Type<DurabilityProperty>
             implements DataComponentProperty.Type<DurabilityProperty>, LoreComponentProperty.Type<DurabilityProperty> {
         @Override
-        public Decoder<DurabilityProperty> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        public Decoder<DurabilityProperty> decoder(Set<Construct.Component.Key> components) {
             return decoder(DurabilityProperty::new, components);
         }
     }

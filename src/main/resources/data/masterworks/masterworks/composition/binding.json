@@ -1,25 +1,24 @@
 {
-    "components": {
-        "main": "masterworks:material"
+    "components": [
+        "main"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:binding"
+        },
+        "masterworks:component/pickaxe/binding": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:pickaxe/binding"
+        },
+        "masterworks:component/sword/broad/guard": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:sword/broad/guard"
+        }
     },
     "properties": {
-        "masterworks:item": {
-            "masterworks:render_item": "masterworks:binding",
-            "masterworks:durability": "$main * 0.3",
-            "masterworks:mining_speed": "$main",
-            "masterworks:attack_speed": "$main"
-        },
-        "masterworks:component/binder/tool": {
-            "masterworks:render_item": "masterworks:binding/tool_binder",
-            "masterworks:durability": "$main * 0.3",
-            "masterworks:mining_speed": "$main",
-            "masterworks:attack_speed": "$main"
-        },
-        "masterworks:component/guard/wide": {
-            "masterworks:render_item": "masterworks:binding/wide_guard",
-            "masterworks:durability": "$main * 0.3",
-            "masterworks:mining_speed": "$main",
-            "masterworks:attack_speed": "$main"
-        }
+        "masterworks:durability": "$main * 0.3",
+        "masterworks:mining_speed": "$main",
+        "masterworks:attack_speed": "$main"
     }
 }

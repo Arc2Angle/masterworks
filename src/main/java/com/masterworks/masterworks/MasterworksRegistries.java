@@ -8,13 +8,13 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
 public class MasterworksRegistries {
-    static RegistriesRegistrar REGISTRAR = new RegistriesRegistrar(MasterworksMod.ID);
+    private static RegistriesRegistrar REGISTRAR = new RegistriesRegistrar(MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <T> Registry<T> register(String name) {
+    private static <T> Registry<T> register(String name) {
         return REGISTRAR.registerRegistry(name, key -> new RegistryBuilder<T>(key).create());
     }
 

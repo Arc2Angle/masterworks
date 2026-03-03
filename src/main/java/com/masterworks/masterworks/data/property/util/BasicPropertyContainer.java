@@ -4,20 +4,19 @@ import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.TransientProperty;
 import com.masterworks.masterworks.location.PropertyTypeReferenceLocation;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.codec.KeyDispatchedMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public final class BasicPropertyContainer
         extends KeyDispatchedMap<PropertyTypeReferenceLocation, Property.Type<?>, Property>
         implements Property.Container {
 
     protected BasicPropertyContainer(
-            Map<PropertyTypeReferenceLocation, Dynamic<?>> dynamics,
-            Map<Construct.Component.Key, RoleReferenceLocation> components) {
+            Map<PropertyTypeReferenceLocation, Dynamic<?>> dynamics, Set<Construct.Component.Key> components) {
         super(dynamics, reference -> reference.registered().value(), type -> type.decoder(components));
     }
 
@@ -30,7 +29,7 @@ public final class BasicPropertyContainer
                         : Optional.empty());
     }
 
-    public static Codec<BasicPropertyContainer> codec(Map<Construct.Component.Key, RoleReferenceLocation> components) {
+    public static Codec<BasicPropertyContainer> codec(Set<Construct.Component.Key> components) {
         return Codec.unboundedMap(PropertyTypeReferenceLocation.CODEC, Codec.PASSTHROUGH)
                 .xmap(dynamics -> new BasicPropertyContainer(dynamics, components), instance -> instance.dynamics);
     }

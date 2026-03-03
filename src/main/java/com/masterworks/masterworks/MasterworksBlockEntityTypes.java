@@ -1,6 +1,5 @@
 package com.masterworks.masterworks;
 
-import com.masterworks.masterworks.block.entity.ConstructForgeBlockEntity;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -14,14 +13,14 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MasterworksBlockEntityTypes {
-    static final DeferredRegister<BlockEntityType<?>> REGISTRAR =
+    private static final DeferredRegister<BlockEntityType<?>> REGISTRAR =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <T extends BlockEntity> Supplier<BlockEntityType<T>> register(
+    private static <T extends BlockEntity> Supplier<BlockEntityType<T>> register(
             String name, BlockEntitySupplier<T> factory, Stream<? extends Supplier<? extends Block>> validBlocks) {
         return REGISTRAR.register(
                 name,
@@ -30,11 +29,9 @@ public class MasterworksBlockEntityTypes {
     }
 
     @SafeVarargs
-    static <T extends BlockEntity> Supplier<BlockEntityType<T>> register(
+    @SuppressWarnings("unused")
+    private static <T extends BlockEntity> Supplier<BlockEntityType<T>> register(
             String name, BlockEntitySupplier<T> factory, Supplier<? extends Block>... validBlocks) {
         return register(name, factory, Arrays.stream(validBlocks));
     }
-
-    public static final Supplier<BlockEntityType<ConstructForgeBlockEntity>> CONSTRUCT_FORGE =
-            register("construct_forge", ConstructForgeBlockEntity::new, MasterworksBlocks.CONSTRUCT_FORGE);
 }
