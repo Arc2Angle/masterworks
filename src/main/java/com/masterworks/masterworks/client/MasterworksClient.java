@@ -2,6 +2,7 @@ package com.masterworks.masterworks.client;
 
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,6 +30,7 @@ public class MasterworksClient {
                 .addToTooltip(
                         MasterworksDataComponents.CONSTRUCT.get(),
                         event.getContext(),
+                        TooltipDisplay.DEFAULT,
                         event.getToolTip()::add,
                         event.getFlags());
     }

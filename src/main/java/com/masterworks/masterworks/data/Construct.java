@@ -1,35 +1,32 @@
 package com.masterworks.masterworks.data;
 
-import com.masterworks.masterworks.MasterworksDataComponents;
+import com.masterworks.masterworks.MasterworksDataPackRegistries;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.location.CompositionReferenceLocation;
-import com.masterworks.masterworks.location.ItemMaterialReferenceLocation;
-import com.masterworks.masterworks.location.MaterialReferenceLocation;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
 
-public record Construct(CompositionReferenceLocation composition, Map<Component.Key, Component> components)
+public record Construct(Holder<Composition> composition, Map<Component.Key, Component> components)
         implements TooltipProvider {
 
     public static final Codec<Construct> CODEC = Codec.recursive(
             "construct",
             self -> RecordCodecBuilder.create(instance -> instance.group(
-                            CompositionReferenceLocation.CODEC
+                            RegistryFixedCodec.create(MasterworksDataPackRegistries.COMPOSITION)
                                     .fieldOf("composition")
                                     .forGetter(Construct::composition),
                             Codec.unboundedMap(Component.Key.CODEC, Component.CODEC)
@@ -37,19 +34,20 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
                                     .forGetter(Construct::components))
                     .apply(instance, Construct::new)));
 
-    public static final StreamCodec<ByteBuf, Construct> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, Construct> STREAM_CODEC =
             StreamCodec.recursive(self -> StreamCodec.composite(
-                    CompositionReferenceLocation.STREAM_CODEC,
+                    ByteBufCodecs.holderRegistry(MasterworksDataPackRegistries.COMPOSITION),
                     Construct::composition,
                     ByteBufCodecs.map(HashMap::new, Component.Key.STREAM_CODEC, Component.STREAM_CODEC),
                     Construct::components,
                     Construct::new));
 
-    public record Component(Either<MaterialReferenceLocation, Construct> value) {
-        public static final Codec<Component> CODEC =
-                Codec.either(MaterialReferenceLocation.CODEC, Construct.CODEC).xmap(Component::new, Component::value);
-        public static final StreamCodec<ByteBuf, Component> STREAM_CODEC = ByteBufCodecs.either(
-                        MaterialReferenceLocation.STREAM_CODEC, Construct.STREAM_CODEC)
+    public record Component(Either<Holder<Material>, Construct> value) {
+        public static final Codec<Component> CODEC = Codec.either(
+                        RegistryFixedCodec.create(MasterworksDataPackRegistries.MATERIAL), Construct.CODEC)
+                .xmap(Component::new, Component::value);
+        public static final StreamCodec<RegistryFriendlyByteBuf, Component> STREAM_CODEC = ByteBufCodecs.either(
+                        ByteBufCodecs.holderRegistry(MasterworksDataPackRegistries.MATERIAL), Construct.STREAM_CODEC)
                 .map(Component::new, Component::value);
 
         public record Key(String value) {
@@ -57,34 +55,14 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
             public static final StreamCodec<ByteBuf, Key> STREAM_CODEC =
                     ByteBufCodecs.STRING_UTF8.map(Key::new, Key::value);
 
-            public static final Key DEFAULT = new Key("main");
-
             private MutableComponent format() {
                 return net.minecraft.network.chat.Component.literal(
                         " " + Character.toUpperCase(value.charAt(0)) + value.substring(1));
             }
         }
 
-        public static Optional<Component> of(ItemStack stack) {
-            if (stack.isEmpty()) {
-                return Optional.empty();
-            }
-
-            Construct construct = stack.get(MasterworksDataComponents.CONSTRUCT);
-            if (construct != null) {
-                return Optional.of(new Component(Either.right(construct)));
-            }
-
-            return Optional.ofNullable(BuiltInRegistries.ITEM.getKeyOrNull(stack.getItem()))
-                    .flatMap(item -> new ItemMaterialReferenceLocation(item).dataMapped())
-                    .map(material -> new Component(Either.left(material)));
-        }
-
-        public Material materialOrThrow() {
-            return value.left()
-                    .orElseThrow(() -> new RuntimeException("Component is not a material"))
-                    .registered()
-                    .value();
+        public Holder<Material> materialOrThrow() {
+            return value.left().orElseThrow(() -> new RuntimeException("Component is not a material"));
         }
 
         public Construct constructOrThrow() {
@@ -92,8 +70,7 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
         }
 
         public Property.Container properties() {
-            return value.map(
-                    material -> material.registered().value().properties(), construct -> construct.properties());
+            return value.map(material -> material.value().properties(), construct -> construct.properties());
         }
 
         /**
@@ -106,16 +83,16 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
         private MutableComponent format() {
             return value.map(
                     reference -> {
-                        Material material = reference.registered().value();
+                        Material material = reference.value();
                         return net.minecraft.network.chat.Component.literal(material.name())
                                 .withColor(material.color().argb());
                     },
-                    Construct::format);
+                    construct -> construct.format());
         }
     }
 
     public Property.Container properties() {
-        return composition.registered().value().properties();
+        return composition.value().properties();
     }
 
     @Override

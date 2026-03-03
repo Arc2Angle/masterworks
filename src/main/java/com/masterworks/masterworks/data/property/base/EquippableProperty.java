@@ -7,8 +7,8 @@ import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.core.EquipmentSlotProperty;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
@@ -24,7 +24,7 @@ public interface EquippableProperty extends Property {
 
     class Applier extends Property.Applier {
         static final ResourceKey<EquipmentAsset> ASSET_KEY = ResourceKey.create(
-                EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "construct"));
+                EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MasterworksMod.ID, "construct"));
 
         @Override
         public void apply(Construct construct, ItemStack stack) {

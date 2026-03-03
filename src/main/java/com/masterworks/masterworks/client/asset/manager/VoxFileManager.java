@@ -1,28 +1,26 @@
-package com.masterworks.masterworks.client.resource.manager;
+package com.masterworks.masterworks.client.asset.manager;
 
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.client.resource.reference.VoxFileResourceReference;
 import com.masterworks.masterworks.util.vox.VoxFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-public final class VoxFileManager extends MappedResourceManager<VoxFileResourceReference, VoxFile> {
-
+public final class VoxFileManager extends AssetManager<VoxFile> {
     // assets/masterworks/voxels/**.vox
     private static final FileToIdConverter CONVERTER = new FileToIdConverter("voxels", ".vox");
 
     @Override
-    protected Map<ResourceLocation, VoxFile> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
-        Map<ResourceLocation, VoxFile> prepared = new HashMap<>();
+    protected Map<Identifier, VoxFile> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
+        Map<Identifier, VoxFile> prepared = new HashMap<>();
 
         for (var entry : CONVERTER.listMatchingResources(resourceManager).entrySet()) {
-            ResourceLocation id = CONVERTER.fileToId(entry.getKey());
+            Identifier id = CONVERTER.fileToId(entry.getKey());
 
             try (InputStream stream = entry.getValue().open()) {
                 prepared.put(id, VoxFile.read(stream));

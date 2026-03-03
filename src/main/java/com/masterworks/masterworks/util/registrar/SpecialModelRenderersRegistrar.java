@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.LinkedList;
 import java.util.List;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 
@@ -16,11 +16,11 @@ public class SpecialModelRenderersRegistrar {
         this.namespace = namespace;
     }
 
-    public <T extends SpecialModelRenderer.Unbaked> ResourceLocation registerSpecialModelRenderer(
+    public <T extends SpecialModelRenderer.Unbaked> Identifier registerSpecialModelRenderer(
             String name, MapCodec<T> codec) {
-        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, name);
-        entries.add(new Entry<>(resourceLocation, codec));
-        return resourceLocation;
+        Identifier id = Identifier.fromNamespaceAndPath(namespace, name);
+        entries.add(new Entry<>(id, codec));
+        return id;
     }
 
     public void register(IEventBus bus) {
@@ -33,9 +33,9 @@ public class SpecialModelRenderersRegistrar {
         }
     }
 
-    record Entry<T extends SpecialModelRenderer.Unbaked>(ResourceLocation resourceLocation, MapCodec<T> codec) {
+    record Entry<T extends SpecialModelRenderer.Unbaked>(Identifier id, MapCodec<T> codec) {
         void apply(RegisterSpecialModelRendererEvent event) {
-            event.register(resourceLocation, codec);
+            event.register(id, codec);
         }
     }
 }

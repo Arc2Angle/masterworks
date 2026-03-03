@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.util.tags;
+package com.masterworks.masterworks.typed.tag;
 
 import java.util.stream.Stream;
 import net.minecraft.core.Registry;

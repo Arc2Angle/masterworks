@@ -1,10 +1,12 @@
 package com.masterworks.masterworks;
 
-import com.masterworks.masterworks.location.MaterialReferenceLocation;
+import com.masterworks.masterworks.data.Material;
 import com.masterworks.masterworks.util.registrar.DataMapTypesRegistrar;
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -17,12 +19,11 @@ public class MasterworksDataMapTypes {
         REGISTRAR.register(bus);
     }
 
-    @SuppressWarnings("unused")
     private static <K, V> DataMapType<K, V> register(String name, ResourceKey<Registry<K>> registry, Codec<V> codec) {
         return REGISTRAR.registerDataMapType(
                 name, key -> DataMapType.builder(key, registry, codec).build());
     }
 
-    public static final DataMapType<Item, MaterialReferenceLocation> ITEM_MATERIAL =
-            register("item_material", Registries.ITEM, MaterialReferenceLocation.CODEC);
+    public static final DataMapType<Item, Holder<Material>> ITEM_MATERIAL = register(
+            "item_material", Registries.ITEM, RegistryFixedCodec.create(MasterworksDataPackRegistries.MATERIAL));
 }

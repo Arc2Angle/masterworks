@@ -5,7 +5,7 @@ import com.masterworks.masterworks.client.renderer.model.TemplateSpecialModelRen
 import com.masterworks.masterworks.util.registrar.SpecialModelRenderersRegistrar;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 
 public class MasterworksSpecialModelRenderers {
@@ -16,13 +16,11 @@ public class MasterworksSpecialModelRenderers {
         REGISTRAR.register(bus);
     }
 
-    private static <T extends SpecialModelRenderer.Unbaked> ResourceLocation register(String name, MapCodec<T> codec) {
+    private static <T extends SpecialModelRenderer.Unbaked> Identifier register(String name, MapCodec<T> codec) {
         return REGISTRAR.registerSpecialModelRenderer(name, codec);
     }
 
-    public static final ResourceLocation CONSTRUCT =
-            register("construct", ConstructSpecialModelRenderer.Unbaked.MAP_CODEC);
+    public static final Identifier CONSTRUCT = register("construct", ConstructSpecialModelRenderer.Unbaked.MAP_CODEC);
 
-    public static final ResourceLocation TEMPLATE =
-            register("template", TemplateSpecialModelRenderer.Unbaked.MAP_CODEC);
+    public static final Identifier TEMPLATE = register("template", TemplateSpecialModelRenderer.Unbaked.MAP_CODEC);
 }

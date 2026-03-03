@@ -3,7 +3,7 @@ package com.masterworks.masterworks.util.registrar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
@@ -18,7 +18,7 @@ public class PreparableReloadListenersRegistrar {
 
     public <T extends PreparableReloadListener> Supplier<T> registerPreparableReloadListener(
             String path, Supplier<T> factory) {
-        Entry<T> entry = new Entry<>(ResourceLocation.fromNamespaceAndPath(namespace, path), factory);
+        Entry<T> entry = new Entry<>(Identifier.fromNamespaceAndPath(namespace, path), factory);
         entries.add(entry);
         return entry;
     }
@@ -34,13 +34,13 @@ public class PreparableReloadListenersRegistrar {
     }
 
     class Entry<T extends PreparableReloadListener> implements Supplier<T> {
-        final ResourceLocation location;
+        final Identifier id;
         final Supplier<T> factory;
 
         T value = null;
 
-        Entry(ResourceLocation location, Supplier<T> factory) {
-            this.location = location;
+        Entry(Identifier id, Supplier<T> factory) {
+            this.id = id;
             this.factory = factory;
         }
 
@@ -52,7 +52,7 @@ public class PreparableReloadListenersRegistrar {
         }
 
         public void apply(AddClientReloadListenersEvent event) {
-            event.addListener(location, get());
+            event.addListener(id, get());
         }
     }
 }

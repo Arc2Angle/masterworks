@@ -2,7 +2,7 @@ package com.masterworks.masterworks.data.property;
 
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.util.BasicPropertyContainer;
-import com.masterworks.masterworks.util.tags.TypedTagKey;
+import com.masterworks.masterworks.typed.tag.TypedTagKey;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
@@ -45,7 +45,7 @@ public interface Property {
          * @param construct The construct to acquire data from
          * @param stack The item stack to apply to
          * @implSpec This method should be implemented such that calling it multiple times is
-         *           equivalent to it's last call.
+         *           equivalent to its last call.
          */
         public abstract void apply(Construct construct, ItemStack stack);
 
@@ -61,8 +61,7 @@ public interface Property {
          */
         protected <P extends Property> Stream<? extends P> propertiesByTagKey(
                 TypedTagKey<Property.Type<?>, ? extends Property.Type<? extends P>> tagKey, Construct construct) {
-            return tagKey.values()
-                    .flatMap(type -> construct.composition().registered().value().properties().get(type).stream());
+            return tagKey.values().flatMap(type -> construct.composition().value().properties().get(type).stream());
         }
     }
 }

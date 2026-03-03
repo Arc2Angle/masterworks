@@ -3,7 +3,6 @@ package com.masterworks.masterworks.data.role;
 import com.masterworks.masterworks.MasterworksRoleTypes;
 import com.masterworks.masterworks.data.Composition;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.util.codec.FlatMapCodec;
 import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.serialization.MapCodec;
@@ -22,11 +21,6 @@ public record CompositorRole(Map<Construct.Component.Key, Role.Key> arguments) i
     }
 
     @Override
-    public Property.Container properties(Construct construct, Construct.Component.Key key) {
-        return construct.components().get(key).constructOrThrow().properties();
-    }
-
-    @Override
     public Stream<Voxels> render(Map<Construct.Component.Key, Construct.Component> components) {
         return components.entrySet().stream().flatMap(entry -> {
             Construct.Component.Key componentKey = entry.getKey();
@@ -34,7 +28,7 @@ public record CompositorRole(Map<Construct.Component.Key, Role.Key> arguments) i
                     .orElseThrow(() -> new RuntimeException("Missing key: " + componentKey));
 
             Construct construct = entry.getValue().constructOrThrow();
-            Composition composition = construct.composition().registered().value();
+            Composition composition = construct.composition().value();
             Role role = Optional.ofNullable(composition.roles().get(roleKey))
                     .orElseThrow(
                             () -> new RuntimeException("Missing role: " + roleKey + " for component: " + componentKey));

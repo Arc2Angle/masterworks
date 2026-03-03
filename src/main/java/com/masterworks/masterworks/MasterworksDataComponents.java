@@ -1,7 +1,6 @@
 package com.masterworks.masterworks;
 
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.Template;
 import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -34,7 +33,4 @@ public class MasterworksDataComponents {
 
     public static final Supplier<DataComponentType<Construct>> CONSTRUCT =
             register("construct", Construct.CODEC, Construct.STREAM_CODEC);
-
-    public static final Supplier<DataComponentType<Template>> TEMPLATE =
-            register("template", Template.CODEC, Template.STREAM_CODEC);
 }

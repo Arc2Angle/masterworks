@@ -2,11 +2,10 @@ package com.masterworks.masterworks.data.role;
 
 import com.masterworks.masterworks.MasterworksPreparableReloadListeners;
 import com.masterworks.masterworks.MasterworksRoleTypes;
-import com.masterworks.masterworks.client.resource.manager.PaletteManager;
-import com.masterworks.masterworks.client.resource.manager.VoxFileManager;
-import com.masterworks.masterworks.client.resource.reference.VoxFileResourceReference;
+import com.masterworks.masterworks.client.asset.manager.PaletteManager;
+import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.Property;
+import com.masterworks.masterworks.typed.identifier.VoxFileIdentifier;
 import com.masterworks.masterworks.util.codec.FlatMapCodec;
 import com.masterworks.masterworks.util.palette.Palette;
 import com.masterworks.masterworks.util.vox.VoxFile;
@@ -16,19 +15,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public record MaterializerRole(Map<Construct.Component.Key, VoxFileResourceReference> arguments) implements Role {
+public record MaterializerRole(Map<Construct.Component.Key, VoxFileIdentifier> arguments) implements Role {
     public static final MapCodec<MaterializerRole> CODEC = FlatMapCodec.forDispatchCodec(
-                    Construct.Component.Key.CODEC, VoxFileResourceReference.CODEC, new Construct.Component.Key("type"))
+                    Construct.Component.Key.CODEC, VoxFileIdentifier.CODEC, new Construct.Component.Key("type"))
             .xmap(MaterializerRole::new, MaterializerRole::arguments);
 
     @Override
     public Type<?> type() {
         return MasterworksRoleTypes.MATERIALIZER.get();
-    }
-
-    @Override
-    public Property.Container properties(Construct construct, Construct.Component.Key key) {
-        return construct.components().get(key).materialOrThrow().properties();
     }
 
     @Override
@@ -40,10 +34,10 @@ public record MaterializerRole(Map<Construct.Component.Key, VoxFileResourceRefer
             Construct.Component.Key key = entry.getKey();
             Construct.Component component = entry.getValue();
 
-            VoxFile voxFile = voxFileManager.getOrThrow(Optional.ofNullable(arguments.get(key))
-                    .orElseThrow(() -> new RuntimeException("Missing key: " + key)));
-            Palette palette =
-                    paletteManager.getOrThrow(component.materialOrThrow().palette());
+            VoxFile voxFile = Optional.ofNullable(arguments.get(key))
+                    .orElseThrow(() -> new RuntimeException("Missing key: " + key))
+                    .assetOrThrow(voxFileManager);
+            Palette palette = component.materialOrThrow().value().palette().assetOrThrow(paletteManager);
 
             return voxFile.voxels(palette);
         });
