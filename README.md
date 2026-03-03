@@ -13,7 +13,6 @@ This README explains the core vocabulary (Roles, Properties, Compositions) and w
   - [Data Pack Files](#data-pack-files)
     - [Composition](#composition)
     - [Material](#material)
-    - [Role](#role)
   - [Resource Pack Files](#resource-pack-files)
     - [Shape](#shape)
     - [Palette](#palette)
@@ -30,7 +29,7 @@ Masterworks is built on a flexible, data-driven system. Most “content” is ex
 
 Roles act as the “type system” for Masterworks constructs. A role describes what something *is allowed to be used as* in a composition. In practice, roles define the valid “slots” that inputs may occupy and the “interfaces” that a composition can fulfill.
 
-When authoring compositions, you’ll use roles to declare what kind of input each named component expects (e.g., a `material` vs a `component/handle/tool`). When consuming a composition (crafting/building a construct), those role constraints are what make the system consistent and predictable.
+When authoring compositions, you define the roles a composition can fulfill in its `roles` block. That block maps the input components to specific sub-roles or textures depending on the role type (e.g., a `materializer` vs a `compositor`). When consuming a composition (crafting/building a construct), those role mappings are what make the visual rendering and system consistent and predictable.
 
 - **Material (`masterworks:material`)**: The fundamental building block (e.g., Iron, Wood). Materials are leaf nodes in a construct tree: they contribute base properties (like durability) and a visual style (palette + color), and they cannot be decomposed further.
 - **Component (`masterworks:component/...`)**: An intermediate part of a construct (e.g., `masterworks:component/pickaxe_head`). Components are produced by compositions that consume one or more materials/components as inputs.
@@ -38,9 +37,9 @@ When authoring compositions, you’ll use roles to declare what kind of input ea
 
 ### Properties
 
-Properties define the behavior, stats, and appearance of a construct. Properties are always associated with a role within a composition: the same composition can output different properties depending on which role you’re asking it to fulfill.
+Properties define the behavior and stats of a composition. Properties apply to the entire composition natively: the identical formula pipeline calculates the final stats irrespective of which target role is requested.
 
-Currently, properties fall into three categories: numeric expressions (stats), providers (bridges into vanilla systems), and rendering (how the item is visually assembled).
+Currently, properties fall into two categories: numeric expressions (stats) and providers (bridges into vanilla systems). Visual assembly and rendering are driven within the `roles` declarations rather than `properties`.
 
 #### Expression Properties
 
@@ -58,86 +57,86 @@ These are bridge properties that connect Masterworks’ computed values to vanil
 - **Tool Rule Provider:** Generates Minecraft tool rules (mining speed and correct tool checks) based on Masterworks properties.
 - **Data Component Provider:** A less specialized form attaching any generic data component to the item stack.
 
-#### Render Property
-
-The `masterworks:render` property controls how the item is visually assembled. It defines which shape textures to use for each component role and how those layers are combined into the final icon.
-
 ## Data-Driven Behavior
 
 ### Data Pack Files
 
-Masterworks uses data packs to define compositions, materials, and roles. These drive the entire system, allowing for clear extension and customization.
+Masterworks uses data packs to define compositions and materials. These drive the entire system, allowing for clear extension and customization.
 
 #### Composition
 
 Compositions are rich JSON files defining how constructs can be formed. They act as a bridge, mapping a set of input **components** (named slots with role constraints) to a set of output **roles** (the things the composition can “be”).
 
-Think of a composition as both a recipe and a stat pipeline: it specifies what goes in, and for each role it can fulfill, it specifies the properties (stats, providers, render rules) of the resulting output.
+Think of a composition as both a recipe and a stat pipeline: it specifies what goes in, handles routing those inputs to specific functions based on the fulfilled role, and specifies global properties (stats, providers) scaling off those inputs.
 
 **Directory:** [src/main/resources/data/masterworks/masterworks/composition/](src/main/resources/data/masterworks/masterworks/composition/)
 
 **Structure:**
 
-- `components`: A map defining the required inputs. Keys are local names (e.g., "head", "main") used in formulas. Values are the **Role** that the input component must fulfill.
-- `properties`: A map defining the output behavior. Keys are the **Role** this composition fulfills. Values are maps of properties (like stats or rendering instructions) for that role.
+- `components`: A list defining the required inputs by their local names (e.g., `"head"`, `"main"`). These names are used in formulas and role definitions.
+- `roles`: A map defining the output behavior contexts. Keys are the **Role** this composition can fulfill. Values set the `type` of the role (e.g., `"masterworks:compositor"` or `"masterworks:materializer"`) and map the component names to their specific target roles or expected sub-components.
+- `properties`: A map defining the stats and functional behavior of the composition. These apply universally to the composition.
 
 **Key Features:**
 
 - **Formulas:** Property values can be mathematical expressions referencing the input components by their local name (e.g., `$head * 0.5`).
-- **Multi-Role:** A single composition can fulfill multiple roles. For example, a "Rod" can exist as a standalone item, but it can also be used as multiple handle-like component roles, each with its own properties and render configuration.
+- **Multi-Role:** A single composition can fulfill multiple roles. For example, a "Rod" can exist as a standalone item, but it can also be used as multiple handle-like component roles, each with its own rendering configurations mapped within the `roles` block.
 
-**Example:** [rod.json](src/main/resources/data/masterworks/masterworks/composition/rod.json) takes a `material` as input (`main`). It outputs properties for three roles: `masterworks:item` (to exist as an item), `masterworks:component/handle/tool` (to be used as a tool handle), and `masterworks:component/handle/short`.
+**Example:** [rod.json](src/main/resources/data/masterworks/masterworks/composition/rod.json) takes a single input (`main`). It fulfills roles for three endpoints: `masterworks:item` (to exist as an item), `masterworks:component/pickaxe/handle`, and `masterworks:component/sword/broad/handle`, mapping the main material into each specific sub-component. Its properties are defined globally for the composition.
 
 ```json
 {
-    "components": {
-        "main": "masterworks:material"
+    "components": [
+        "main"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:rod"
+        },
+        "masterworks:component/pickaxe/handle": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:pickaxe/handle"
+        },
+        "masterworks:component/sword/broad/handle": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:sword/broad/handle"
+        }
     },
     "properties": {
-        "masterworks:item": {
-            "masterworks:render_item": "masterworks:rod",
-            "masterworks:durability": "$main * 0.2",
-            ...
-        },
-        "masterworks:component/handle/tool": {
-            "masterworks:render_item": "masterworks:rod/tool_handle",
-            "masterworks:durability": "$main * 0.2",
-            ...
-        },
-        "masterworks:component/handle/short": {
-            "masterworks:render_item": "masterworks:rod/short_handle",
-            "masterworks:durability": "$main * 0.15",
-            ...
-        }
+        "masterworks:durability": "$main * 0.2",
+        "masterworks:mining_speed": "$main",
+        "masterworks:attack_speed": "$main"
     }
 }
 ```
 
-**Example:** [pickaxe.json](src/main/resources/data/masterworks/masterworks/composition/pickaxe.json) takes three components as input: a pickaxe head, a binding, and a handle. It outputs properties for the `masterworks:item` role, calculating stats based on all three inputs. The set of blocks it can mine is determined by two factors: the head component, which inherits its material's denied blocks tag, and the vanilla pickaxe mining tag defined for its mining speed property.
+**Example:** [pickaxe.json](src/main/resources/data/masterworks/masterworks/composition/pickaxe.json) takes three components as input: a pickaxe head, a binding, and a handle. It outputs properties configured under the `roles` block for the `masterworks:item` role as a "compositor", mapping those components to their final visual targets. The set of blocks it can mine is defined in the `properties` block along with the rest of the calculated stats.
 
 ```json
 {
-    "components": {
-        "head": "masterworks:component/pickaxe_head",
-        "binding": "masterworks:component/binder/tool",
-        "handle": "masterworks:component/handle/tool"
+    "components": [
+        "head",
+        "binding",
+        "handle"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:compositor",
+            "head": "masterworks:component/pickaxe/head",
+            "binding": "masterworks:component/pickaxe/binding",
+            "handle": "masterworks:component/pickaxe/handle"
+        }
     },
     "properties": {
-        "masterworks:item": {
-            "masterworks:render_item": [
-                "head",
-                "handle",
-                "binding"
-            ],
-            "masterworks:durability": "$head + $handle + $binding",
-            "masterworks:mining_denied": "$head",
-            "masterworks:mining_speed": {
-                "block_tag": "minecraft:mineable/pickaxe",
-                "value": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
-            },
-            "masterworks:attack_damage": "$head",
-            "masterworks:attack_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
-        }
+        "masterworks:durability": "$head + $handle + $binding",
+        "masterworks:mining_denied": "$head",
+        "masterworks:mining_speed": {
+            "block_tag": "minecraft:mineable/pickaxe",
+            "value": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
+        },
+        "masterworks:attack_damage": "$head",
+        "masterworks:attack_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
     }
 }
 ```
@@ -168,32 +167,6 @@ Materials are JSON files defining the base properties and visual style of a raw 
         "masterworks:attack_damage": 7.0,
         ...
     }
-}
-```
-
-#### Role
-
-Roles are JSON files defining the “interfaces” or “slots” that constructs and components fit into. Role definitions are used both for validation (what is allowed where) and for presentation (example shapes used for display/preview).
-
-**Directory:** [src/main/resources/data/masterworks/masterworks/role/](src/main/resources/data/masterworks/masterworks/role/)
-
-**Types:**
-
-- **Material (`masterworks:material`):** The fundamental input. Its render logic takes a **Shape** argument and applies the material's palette to it.
-- **Component (`masterworks:component/...`):** Intermediate parts (e.g., tool binding, handle). Its render logic typically takes a boolean flag to pass through the underlying construct's rendering.
-- **Item (`masterworks:item`):** The final output for a usable item.
-
-**Structure:**
-
-- `type`: The role type registry name.
-- `examples`: A list of **Shape** textures valid for this role (often used for display in creative tabs or guides).
-
-**Example:** [component/handle/tool.json](src/main/resources/data/masterworks/masterworks/role/component/handle/tool.json) defines the `masterworks:component/handle/tool` role, which represents a tool handle component. It provides an example shape (`masterworks:rod`) that can be used for display. Note that this shape is actually representative of a rod's item form, not of this specific handle shape.
-
-```json
-{
-    "type": "masterworks:component",
-    "examples": "masterworks:rod"
 }
 ```
 
