@@ -1,8 +1,6 @@
 package com.masterworks.masterworks.gui.screen;
 
 import com.masterworks.masterworks.gui.menu.ConstructForgeContainerMenu;
-import com.masterworks.masterworks.location.ShapeReferenceLocation;
-import java.util.List;
 import javax.annotation.Nonnull;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -64,20 +62,20 @@ public class ConstructForgeContainerScreen extends AbstractContainerScreen<Const
 
             drawSlotGeneric(graphics, x, y);
 
-            if (slot instanceof ConstructForgeContainerMenu.ComponentSlot componentSlot) {
-                List<ShapeReferenceLocation> shapes = componentSlot
-                        .getRoles()
-                        .flatMap(role -> role.registered().value().examples().stream())
-                        .toList();
+            // if (slot instanceof ConstructForgeContainerMenu.ComponentSlot componentSlot) {
+            //     List<ShapeReferenceLocation> shapes = componentSlot
+            //             .getRoles()
+            //             .flatMap(role -> role.registered().value().examples().stream())
+            //             .toList();
 
-                if (shapes.isEmpty()) {
-                    continue;
-                }
+            //     if (shapes.isEmpty()) {
+            //         continue;
+            //     }
 
-                ShapeReferenceLocation shape = shapes.get((currentContainerTick / TICKS_PER_SWITCH) % shapes.size());
+            //     ShapeReferenceLocation shape = shapes.get((currentContainerTick / TICKS_PER_SWITCH) % shapes.size());
 
-                drawSlotItem(graphics, shape.value(), x, y);
-            }
+            //     drawSlotItem(graphics, shape.value(), x, y);
+            // }
         }
     }
 

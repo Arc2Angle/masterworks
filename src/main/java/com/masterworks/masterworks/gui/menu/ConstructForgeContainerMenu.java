@@ -1,10 +1,8 @@
 package com.masterworks.masterworks.gui.menu;
 
 import com.masterworks.masterworks.MasterworksMenuTypes;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.transfer.item.ConstructForgeHandler;
 import com.masterworks.masterworks.transfer.item.DefaultConstructForgeHandler;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -76,8 +74,8 @@ public class ConstructForgeContainerMenu extends AbstractContainerMenu {
             this.componentIndex = componentIndex;
         }
 
-        public Stream<RoleReferenceLocation> getRoles() {
-            return handler.getComponentRoles(componentIndex);
-        }
+        // public Stream<RoleReferenceLocation> getRoles() {
+        //     return handler.getComponentRoles(componentIndex);
+        // }
     }
 }

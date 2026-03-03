@@ -6,7 +6,6 @@ import com.masterworks.masterworks.MasterworksTags;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.data.property.core.EquipmentSlotProperty;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +29,7 @@ public interface EquippableProperty extends Property {
         @Override
         public void apply(Construct construct, ItemStack stack) {
             EquipmentSlotProperty equipmentSlotProperty = construct
-                    .properties(RoleReferenceLocation.ITEM)
+                    .properties()
                     .get(MasterworksPropertyTypes.EQUIPMENT_SLOT.get())
                     .orElse(null);
 

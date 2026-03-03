@@ -5,7 +5,6 @@ import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.location.CompositionReferenceLocation;
 import com.masterworks.masterworks.location.ItemMaterialReferenceLocation;
 import com.masterworks.masterworks.location.MaterialReferenceLocation;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,7 +12,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -61,7 +59,7 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
 
             public static final Key DEFAULT = new Key("main");
 
-            MutableComponent format() {
+            private MutableComponent format() {
                 return net.minecraft.network.chat.Component.literal(
                         " " + Character.toUpperCase(value.charAt(0)) + value.substring(1));
             }
@@ -82,13 +80,20 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
                     .map(material -> new Component(Either.left(material)));
         }
 
-        public Set<RoleReferenceLocation> roles() {
-            return value.map(material -> Set.of(RoleReferenceLocation.MATERIAL), construct -> construct
-                    .composition
+        public Material materialOrThrow() {
+            return value.left()
+                    .orElseThrow(() -> new RuntimeException("Component is not a material"))
                     .registered()
-                    .value()
-                    .properties()
-                    .keySet());
+                    .value();
+        }
+
+        public Construct constructOrThrow() {
+            return value.right().orElseThrow(() -> new RuntimeException("Component is not a construct"));
+        }
+
+        public Property.Container properties() {
+            return value.map(
+                    material -> material.registered().value().properties(), construct -> construct.properties());
         }
 
         /**
@@ -98,26 +103,7 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
             return value.map(material -> Map.of(), construct -> construct.components);
         }
 
-        /**
-         * Gets the properties for the given role from this construct's composition.
-         *
-         * @throws RuntimeException if the role is missing
-         */
-        public Property.Container properties(RoleReferenceLocation role) {
-            return value.map(
-                    material -> {
-                        if (!role.equals(RoleReferenceLocation.MATERIAL)) {
-                            throw new RuntimeException("Material component does not have role " + role);
-                        }
-
-                        return material.registered().value().properties();
-                    },
-                    construct -> {
-                        return construct.properties(role);
-                    });
-        }
-
-        MutableComponent format() {
+        private MutableComponent format() {
             return value.map(
                     reference -> {
                         Material material = reference.registered().value();
@@ -128,20 +114,8 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
         }
     }
 
-    /**
-     * Gets the properties for the given role from this construct's composition.
-     *
-     * @throws RuntimeException if the role is missing
-     */
-    public Property.Container properties(RoleReferenceLocation role) {
-        Property.Container roleProperties =
-                composition.registered().value().properties().get(role);
-
-        if (roleProperties == null) {
-            throw new RuntimeException("Construct composition " + composition + " missing " + role + " role");
-        }
-
-        return roleProperties;
+    public Property.Container properties() {
+        return composition.registered().value().properties();
     }
 
     @Override
@@ -153,7 +127,7 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
         adder.accept(format());
     }
 
-    MutableComponent format() {
+    private MutableComponent format() {
         if (components.size() == 1) {
             return components.values().iterator().next().format();
         }
@@ -164,14 +138,14 @@ public record Construct(CompositionReferenceLocation composition, Map<Component.
                 .orElseThrow(() -> new RuntimeException("Construct has no components")));
     }
 
-    static MutableComponent formatWrapBraces(net.minecraft.network.chat.Component value) {
+    private static MutableComponent formatWrapBraces(net.minecraft.network.chat.Component value) {
         return net.minecraft.network.chat.Component.literal("(")
                 .withColor(0xFFFFFF)
                 .append(value)
                 .append(net.minecraft.network.chat.Component.literal(")").withColor(0xFFFFFF));
     }
 
-    static MutableComponent formatJoinPlus(MutableComponent left, MutableComponent right) {
+    private static MutableComponent formatJoinPlus(MutableComponent left, MutableComponent right) {
         return left.append(net.minecraft.network.chat.Component.literal(" + ").withColor(0xFFFFFF))
                 .append(right);
     }

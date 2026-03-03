@@ -4,12 +4,12 @@ import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -37,7 +37,7 @@ public sealed interface MiningDeniedProperty extends ToolRuleProperty
 
     public static final class Type implements ToolRuleProperty.Type<MiningDeniedProperty> {
         @Override
-        public Decoder<MiningDeniedProperty> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        public Decoder<MiningDeniedProperty> decoder(Set<Construct.Component.Key> components) {
             return Decoder.ofSimple(new Decoder.Simple<>() {
                 @Override
                 public <T> DataResult<MiningDeniedProperty> decode(Dynamic<T> input) {
@@ -56,12 +56,11 @@ public sealed interface MiningDeniedProperty extends ToolRuleProperty
                             })
                             .mapOrElse(
                                     key -> {
-                                        RoleReferenceLocation role = components.get(key);
-                                        if (role == null) {
+                                        if (!components.contains(key)) {
                                             return DataResult.error(() -> "Missing component: " + key);
                                         }
 
-                                        return DataResult.success(new Reference(key, role));
+                                        return DataResult.success(new Reference(key));
                                     },
                                     error -> TagKey.codec(Registries.BLOCK)
                                             .parse(input)
@@ -80,7 +79,7 @@ public sealed interface MiningDeniedProperty extends ToolRuleProperty
         }
     }
 
-    record Reference(Construct.Component.Key key, RoleReferenceLocation role) implements MiningDeniedProperty {
+    record Reference(Construct.Component.Key key) implements MiningDeniedProperty {
         @Override
         public TagKey<Block> blocks(Map<Construct.Component.Key, Construct.Component> components) {
             Construct.Component component = components.get(key);
@@ -89,7 +88,7 @@ public sealed interface MiningDeniedProperty extends ToolRuleProperty
             }
 
             MiningDeniedProperty property = component
-                    .properties(role)
+                    .properties()
                     .get(type())
                     .orElseThrow(() -> new RuntimeException("Property " + type() + " not found in component " + key));
 

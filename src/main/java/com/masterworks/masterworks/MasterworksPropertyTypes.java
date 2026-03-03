@@ -10,7 +10,6 @@ import com.masterworks.masterworks.data.property.core.EquipmentSwappableProperty
 import com.masterworks.masterworks.data.property.core.MaxStackSizeProperty;
 import com.masterworks.masterworks.data.property.core.MiningDeniedProperty;
 import com.masterworks.masterworks.data.property.core.MiningSpeedProperty;
-import com.masterworks.masterworks.data.property.core.RenderProperty;
 import com.masterworks.masterworks.data.property.core.ToughnessProperty;
 import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
@@ -27,8 +26,6 @@ public class MasterworksPropertyTypes {
     static <P extends Property, T extends Property.Type<P>> Supplier<T> register(String path, Supplier<T> type) {
         return REGISTRAR.register(path, type);
     }
-
-    public static final Supplier<RenderProperty.Type> RENDER = register("render", RenderProperty.Type::new);
 
     public static final Supplier<MaxStackSizeProperty.Type> MAX_STACK_SIZE =
             register("max_stack_size", MaxStackSizeProperty.Type::new);

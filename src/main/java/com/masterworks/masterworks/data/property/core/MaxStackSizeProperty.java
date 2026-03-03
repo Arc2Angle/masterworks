@@ -4,10 +4,9 @@ import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.TransientProperty;
 import com.masterworks.masterworks.data.property.base.DataComponentProperty;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Decoder;
-import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.TypedDataComponent;
 
@@ -30,7 +29,7 @@ public record MaxStackSizeProperty(int size) implements TransientProperty, DataC
         }
 
         @Override
-        public Decoder<MaxStackSizeProperty> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        public Decoder<MaxStackSizeProperty> decoder(Set<Construct.Component.Key> components) {
             return Codec.INT.xmap(MaxStackSizeProperty::new, MaxStackSizeProperty::size);
         }
     }

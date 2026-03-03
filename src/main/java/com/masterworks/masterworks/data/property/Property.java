@@ -2,13 +2,12 @@ package com.masterworks.masterworks.data.property;
 
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.util.BasicPropertyContainer;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.tags.TypedTagKey;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +16,7 @@ public interface Property {
     Type<?> type();
 
     interface Type<T extends Property> {
-        Decoder<T> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components);
+        Decoder<T> decoder(Set<Construct.Component.Key> components);
     }
 
     interface Container {
@@ -29,7 +28,7 @@ public interface Property {
          */
         <T extends Property> Optional<T> get(Property.Type<T> type);
 
-        static Codec<Container> basicCodec(Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        static Codec<Container> basicCodec(Set<Construct.Component.Key> components) {
             return BasicPropertyContainer.codec(components)
                     .flatComapMap(
                             Function.identity(),
@@ -62,7 +61,8 @@ public interface Property {
          */
         protected <P extends Property> Stream<? extends P> propertiesByTagKey(
                 TypedTagKey<Property.Type<?>, ? extends Property.Type<? extends P>> tagKey, Construct construct) {
-            return tagKey.values().flatMap(type -> construct.properties(RoleReferenceLocation.ITEM).get(type).stream());
+            return tagKey.values()
+                    .flatMap(type -> construct.composition().registered().value().properties().get(type).stream());
         }
     }
 }

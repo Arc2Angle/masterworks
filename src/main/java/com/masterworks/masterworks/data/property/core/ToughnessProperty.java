@@ -5,10 +5,9 @@ import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Decoder;
-import java.util.Map;
+import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -16,8 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 
-public record ToughnessProperty(Expression expression, Map<Construct.Component.Key, RoleReferenceLocation> roles)
-        implements ExpressionProperty, ItemAttributeModifierProperty {
+public record ToughnessProperty(Expression expression) implements ExpressionProperty, ItemAttributeModifierProperty {
     public static final ResourceLocation ATTRIBUTE_ID =
             ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "armor_toughness");
 
@@ -37,7 +35,7 @@ public record ToughnessProperty(Expression expression, Map<Construct.Component.K
     public static class Type extends ExpressionProperty.Type<ToughnessProperty>
             implements ItemAttributeModifierProperty.Type<ToughnessProperty> {
         @Override
-        public Decoder<ToughnessProperty> decoder(Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        public Decoder<ToughnessProperty> decoder(Set<Construct.Component.Key> components) {
             return decoder(ToughnessProperty::new, components);
         }
     }

@@ -2,14 +2,14 @@ package com.masterworks.masterworks.data.property.base;
 
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,21 +18,16 @@ public interface ExpressionProperty extends Property {
 
     Expression expression();
 
-    Map<Construct.Component.Key, RoleReferenceLocation> roles();
-
     default Double evaluate(Map<Construct.Component.Key, Construct.Component> components) {
+
         Map<String, Double> arguments = components.entrySet().stream()
                 .flatMap(entry -> {
                     Construct.Component.Key key = entry.getKey();
                     Construct.Component component = entry.getValue();
 
-                    RoleReferenceLocation role = Optional.ofNullable(roles().get(key))
-                            .orElseThrow(() -> new IllegalStateException(
-                                    "No role mapping for component key " + key + " in property " + this));
-
                     String argumentKey = "$" + key.value();
                     Optional<Double> argumentValue = component
-                            .properties(role)
+                            .properties()
                             .get(type())
                             .map(property -> property.evaluate(component.components()));
 
@@ -47,20 +42,17 @@ public interface ExpressionProperty extends Property {
     Type<?> type();
 
     public abstract static class Type<P extends ExpressionProperty> implements Property.Type<P> {
-        protected Decoder<P> decoder(
-                BiFunction<Expression, Map<Construct.Component.Key, RoleReferenceLocation>, P> constructor,
-                Map<Construct.Component.Key, RoleReferenceLocation> components) {
+        protected Decoder<P> decoder(Function<Expression, P> constructor, Set<Construct.Component.Key> components) {
             return Decoder.ofSimple(new Decoder.Simple<P>() {
                 @Override
                 public <T> DataResult<P> decode(Dynamic<T> input) {
-                    return decodeExpression(input, components)
-                            .map(expression -> constructor.apply(expression, components));
+                    return decodeExpression(input, components).map(expression -> constructor.apply(expression));
                 }
             });
         }
 
         protected <T> DataResult<Expression> decodeExpression(
-                Dynamic<T> input, Map<Construct.Component.Key, RoleReferenceLocation> components) {
+                Dynamic<T> input, Set<Construct.Component.Key> components) {
             return Expression.CODEC.parse(input).flatMap(expression -> expression
                     .arguments()
                     .flatMap(argument -> {
@@ -74,7 +66,7 @@ public interface ExpressionProperty extends Property {
                         Construct.Component.Key key =
                                 new Construct.Component.Key(argument.substring(ARGUMENT_PREFIX.length()));
 
-                        if (!components.containsKey(key)) {
+                        if (!components.contains(key)) {
                             return Stream.of(DataResult.<Expression>error(() -> "Expression \""
                                     + expression + "\" references non-existent component \"" + key
                                     + "\""));

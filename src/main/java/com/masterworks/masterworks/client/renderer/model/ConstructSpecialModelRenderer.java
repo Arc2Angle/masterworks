@@ -2,10 +2,8 @@ package com.masterworks.masterworks.client.renderer.model;
 
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.MasterworksPropertyTypes;
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.core.RenderProperty;
-import com.masterworks.masterworks.location.RoleReferenceLocation;
+import com.masterworks.masterworks.data.role.Role;
 import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.serialization.MapCodec;
 import java.util.Map;
@@ -56,25 +54,23 @@ public class ConstructSpecialModelRenderer extends VoxelsSpecialModelRenderer<Co
             return cached;
         }
 
-        RenderProperty property = argument.properties(RoleReferenceLocation.ITEM)
-                .get(MasterworksPropertyTypes.RENDER.get())
-                .orElse(null);
-
-        if (property == null) {
-            MasterworksMod.LOGGER.warn("Missing render property for construct " + argument);
-            return null;
-        }
-
         try {
-            Voxels voxels = property.render(argument.components())
+            Voxels voxels = argument.composition()
+                    .registered()
+                    .value()
+                    .roles()
+                    .get(Role.Key.ITEM)
+                    .render(argument.components())
                     .reduce(Voxels::overlay)
                     .orElseThrow()
                     .compact();
 
             cache.put(argument, voxels);
             return voxels;
+
         } catch (Exception e) {
-            throw new RuntimeException("Failed to render composition " + argument.composition(), e);
+            MasterworksMod.LOGGER.error("Failed to render construct with composition: {}", argument.composition(), e);
+            return null;
         }
     }
 }

@@ -2,7 +2,6 @@ package com.masterworks.masterworks;
 
 import com.masterworks.masterworks.data.Composition;
 import com.masterworks.masterworks.data.Material;
-import com.masterworks.masterworks.data.role.Role;
 import com.masterworks.masterworks.util.registrar.DataPackRegistriesRegistrar;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
@@ -21,8 +20,6 @@ public class MasterworksDataPackRegistries {
     }
 
     public static final ResourceKey<Registry<Material>> MATERIAL = register("material", Material.CODEC);
-
-    public static final ResourceKey<Registry<Role>> ROLE = register("role", Role.CODEC);
 
     public static final ResourceKey<Registry<Composition>> COMPOSITION = register("composition", Composition.CODEC);
 }
