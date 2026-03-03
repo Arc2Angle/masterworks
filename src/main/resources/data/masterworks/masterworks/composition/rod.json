@@ -1,25 +1,24 @@
 {
-    "components": {
-        "main": "masterworks:material"
-    },
-    "properties": {
+    "components": [
+        "main"
+    ],
+    "roles": {
         "masterworks:item": {
-            "masterworks:render": "masterworks:rod",
-            "masterworks:durability": "$main * 0.2",
-            "masterworks:mining_speed": "$main",
-            "masterworks:attack_speed": "$main"
+            "type": "masterworks:materializer",
+            "main": "masterworks:rod"
         },
         "masterworks:component/pickaxe/handle": {
-            "masterworks:render": "masterworks:pickaxe/handle",
-            "masterworks:durability": "$main * 0.2",
-            "masterworks:mining_speed": "$main",
-            "masterworks:attack_speed": "$main"
+            "type": "masterworks:materializer",
+            "main": "masterworks:pickaxe/handle"
         },
         "masterworks:component/sword/broad/handle": {
-            "masterworks:render": "masterworks:sword/broad/handle",
-            "masterworks:durability": "$main * 0.2",
-            "masterworks:mining_speed": "$main",
-            "masterworks:attack_speed": "$main"
+            "type": "masterworks:materializer",
+            "main": "masterworks:sword/broad/handle"
         }
+    },
+    "properties": {
+        "masterworks:durability": "$main * 0.2",
+        "masterworks:mining_speed": "$main",
+        "masterworks:attack_speed": "$main"
     }
 }

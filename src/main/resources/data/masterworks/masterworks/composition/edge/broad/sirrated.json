@@ -1,25 +1,32 @@
 {
-    "components": {
-        "main": "masterworks:material"
-    },
-    "properties": {
+    "components": [
+        "main"
+    ],
+    "roles": {
         "masterworks:item": {
-            "masterworks:render": "masterworks:edge/broad/sirrated",
-            "masterworks:durability": "$main * 0.25",
-            "masterworks:attack_damage": "$main * 0.5",
-            "masterworks:attack_speed": "$main * 0.5"
+            "type": "masterworks:materializer",
+            "main": "masterworks:edge/broad/sirrated"
         },
         "masterworks:component/blade/broad/dual/left": {
-            "masterworks:render": "masterworks:sword/broad/blade/dual/left/sirrated",
-            "masterworks:durability": "$main * 0.25",
-            "masterworks:attack_damage": "$main * 0.5",
-            "masterworks:attack_speed": "$main * 0.5"
+            "type": "masterworks:materializer",
+            "main": "masterworks:blade/broad/dual/left/sirrated"
         },
         "masterworks:component/blade/broad/dual/right": {
-            "masterworks:render": "masterworks:sword/broad/blade/dual/right/sirrated",
-            "masterworks:durability": "$main * 0.25",
-            "masterworks:attack_damage": "$main * 0.5",
-            "masterworks:attack_speed": "$main * 0.5"
+            "type": "masterworks:materializer",
+            "main": "masterworks:blade/broad/dual/right/sirrated"
+        },
+        "masterworks:component/sword/broad/blade/dual/left": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:sword/broad/blade/dual/left/sirrated"
+        },
+        "masterworks:component/sword/broad/blade/dual/right": {
+            "type": "masterworks:materializer",
+            "main": "masterworks:sword/broad/blade/dual/right/sirrated"
         }
+    },
+    "properties": {
+        "masterworks:durability": "$main * 0.25",
+        "masterworks:attack_damage": "$main * 0.5",
+        "masterworks:attack_speed": "$main * 0.5"
     }
 }

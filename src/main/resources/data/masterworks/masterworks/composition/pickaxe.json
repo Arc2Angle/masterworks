@@ -1,24 +1,25 @@
 {
-    "components": {
-        "head": "masterworks:component/pickaxe/head",
-        "binding": "masterworks:component/pickaxe/binding",
-        "handle": "masterworks:component/pickaxe/handle"
+    "components": [
+        "head",
+        "binding",
+        "handle"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:compositor",
+            "head": "masterworks:component/pickaxe/head",
+            "binding": "masterworks:component/pickaxe/binding",
+            "handle": "masterworks:component/pickaxe/handle"
+        }
     },
     "properties": {
-        "masterworks:item": {
-            "masterworks:render": [
-                "head",
-                "handle",
-                "binding"
-            ],
-            "masterworks:durability": "$head + $handle + $binding",
-            "masterworks:mining_denied": "$head",
-            "masterworks:mining_speed": {
-                "block_tag": "minecraft:mineable/pickaxe",
-                "value": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
-            },
-            "masterworks:attack_damage": "$head",
-            "masterworks:attack_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
-        }
+        "masterworks:durability": "$head + $handle + $binding",
+        "masterworks:mining_denied": "$head",
+        "masterworks:mining_speed": {
+            "block_tag": "minecraft:mineable/pickaxe",
+            "value": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
+        },
+        "masterworks:attack_damage": "$head",
+        "masterworks:attack_speed": "$head * 0.4 + $handle * 0.4 + $binding * 0.2"
     }
 }

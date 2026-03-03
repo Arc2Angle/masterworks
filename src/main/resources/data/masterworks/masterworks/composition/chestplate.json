@@ -1,14 +1,16 @@
 {
-    "components": {
-        "main": "masterworks:material"
+    "components": [
+        "main"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "type": "masterworks:materializer"
+        }
     },
     "properties": {
-        "masterworks:item": {
-            "masterworks:render": "masterworks:equipment/chestplate",
-            "masterworks:equipment_slot": "chest",
-            "masterworks:durability": "$main",
-            "masterworks:armor": "$main",
-            "masterworks:toughness": "$main"
-        }
+        "masterworks:equipment_slot": "chest",
+        "masterworks:durability": "$main",
+        "masterworks:armor": "$main",
+        "masterworks:toughness": "$main"
     }
 }
