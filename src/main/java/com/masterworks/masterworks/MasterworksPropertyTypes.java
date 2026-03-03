@@ -16,14 +16,15 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MasterworksPropertyTypes {
-    static final DeferredRegister<Property.Type<?>> REGISTRAR =
+    private static final DeferredRegister<Property.Type<?>> REGISTRAR =
             DeferredRegister.create(MasterworksRegistries.PROPERTY_TYPE, MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <P extends Property, T extends Property.Type<P>> Supplier<T> register(String path, Supplier<T> type) {
+    private static <P extends Property, T extends Property.Type<P>> Supplier<T> register(
+            String path, Supplier<T> type) {
         return REGISTRAR.register(path, type);
     }
 

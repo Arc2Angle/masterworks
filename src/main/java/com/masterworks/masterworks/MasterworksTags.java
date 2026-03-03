@@ -16,11 +16,12 @@ import net.minecraft.tags.TagKey;
 
 public class MasterworksTags {
 
-    static <T> TagKey<T> create(ResourceKey<? extends Registry<T>> key, String path) {
+    @SuppressWarnings("unused")
+    private static <T> TagKey<T> create(ResourceKey<? extends Registry<T>> key, String path) {
         return TagKey.create(key, ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, path));
     }
 
-    static <T, U extends T> TypedTagKey<T, U> createWarningTyped(
+    private static <T, U extends T> TypedTagKey<T, U> createWarningTyped(
             Registry<T> registry, String path, Function<? super T, ? extends U> cast) {
         TagKey<T> untyped =
                 TagKey.create(registry.key(), ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, path));

@@ -13,19 +13,20 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MasterworksDataComponents {
-    static final DeferredRegister.DataComponents REGISTRAR =
+    private static final DeferredRegister.DataComponents REGISTRAR =
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <T> Supplier<DataComponentType<T>> register(
+    @SuppressWarnings("unused")
+    private static <T> Supplier<DataComponentType<T>> register(
             String name, UnaryOperator<DataComponentType.Builder<T>> builder) {
         return REGISTRAR.registerComponentType(name, builder);
     }
 
-    static <T> Supplier<DataComponentType<T>> register(
+    private static <T> Supplier<DataComponentType<T>> register(
             String name, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
         return REGISTRAR.registerComponentType(
                 name, builder -> builder.networkSynchronized(streamCodec).persistent(codec));

@@ -9,15 +9,14 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MasterworksRoleTypes {
-
-    static final DeferredRegister<Role.Type<?>> REGISTRAR =
+    private static final DeferredRegister<Role.Type<?>> REGISTRAR =
             DeferredRegister.create(MasterworksRegistries.ROLE_TYPE, MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <T extends Role> Supplier<Role.Type<T>> register(String path, MapCodec<T> codec) {
+    private static <T extends Role> Supplier<Role.Type<T>> register(String path, MapCodec<T> codec) {
         return REGISTRAR.register(path, () -> new Role.Type<>(codec));
     }
 

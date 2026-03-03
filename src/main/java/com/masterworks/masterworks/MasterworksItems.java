@@ -12,17 +12,18 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MasterworksItems {
-    static final DeferredRegister.Items REGISTRAR = DeferredRegister.createItems(MasterworksMod.ID);
+    private static final DeferredRegister.Items REGISTRAR = DeferredRegister.createItems(MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <T extends Item> DeferredItem<T> register(String name, Function<Item.Properties, T> factory) {
+    private static <T extends Item> DeferredItem<T> register(String name, Function<Item.Properties, T> factory) {
         return REGISTRAR.registerItem(name, factory);
     }
 
-    static DeferredItem<BlockItem> registerBlockItem(String name, Supplier<? extends Block> factory) {
+    @SuppressWarnings("unused")
+    private static DeferredItem<BlockItem> registerBlockItem(String name, Supplier<? extends Block> factory) {
         return REGISTRAR.registerSimpleBlockItem(name, factory);
     }
 
@@ -48,7 +49,4 @@ public class MasterworksItems {
 
     public static final DeferredItem<TemplateItem> BROADSWORD_TEMPLATE =
             register("broadsword_template", TemplateItem::new);
-
-    public static final DeferredItem<BlockItem> CONSTRUCT_FORGE =
-            registerBlockItem("construct_forge", MasterworksBlocks.CONSTRUCT_FORGE);
 }

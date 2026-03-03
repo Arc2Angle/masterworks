@@ -1,7 +1,5 @@
 package com.masterworks.masterworks;
 
-import com.masterworks.masterworks.recipe.ConstructionRecipe;
-import com.masterworks.masterworks.recipe.serializer.ConstructionRecipeSerializer;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
@@ -10,18 +8,16 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MasterworksRecipeSerializers {
-    static final DeferredRegister<RecipeSerializer<?>> REGISTRAR =
+    private static final DeferredRegister<RecipeSerializer<?>> REGISTRAR =
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <T extends Recipe<?>> Supplier<RecipeSerializer<T>> register(
+    @SuppressWarnings("unused")
+    private static <T extends Recipe<?>> Supplier<RecipeSerializer<T>> register(
             String name, Supplier<? extends RecipeSerializer<T>> factory) {
         return REGISTRAR.register(name, factory);
     }
-
-    public static final Supplier<RecipeSerializer<ConstructionRecipe>> CONSTRUCTION =
-            register("construction", ConstructionRecipeSerializer::new);
 }

@@ -9,13 +9,13 @@ import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
 
 public class MasterworksDataPackRegistries {
-    static DataPackRegistriesRegistrar REGISTRAR = new DataPackRegistriesRegistrar(MasterworksMod.ID);
+    private static DataPackRegistriesRegistrar REGISTRAR = new DataPackRegistriesRegistrar(MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <T> ResourceKey<Registry<T>> register(String name, Codec<T> codec) {
+    private static <T> ResourceKey<Registry<T>> register(String name, Codec<T> codec) {
         return REGISTRAR.registerDataPackRegistry(name, codec);
     }
 

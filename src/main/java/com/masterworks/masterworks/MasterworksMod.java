@@ -17,25 +17,25 @@ public class MasterworksMod {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public MasterworksMod(IEventBus bus, ModContainer container) {
-        com.masterworks.masterworks.MasterworksRegistries.register(bus);
-        com.masterworks.masterworks.MasterworksDataPackRegistries.register(bus);
+        MasterworksRegistries.register(bus);
+        MasterworksDataPackRegistries.register(bus);
 
-        com.masterworks.masterworks.MasterworksDataMapTypes.register(bus);
-        com.masterworks.masterworks.MasterworksDataComponents.register(bus);
-        com.masterworks.masterworks.MasterworksMenuTypes.register(bus);
-        com.masterworks.masterworks.MasterworksMenuScreens.register(bus);
-        com.masterworks.masterworks.MasterworksItems.register(bus);
-        com.masterworks.masterworks.MasterworksBlocks.register(bus);
-        com.masterworks.masterworks.MasterworksBlockEntityTypes.register(bus);
-        com.masterworks.masterworks.MasterworksCreativeTabs.register(bus);
-        com.masterworks.masterworks.MasterworksRecipeSerializers.register(bus);
-        com.masterworks.masterworks.MasterworksRecipeTypes.register(bus);
-        com.masterworks.masterworks.MasterworksIngredientTypes.register(bus);
-        com.masterworks.masterworks.MasterworksCapabilities.register(bus);
+        MasterworksDataMapTypes.register(bus);
+        MasterworksDataComponents.register(bus);
+        MasterworksMenuTypes.register(bus);
+        MasterworksMenuScreens.register(bus);
+        MasterworksItems.register(bus);
+        MasterworksBlocks.register(bus);
+        MasterworksBlockEntityTypes.register(bus);
+        MasterworksCreativeModeTabs.register(bus);
+        MasterworksRecipeSerializers.register(bus);
+        MasterworksRecipeTypes.register(bus);
+        MasterworksIngredientTypes.register(bus);
+        MasterworksCapabilities.register(bus);
 
-        com.masterworks.masterworks.MasterworksPropertyTypes.register(bus);
-        com.masterworks.masterworks.MasterworksPropertyAppliers.register(bus);
-        com.masterworks.masterworks.MasterworksRoleTypes.register(bus);
+        MasterworksPropertyTypes.register(bus);
+        MasterworksPropertyAppliers.register(bus);
+        MasterworksRoleTypes.register(bus);
 
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

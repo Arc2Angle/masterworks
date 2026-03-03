@@ -11,14 +11,14 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MasterworksPropertyAppliers {
-    static final DeferredRegister<Property.Applier> REGISTRAR =
+    private static final DeferredRegister<Property.Applier> REGISTRAR =
             DeferredRegister.create(MasterworksRegistries.PROPERTY_APPLIER, MasterworksMod.ID);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
     }
 
-    static <T extends Property.Applier> Supplier<T> register(String path, Supplier<T> type) {
+    private static <T extends Property.Applier> Supplier<T> register(String path, Supplier<T> type) {
         return REGISTRAR.register(path, type);
     }
 
