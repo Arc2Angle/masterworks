@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import java.util.LinkedList;
 import java.util.List;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
@@ -18,8 +18,7 @@ public class DataPackRegistriesRegistrar {
     }
 
     public <T> ResourceKey<Registry<T>> registerDataPackRegistry(String name, Codec<T> codec) {
-        ResourceKey<Registry<T>> key =
-                ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(namespace, name));
+        ResourceKey<Registry<T>> key = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(namespace, name));
         entries.add(new Entry<T>(key, codec));
         return key;
     }

@@ -56,7 +56,6 @@ public class ConstructSpecialModelRenderer extends VoxelsSpecialModelRenderer<Co
 
         try {
             Voxels voxels = argument.composition()
-                    .registered()
                     .value()
                     .roles()
                     .get(Role.Key.ITEM)

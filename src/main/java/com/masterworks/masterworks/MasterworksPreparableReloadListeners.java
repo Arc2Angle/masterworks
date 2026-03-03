@@ -1,7 +1,7 @@
 package com.masterworks.masterworks;
 
-import com.masterworks.masterworks.client.resource.manager.PaletteManager;
-import com.masterworks.masterworks.client.resource.manager.VoxFileManager;
+import com.masterworks.masterworks.client.asset.manager.PaletteManager;
+import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
 import com.masterworks.masterworks.util.registrar.PreparableReloadListenersRegistrar;
 import java.util.function.Supplier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;

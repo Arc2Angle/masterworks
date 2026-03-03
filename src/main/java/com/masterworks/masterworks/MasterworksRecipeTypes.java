@@ -3,7 +3,7 @@ package com.masterworks.masterworks;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
@@ -19,7 +19,7 @@ public class MasterworksRecipeTypes {
 
     @SuppressWarnings("unused")
     private static <T extends Recipe<?>> Supplier<RecipeType<T>> register(
-            String name, Function<ResourceLocation, ? extends RecipeType<T>> factory) {
+            String name, Function<Identifier, ? extends RecipeType<T>> factory) {
         return REGISTRAR.register(name, factory);
     }
 }

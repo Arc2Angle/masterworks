@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.util.tags;
+package com.masterworks.masterworks.typed.tag;
 
 import java.util.Optional;
 import java.util.function.Consumer;

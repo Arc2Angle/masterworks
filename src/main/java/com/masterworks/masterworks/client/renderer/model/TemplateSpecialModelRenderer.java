@@ -1,8 +1,8 @@
 package com.masterworks.masterworks.client.renderer.model;
 
 import com.masterworks.masterworks.MasterworksPreparableReloadListeners;
-import com.masterworks.masterworks.client.resource.manager.VoxFileManager;
-import com.masterworks.masterworks.client.resource.reference.VoxFileResourceReference;
+import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
+import com.masterworks.masterworks.typed.identifier.VoxFileIdentifier;
 import com.masterworks.masterworks.util.palette.Palette;
 import com.masterworks.masterworks.util.vox.VoxFile;
 import com.masterworks.masterworks.util.vox.Voxels;
@@ -16,14 +16,11 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 
 public class TemplateSpecialModelRenderer extends VoxelsSpecialModelRenderer<Void> {
-    public record Unbaked(VoxFileResourceReference tier, List<VoxFileResourceReference> shape)
+    public record Unbaked(VoxFileIdentifier tier, List<VoxFileIdentifier> shape)
             implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                        VoxFileResourceReference.CODEC.fieldOf("tier").forGetter(Unbaked::tier),
-                        Codec.withAlternative(
-                                        Codec.list(VoxFileResourceReference.CODEC),
-                                        VoxFileResourceReference.CODEC,
-                                        List::of)
+                        VoxFileIdentifier.CODEC.fieldOf("tier").forGetter(Unbaked::tier),
+                        Codec.withAlternative(Codec.list(VoxFileIdentifier.CODEC), VoxFileIdentifier.CODEC, List::of)
                                 .fieldOf("shape")
                                 .forGetter(Unbaked::shape))
                 .apply(instance, Unbaked::new));
@@ -38,11 +35,11 @@ public class TemplateSpecialModelRenderer extends VoxelsSpecialModelRenderer<Voi
         public SpecialModelRenderer<?> bake(@Nonnull BakingContext context) {
             VoxFileManager voxFileManager = MasterworksPreparableReloadListeners.VOX_FILE_MANAGER.get();
 
-            VoxFile tierVoxFile = voxFileManager.getOrThrow(tier);
+            VoxFile tierVoxFile = tier.assetOrThrow(voxFileManager);
             Voxels tierVoxels = tierVoxFile.voxels(tierVoxFile.palette());
 
             Voxels shapeVoxels = shape.stream()
-                    .map(reference -> voxFileManager.getOrThrow(reference).voxels(Palette.NO_COLOR8))
+                    .map(reference -> reference.assetOrThrow(voxFileManager).voxels(Palette.NO_COLOR8))
                     .reduce(Voxels::overlay)
                     .orElseThrow();
 

@@ -8,7 +8,7 @@ import com.masterworks.masterworks.data.property.base.ItemAttributeModifierPrope
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Decoder;
 import java.util.Set;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -16,8 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public record ToughnessProperty(Expression expression) implements ExpressionProperty, ItemAttributeModifierProperty {
-    public static final ResourceLocation ATTRIBUTE_ID =
-            ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, "armor_toughness");
+    public static final Identifier ATTRIBUTE_ID = Identifier.fromNamespaceAndPath(MasterworksMod.ID, "armor_toughness");
 
     @Override
     public ItemAttributeModifiers.Entry getItemAttributeModifier(Construct construct) {

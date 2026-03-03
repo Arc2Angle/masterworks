@@ -6,25 +6,24 @@ import com.masterworks.masterworks.data.property.base.EquippableProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
 import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
 import com.masterworks.masterworks.data.property.base.ToolRuleProperty;
-import com.masterworks.masterworks.util.tags.PermissiveTypedTagKey;
-import com.masterworks.masterworks.util.tags.TypedTagKey;
+import com.masterworks.masterworks.typed.tag.PermissiveTypedTagKey;
+import com.masterworks.masterworks.typed.tag.TypedTagKey;
 import java.util.function.Function;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
 public class MasterworksTags {
 
     @SuppressWarnings("unused")
     private static <T> TagKey<T> create(ResourceKey<? extends Registry<T>> key, String path) {
-        return TagKey.create(key, ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, path));
+        return TagKey.create(key, Identifier.fromNamespaceAndPath(MasterworksMod.ID, path));
     }
 
     private static <T, U extends T> TypedTagKey<T, U> createWarningTyped(
             Registry<T> registry, String path, Function<? super T, ? extends U> cast) {
-        TagKey<T> untyped =
-                TagKey.create(registry.key(), ResourceLocation.fromNamespaceAndPath(MasterworksMod.ID, path));
+        TagKey<T> untyped = TagKey.create(registry.key(), Identifier.fromNamespaceAndPath(MasterworksMod.ID, path));
 
         return PermissiveTypedTagKey.createSuppressing(untyped, registry, cast, exception -> {
             MasterworksMod.LOGGER.warn(
