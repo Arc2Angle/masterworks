@@ -1,6 +1,6 @@
 package com.masterworks.masterworks.client.renderer.model;
 
-import com.masterworks.masterworks.MasterworksPreparableReloadListeners;
+import com.masterworks.masterworks.client.MasterworksPreparableReloadListeners;
 import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
 import com.masterworks.masterworks.typed.identifier.VoxFileIdentifier;
 import com.masterworks.masterworks.util.palette.Palette;
