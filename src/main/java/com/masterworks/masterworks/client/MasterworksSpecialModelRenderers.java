@@ -1,5 +1,6 @@
-package com.masterworks.masterworks;
+package com.masterworks.masterworks.client;
 
+import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.client.renderer.model.ConstructSpecialModelRenderer;
 import com.masterworks.masterworks.client.renderer.model.TemplateSpecialModelRenderer;
 import com.masterworks.masterworks.util.registrar.SpecialModelRenderersRegistrar;

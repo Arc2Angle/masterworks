@@ -1,5 +1,6 @@
-package com.masterworks.masterworks;
+package com.masterworks.masterworks.client;
 
+import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.client.asset.manager.PaletteManager;
 import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
 import com.masterworks.masterworks.util.registrar.PreparableReloadListenersRegistrar;

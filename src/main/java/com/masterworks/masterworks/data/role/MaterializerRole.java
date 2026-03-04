@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.data.role;
 
-import com.masterworks.masterworks.MasterworksPreparableReloadListeners;
 import com.masterworks.masterworks.MasterworksRoleTypes;
+import com.masterworks.masterworks.client.MasterworksPreparableReloadListeners;
 import com.masterworks.masterworks.client.asset.manager.PaletteManager;
 import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
 import com.masterworks.masterworks.data.Construct;
