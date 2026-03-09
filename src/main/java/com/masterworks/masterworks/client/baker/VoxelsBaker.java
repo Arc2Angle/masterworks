@@ -1,16 +1,15 @@
 package com.masterworks.masterworks.client.baker;
 
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.util.registrar.AtlasStitchDependenetsRegistrar;
 import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.blaze3d.platform.Transparency;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BakedQuad.SpriteInfo;
 import net.minecraft.client.renderer.block.model.Material;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -23,35 +22,15 @@ import org.jspecify.annotations.NonNull;
 /**
  * Bakes {@link Voxels} into a list of {@link BakedQuad}s using a single white pixel texture.
  */
-public record VoxelsBaker(
-        SpriteInfo whitePixelSpriteInfo, long packedUV0, long packedUV1, long packedUV2, long packedUV3) {
+public record VoxelsBaker(SpriteGetter sprites) {
+    private static final SpriteId WHITE_PIXEL_SPRITE_ID = new SpriteId(
+            Identifier.withDefaultNamespace("textures/atlas/items.png"),
+            Identifier.fromNamespaceAndPath(MasterworksMod.ID, "item/white_pixel"));
 
-    public record Factory() implements AtlasStitchDependenetsRegistrar.Factory<VoxelsBaker> {
-        @Override
-        public Identifier atlasId() {
-            return Identifier.withDefaultNamespace("textures/atlas/items.png");
-        }
-
-        private static final Identifier SPRITE_ID =
-                Identifier.fromNamespaceAndPath(MasterworksMod.ID, "item/white_pixel");
-
-        @Override
-        public VoxelsBaker create(TextureAtlas atlas) {
-            TextureAtlasSprite sprite = atlas.getSprite(SPRITE_ID);
-            SpriteInfo spriteInfo = SpriteInfo.of(new Material.Baked(sprite, false), Transparency.NONE);
-
-            long packedUV0 = packUV(sprite.getU0(), sprite.getV0());
-            long packedUV1 = packUV(sprite.getU1(), sprite.getV0());
-            long packedUV2 = packUV(sprite.getU1(), sprite.getV1());
-            long packedUV3 = packUV(sprite.getU0(), sprite.getV1());
-
-            return new VoxelsBaker(spriteInfo, packedUV0, packedUV1, packedUV2, packedUV3);
-        }
-
-        private static long packUV(float u, float v) {
-            return ((long) Float.floatToRawIntBits(u) << 32) | (Float.floatToRawIntBits(v) & 0xFFFFFFFFL);
-        }
-    }
+    private static final int TINT_INDEX = -1;
+    private static final boolean SHADE = true;
+    private static final int LIGHT_EMMISION = 0;
+    private static final boolean HAS_AMBIANT_OCCLUSION = true;
 
     public List<BakedQuad> bake(@NonNull Voxels voxels) {
         List<BakedQuad> quads = new ArrayList<>();
@@ -65,6 +44,8 @@ public record VoxelsBaker(
 
         Vector3f size = voxels.size();
         Vector3f offset = voxels.offset();
+
+        BakedSprite pixel = BakedSprite.of(sprites.get(WHITE_PIXEL_SPRITE_ID));
 
         for (int i = 0; i < colors.length; i++) {
             if (ARGB.alpha(colors[i]) == 0) {
@@ -86,7 +67,7 @@ public record VoxelsBaker(
             float z1 = size.z * (zi + 1) / countZ + offset.z;
 
             if (yi == 0 || ARGB.alpha(colors[i - countX]) != 0xFF) {
-                quads.add(createQuad(
+                quads.add(pixel.createQuad(
                         new Vector3f(x0, y0, z0),
                         new Vector3f(x1, y0, z0),
                         new Vector3f(x1, y0, z1),
@@ -96,7 +77,7 @@ public record VoxelsBaker(
             }
 
             if (yi == countY - 1 || ARGB.alpha(colors[i + countX]) != 0xFF) {
-                quads.add(createQuad(
+                quads.add(pixel.createQuad(
                         new Vector3f(x0, y1, z1),
                         new Vector3f(x1, y1, z1),
                         new Vector3f(x1, y1, z0),
@@ -106,7 +87,7 @@ public record VoxelsBaker(
             }
 
             if (zi == 0 || ARGB.alpha(colors[i - countXY]) != 0xFF) {
-                quads.add(createQuad(
+                quads.add(pixel.createQuad(
                         new Vector3f(x1, y0, z0),
                         new Vector3f(x0, y0, z0),
                         new Vector3f(x0, y1, z0),
@@ -116,7 +97,7 @@ public record VoxelsBaker(
             }
 
             if (zi == countZ - 1 || ARGB.alpha(colors[i + countXY]) != 0xFF) {
-                quads.add(createQuad(
+                quads.add(pixel.createQuad(
                         new Vector3f(x0, y0, z1),
                         new Vector3f(x1, y0, z1),
                         new Vector3f(x1, y1, z1),
@@ -126,7 +107,7 @@ public record VoxelsBaker(
             }
 
             if (xi == 0 || ARGB.alpha(colors[i - 1]) != 0xFF) {
-                quads.add(createQuad(
+                quads.add(pixel.createQuad(
                         new Vector3f(x0, y0, z0),
                         new Vector3f(x0, y0, z1),
                         new Vector3f(x0, y1, z1),
@@ -136,7 +117,7 @@ public record VoxelsBaker(
             }
 
             if (xi == countX - 1 || ARGB.alpha(colors[i + 1]) != 0xFF) {
-                quads.add(createQuad(
+                quads.add(pixel.createQuad(
                         new Vector3f(x1, y0, z1),
                         new Vector3f(x1, y0, z0),
                         new Vector3f(x1, y1, z0),
@@ -149,29 +130,41 @@ public record VoxelsBaker(
         return quads;
     }
 
-    public static final int TINT_INDEX = -1;
-    public static final boolean SHADE = true;
-    public static final int LIGHT_EMMISION = 0;
-    public static final boolean HAS_AMBIANT_OCCLUSION = true;
+    private record BakedSprite(BakedQuad.SpriteInfo info, long uv0, long uv1, long uv2, long uv3) {
+        public static BakedSprite of(TextureAtlasSprite sprite) {
+            BakedQuad.SpriteInfo info = BakedQuad.SpriteInfo.of(new Material.Baked(sprite, false), Transparency.NONE);
 
-    private BakedQuad createQuad(
-            Vector3fc v1, Vector3fc v2, Vector3fc v3, Vector3fc v4, Direction direction, BakedColors bakedColors) {
-        return new BakedQuad(
-                v1,
-                v2,
-                v3,
-                v4,
-                packedUV0,
-                packedUV1,
-                packedUV2,
-                packedUV3,
-                TINT_INDEX,
-                direction,
-                whitePixelSpriteInfo,
-                SHADE,
-                LIGHT_EMMISION,
-                BakedNormals.UNSPECIFIED,
-                bakedColors,
-                HAS_AMBIANT_OCCLUSION);
+            long uv0 = packUV(sprite.getU0(), sprite.getV0());
+            long uv1 = packUV(sprite.getU1(), sprite.getV0());
+            long uv2 = packUV(sprite.getU1(), sprite.getV1());
+            long uv3 = packUV(sprite.getU0(), sprite.getV1());
+
+            return new BakedSprite(info, uv0, uv1, uv2, uv3);
+        }
+
+        private static long packUV(float u, float v) {
+            return ((long) Float.floatToRawIntBits(u) << 32) | (Float.floatToRawIntBits(v) & 0xFFFFFFFFL);
+        }
+
+        public BakedQuad createQuad(
+                Vector3fc v1, Vector3fc v2, Vector3fc v3, Vector3fc v4, Direction direction, BakedColors bakedColors) {
+            return new BakedQuad(
+                    v1,
+                    v2,
+                    v3,
+                    v4,
+                    uv0,
+                    uv1,
+                    uv2,
+                    uv3,
+                    TINT_INDEX,
+                    direction,
+                    info,
+                    SHADE,
+                    LIGHT_EMMISION,
+                    BakedNormals.UNSPECIFIED,
+                    bakedColors,
+                    HAS_AMBIANT_OCCLUSION);
+        }
     }
 }

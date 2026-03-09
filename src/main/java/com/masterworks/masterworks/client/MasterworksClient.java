@@ -18,7 +18,6 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 public class MasterworksClient {
 
     public MasterworksClient(ModContainer container, IEventBus bus) {
-        MasterworksAtlasStitchDependents.register(bus);
         MasterworksPreparableReloadListeners.register(bus);
         MasterworksSpecialModelRenderers.register(bus);
 

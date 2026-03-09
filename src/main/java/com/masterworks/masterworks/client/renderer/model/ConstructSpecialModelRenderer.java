@@ -2,27 +2,30 @@ package com.masterworks.masterworks.client.renderer.model;
 
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.client.MasterworksAtlasStitchDependents;
+import com.masterworks.masterworks.client.baker.VoxelsBaker;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.role.Role;
 import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.item.ItemStackRenderState.FoilType;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-public final class ConstructSpecialModelRenderer implements SpecialModelRenderer<Construct> {
+public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Construct, List<BakedQuad>> cache)
+        implements SpecialModelRenderer<Construct> {
+
     public record Unbaked() implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<ConstructSpecialModelRenderer.Unbaked> MAP_CODEC =
                 MapCodec.unit(ConstructSpecialModelRenderer.Unbaked::new);
@@ -35,7 +38,7 @@ public final class ConstructSpecialModelRenderer implements SpecialModelRenderer
         @Override
         @Nonnull
         public SpecialModelRenderer<?> bake(@Nonnull BakingContext context) {
-            return new ConstructSpecialModelRenderer();
+            return new ConstructSpecialModelRenderer(new VoxelsBaker(context.sprites()), new WeakHashMap<>());
         }
     }
 
@@ -54,8 +57,6 @@ public final class ConstructSpecialModelRenderer implements SpecialModelRenderer
         Vector3fc extent = new PoseStack.Pose().pose().transformPosition(new Vector3f(0f, 0f, 0f));
         output.accept(extent);
     }
-
-    private final WeakHashMap<Construct, List<BakedQuad>> cache = new WeakHashMap<>();
 
     @Override
     public void submit(
@@ -86,7 +87,7 @@ public final class ConstructSpecialModelRenderer implements SpecialModelRenderer
                         .orElseThrow()
                         .compact();
 
-                bakedQuads = MasterworksAtlasStitchDependents.VOXELS_BAKER.get().bake(voxels);
+                bakedQuads = voxelsBaker.bake(voxels);
                 cache.put(argument, bakedQuads);
 
             } catch (Exception e) {
@@ -104,6 +105,9 @@ public final class ConstructSpecialModelRenderer implements SpecialModelRenderer
                 outlineColor,
                 null,
                 bakedQuads,
-                hasFoil ? FoilType.STANDARD : FoilType.NONE);
+                hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
     }
+
+    // TODO: add a way to get an instance for a client side reload
+    // TODO: add a custom packet for a server side reload
 }
