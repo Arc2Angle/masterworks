@@ -18,7 +18,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 public class MasterworksClient {
 
     public MasterworksClient(ModContainer container, IEventBus bus) {
-        MasterworksPreparableReloadListeners.register(bus);
+        MasterworksReloadListeners.register(bus);
         MasterworksSpecialModelRenderers.register(bus);
 
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);

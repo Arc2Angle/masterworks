@@ -84,8 +84,7 @@ public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Constru
                         .get(Role.Key.ITEM)
                         .render(argument.components())
                         .reduce(Voxels::overlay)
-                        .orElseThrow()
-                        .compact();
+                        .orElseThrow();
 
                 bakedQuads = voxelsBaker.bake(voxels);
                 cache.put(argument, bakedQuads);
