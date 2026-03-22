@@ -8,22 +8,21 @@ import com.masterworks.masterworks.data.role.Role;
 import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
-import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Construct, List<BakedQuad>> cache)
+public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Construct, QuadCollection> cache)
         implements SpecialModelRenderer<Construct> {
 
     public record Unbaked() implements SpecialModelRenderer.Unbaked {
@@ -72,10 +71,10 @@ public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Constru
             return;
         }
 
-        List<BakedQuad> bakedQuads;
+        QuadCollection quads;
 
         if (cache.containsKey(argument)) {
-            bakedQuads = cache.get(argument);
+            quads = cache.get(argument);
         } else {
             try {
                 Voxels voxels = argument.composition()
@@ -86,8 +85,8 @@ public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Constru
                         .reduce(Voxels::overlay)
                         .orElseThrow();
 
-                bakedQuads = voxelsBaker.bake(voxels);
-                cache.put(argument, bakedQuads);
+                quads = voxelsBaker.bake(voxels);
+                cache.put(argument, quads);
 
             } catch (Exception e) {
                 MasterworksMod.LOGGER.error(
@@ -103,7 +102,7 @@ public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Constru
                 packedOverlay,
                 outlineColor,
                 null,
-                bakedQuads,
+                quads.getAll(),
                 hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
     }
 

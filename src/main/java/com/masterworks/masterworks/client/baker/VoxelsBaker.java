@@ -3,11 +3,10 @@ package com.masterworks.masterworks.client.baker;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.blaze3d.platform.Transparency;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.client.resources.model.SpriteId;
 import net.minecraft.core.Direction;
@@ -32,8 +31,8 @@ public record VoxelsBaker(SpriteGetter sprites) {
     private static final int LIGHT_EMMISION = 0;
     private static final boolean HAS_AMBIANT_OCCLUSION = true;
 
-    public List<BakedQuad> bake(@NonNull Voxels voxels) {
-        List<BakedQuad> quads = new ArrayList<>();
+    public QuadCollection bake(@NonNull Voxels voxels) {
+        Builder builder = new Builder(sprites.get(WHITE_PIXEL_SPRITE_ID));
 
         int[] colors = voxels.colors();
 
@@ -44,8 +43,6 @@ public record VoxelsBaker(SpriteGetter sprites) {
 
         Vector3f size = voxels.size();
         Vector3f offset = voxels.offset();
-
-        BakedSprite pixel = BakedSprite.of(sprites.get(WHITE_PIXEL_SPRITE_ID));
 
         for (int i = 0; i < colors.length; i++) {
             if (ARGB.alpha(colors[i]) == 0) {
@@ -67,88 +64,88 @@ public record VoxelsBaker(SpriteGetter sprites) {
             float z1 = size.z * (zi + 1) / countZ + offset.z;
 
             if (yi == 0 || ARGB.alpha(colors[i - countX]) != 0xFF) {
-                quads.add(pixel.createQuad(
+                builder.addFace(
                         new Vector3f(x0, y0, z0),
                         new Vector3f(x1, y0, z0),
                         new Vector3f(x1, y0, z1),
                         new Vector3f(x0, y0, z1),
                         Direction.DOWN,
-                        bakedColors));
+                        bakedColors);
             }
 
             if (yi == countY - 1 || ARGB.alpha(colors[i + countX]) != 0xFF) {
-                quads.add(pixel.createQuad(
+                builder.addFace(
                         new Vector3f(x0, y1, z1),
                         new Vector3f(x1, y1, z1),
                         new Vector3f(x1, y1, z0),
                         new Vector3f(x0, y1, z0),
                         Direction.UP,
-                        bakedColors));
+                        bakedColors);
             }
 
             if (zi == 0 || ARGB.alpha(colors[i - countXY]) != 0xFF) {
-                quads.add(pixel.createQuad(
+                builder.addFace(
                         new Vector3f(x1, y0, z0),
                         new Vector3f(x0, y0, z0),
                         new Vector3f(x0, y1, z0),
                         new Vector3f(x1, y1, z0),
                         Direction.NORTH,
-                        bakedColors));
+                        bakedColors);
             }
 
             if (zi == countZ - 1 || ARGB.alpha(colors[i + countXY]) != 0xFF) {
-                quads.add(pixel.createQuad(
+                builder.addFace(
                         new Vector3f(x0, y0, z1),
                         new Vector3f(x1, y0, z1),
                         new Vector3f(x1, y1, z1),
                         new Vector3f(x0, y1, z1),
                         Direction.SOUTH,
-                        bakedColors));
+                        bakedColors);
             }
 
             if (xi == 0 || ARGB.alpha(colors[i - 1]) != 0xFF) {
-                quads.add(pixel.createQuad(
+                builder.addFace(
                         new Vector3f(x0, y0, z0),
                         new Vector3f(x0, y0, z1),
                         new Vector3f(x0, y1, z1),
                         new Vector3f(x0, y1, z0),
                         Direction.WEST,
-                        bakedColors));
+                        bakedColors);
             }
 
             if (xi == countX - 1 || ARGB.alpha(colors[i + 1]) != 0xFF) {
-                quads.add(pixel.createQuad(
+                builder.addFace(
                         new Vector3f(x1, y0, z1),
                         new Vector3f(x1, y0, z0),
                         new Vector3f(x1, y1, z0),
                         new Vector3f(x1, y1, z1),
                         Direction.EAST,
-                        bakedColors));
+                        bakedColors);
             }
         }
 
-        return quads;
+        return builder.build();
     }
 
-    private record BakedSprite(BakedQuad.SpriteInfo info, long uv0, long uv1, long uv2, long uv3) {
-        public static BakedSprite of(TextureAtlasSprite sprite) {
-            BakedQuad.SpriteInfo info = BakedQuad.SpriteInfo.of(new Material.Baked(sprite, false), Transparency.NONE);
+    private final class Builder extends QuadCollection.Builder {
+        private final BakedQuad.SpriteInfo spriteInfo;
+        private final long uv0, uv1, uv2, uv3;
 
-            long uv0 = packUV(sprite.getU0(), sprite.getV0());
-            long uv1 = packUV(sprite.getU1(), sprite.getV0());
-            long uv2 = packUV(sprite.getU1(), sprite.getV1());
-            long uv3 = packUV(sprite.getU0(), sprite.getV1());
-
-            return new BakedSprite(info, uv0, uv1, uv2, uv3);
+        public Builder(TextureAtlasSprite sprite) {
+            spriteInfo = BakedQuad.SpriteInfo.of(new Material.Baked(sprite, false), Transparency.NONE);
+            uv0 = packUV(sprite.getU0(), sprite.getV0());
+            uv1 = packUV(sprite.getU1(), sprite.getV0());
+            uv2 = packUV(sprite.getU1(), sprite.getV1());
+            uv3 = packUV(sprite.getU0(), sprite.getV1());
         }
 
         private static long packUV(float u, float v) {
             return ((long) Float.floatToRawIntBits(u) << 32) | (Float.floatToRawIntBits(v) & 0xFFFFFFFFL);
         }
 
-        public BakedQuad createQuad(
+        public Builder addFace(
                 Vector3fc v1, Vector3fc v2, Vector3fc v3, Vector3fc v4, Direction direction, BakedColors bakedColors) {
-            return new BakedQuad(
+            BakedQuad quad = new BakedQuad(
                     v1,
                     v2,
                     v3,
@@ -159,12 +156,14 @@ public record VoxelsBaker(SpriteGetter sprites) {
                     uv3,
                     TINT_INDEX,
                     direction,
-                    info,
+                    spriteInfo,
                     SHADE,
                     LIGHT_EMMISION,
                     BakedNormals.UNSPECIFIED,
                     bakedColors,
                     HAS_AMBIANT_OCCLUSION);
+            addCulledFace(direction, quad);
+            return this;
         }
     }
 }

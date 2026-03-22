@@ -18,16 +18,15 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-public record TemplateSpecialModelRenderer(Supplier<List<BakedQuad>> bakedQuadsSupplier)
-        implements SpecialModelRenderer<Void> {
+public record TemplateSpecialModelRenderer(Supplier<QuadCollection> quads) implements SpecialModelRenderer<Void> {
     public record Unbaked(VoxFileIdentifier tier, List<VoxFileIdentifier> shape)
             implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -45,20 +44,24 @@ public record TemplateSpecialModelRenderer(Supplier<List<BakedQuad>> bakedQuadsS
         @Override
         @Nonnull
         public SpecialModelRenderer<?> bake(@Nonnull BakingContext context) {
-            VoxFileManager voxFileManager = MasterworksReloadListeners.VOX_FILE_MANAGER.get();
+            // defered to first frame of rendering
+            // since baked quads depend on atlas and resource assets
+            return new TemplateSpecialModelRenderer(Suppliers.memoize(() -> {
+                VoxFileManager voxFileManager = MasterworksReloadListeners.VOX_FILE_MANAGER.get();
 
-            VoxFile tierVoxFile = tier.assetOrThrow(voxFileManager);
-            Voxels tierVoxels = tierVoxFile.voxels(tierVoxFile.palette());
+                VoxFile tierVoxFile = tier.assetOrThrow(voxFileManager);
+                Voxels tierVoxels = tierVoxFile.voxels(tierVoxFile.palette());
 
-            Voxels shapeVoxels = shape.stream()
-                    .map(reference -> reference.assetOrThrow(voxFileManager).voxels(Palette.NO_COLOR8))
-                    .reduce(Voxels::overlay)
-                    .orElseThrow();
+                Voxels shapeVoxels = shape.stream()
+                        .map(reference -> reference.assetOrThrow(voxFileManager).voxels(Palette.NO_COLOR8))
+                        .reduce(Voxels::overlay)
+                        .orElseThrow();
 
-            Voxels templateVoxels = etchProjected(tierVoxels, 8, shapeVoxels, 7, 0x7F);
+                Voxels templateVoxels = etchProjected(tierVoxels, 8, shapeVoxels, 7, 0x7F);
 
-            VoxelsBaker baker = new VoxelsBaker(context.sprites());
-            return new TemplateSpecialModelRenderer(Suppliers.memoize(() -> baker.bake(templateVoxels)));
+                VoxelsBaker baker = new VoxelsBaker(context.sprites());
+                return baker.bake(templateVoxels);
+            }));
         }
     }
 
@@ -92,7 +95,7 @@ public record TemplateSpecialModelRenderer(Supplier<List<BakedQuad>> bakedQuadsS
                 packedOverlay,
                 outlineColor,
                 null,
-                bakedQuadsSupplier.get(),
+                quads.get().getAll(),
                 hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
     }
 
