@@ -1,8 +1,8 @@
 package com.masterworks.masterworks.client.asset.manager;
 
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.client.MasterworksReloadListeners;
 import com.masterworks.masterworks.util.palette.Palette;
-import com.masterworks.masterworks.util.registrar.ReloadListenersRegistrar;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +44,7 @@ public final class PaletteManager extends AssetManager<Palette> {
         return prepared;
     }
 
-    public static final class Type implements ReloadListenersRegistrar.Type<PaletteManager> {
+    public static final class Type implements MasterworksReloadListeners.Type<PaletteManager> {
         @Override
         public List<Identifier> dependents() {
             return List.of(VanillaClientListeners.MODELS);

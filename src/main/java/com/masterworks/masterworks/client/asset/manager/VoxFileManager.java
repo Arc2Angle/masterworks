@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.client.asset.manager;
 
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.util.registrar.ReloadListenersRegistrar;
+import com.masterworks.masterworks.client.MasterworksReloadListeners;
 import com.masterworks.masterworks.util.vox.VoxFile;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +39,7 @@ public final class VoxFileManager extends AssetManager<VoxFile> {
         return prepared;
     }
 
-    public static final class Type implements ReloadListenersRegistrar.Type<VoxFileManager> {
+    public static final class Type implements MasterworksReloadListeners.Type<VoxFileManager> {
         @Override
         public List<Identifier> dependents() {
             return List.of(VanillaClientListeners.MODELS);
