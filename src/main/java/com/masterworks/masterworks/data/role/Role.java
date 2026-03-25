@@ -16,6 +16,10 @@ public interface Role {
 
     Type<?> type();
 
+    /**
+     * Returns a stream of voxels to render for the given components.
+     * @apiNote This is a client-side method and may access client-only resources. It will only be called on the logical client.
+     */
     Stream<Voxels> render(Map<Construct.Component.Key, Construct.Component> components);
 
     public record Key(Identifier value) {

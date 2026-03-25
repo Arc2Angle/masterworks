@@ -1,16 +1,19 @@
 package com.masterworks.masterworks.client.asset.manager;
 
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.client.MasterworksReloadListeners;
 import com.masterworks.masterworks.util.palette.Palette;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.neoforged.neoforge.client.resources.VanillaClientListeners;
 
 public final class PaletteManager extends AssetManager<Palette> {
     // assets/masterworks/textures/palettes/**.png
@@ -38,7 +41,18 @@ public final class PaletteManager extends AssetManager<Palette> {
             MasterworksMod.LOGGER.info("Loaded palette: {}", id);
         }
 
-        apply(prepared, null, null); // TODO: burn this abomination
         return prepared;
+    }
+
+    public static final class Type implements MasterworksReloadListeners.Type<PaletteManager> {
+        @Override
+        public List<Identifier> dependents() {
+            return List.of(VanillaClientListeners.MODELS);
+        }
+
+        @Override
+        public PaletteManager create() {
+            return new PaletteManager();
+        }
     }
 }

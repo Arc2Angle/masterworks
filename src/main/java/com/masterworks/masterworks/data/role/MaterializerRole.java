@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.data.role;
 
-import com.masterworks.masterworks.MasterworksPreparableReloadListeners;
 import com.masterworks.masterworks.MasterworksRoleTypes;
+import com.masterworks.masterworks.client.MasterworksReloadListeners;
 import com.masterworks.masterworks.client.asset.manager.PaletteManager;
 import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
 import com.masterworks.masterworks.data.Construct;
@@ -27,8 +27,8 @@ public record MaterializerRole(Map<Construct.Component.Key, VoxFileIdentifier> a
 
     @Override
     public Stream<Voxels> render(Map<Construct.Component.Key, Construct.Component> components) {
-        VoxFileManager voxFileManager = MasterworksPreparableReloadListeners.VOX_FILE_MANAGER.get();
-        PaletteManager paletteManager = MasterworksPreparableReloadListeners.PALETTE_MANAGER.get();
+        VoxFileManager voxFileManager = MasterworksReloadListeners.VOX_FILE_MANAGER.get();
+        PaletteManager paletteManager = MasterworksReloadListeners.PALETTE_MANAGER.get();
 
         return components.entrySet().stream().map(entry -> {
             Construct.Component.Key key = entry.getKey();

@@ -1,15 +1,18 @@
 package com.masterworks.masterworks.client.asset.manager;
 
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.client.MasterworksReloadListeners;
 import com.masterworks.masterworks.util.vox.VoxFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.neoforged.neoforge.client.resources.VanillaClientListeners;
 
 public final class VoxFileManager extends AssetManager<VoxFile> {
     // assets/masterworks/voxels/**.vox
@@ -33,7 +36,18 @@ public final class VoxFileManager extends AssetManager<VoxFile> {
             MasterworksMod.LOGGER.info("Loaded vox shape: {}", id);
         }
 
-        apply(prepared, null, null); // TODO: burn this abomination
         return prepared;
+    }
+
+    public static final class Type implements MasterworksReloadListeners.Type<VoxFileManager> {
+        @Override
+        public List<Identifier> dependents() {
+            return List.of(VanillaClientListeners.MODELS);
+        }
+
+        @Override
+        public VoxFileManager create() {
+            return new VoxFileManager();
+        }
     }
 }
