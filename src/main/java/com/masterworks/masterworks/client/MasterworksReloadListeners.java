@@ -3,6 +3,7 @@ package com.masterworks.masterworks.client;
 import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.client.asset.manager.PaletteManager;
 import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
+import com.masterworks.masterworks.client.renderer.model.ConstructSpecialModelRenderer;
 import com.masterworks.masterworks.util.Registrar;
 import java.util.List;
 import java.util.function.Supplier;
@@ -15,6 +16,7 @@ public class MasterworksReloadListeners {
     private static final Registrar<AddClientReloadListenersEvent> REGISTRAR =
             new Registrar<>(MasterworksMod.ID, AddClientReloadListenersEvent.class);
 
+    @FunctionalInterface
     public interface Type<T extends PreparableReloadListener> {
         default List<Identifier> dependencies() {
             return List.of();
@@ -44,6 +46,9 @@ public class MasterworksReloadListeners {
 
     public static final Supplier<PaletteManager> PALETTE_MANAGER =
             register("textures/palette", new PaletteManager.Type());
+
+    public static final Supplier<ConstructSpecialModelRenderer.QuadCollectionCache> CONSTRUCT_SPECIAL_MODEL_RENDERER_CACHE =
+            register("construct_special_model_renderer_cache", ConstructSpecialModelRenderer.QuadCollectionCache::new);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);

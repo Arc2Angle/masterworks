@@ -2,6 +2,7 @@ package com.masterworks.masterworks.client.renderer.model;
 
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.client.MasterworksReloadListeners;
 import com.masterworks.masterworks.client.baker.VoxelsBaker;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.role.Role;
@@ -17,15 +18,17 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Construct, QuadCollection> cache)
+public record ConstructSpecialModelRenderer(VoxelsBaker baker, QuadCollectionCache cache)
         implements SpecialModelRenderer<Construct> {
 
-    public record Unbaked() implements SpecialModelRenderer.Unbaked {
+    public static final class Unbaked implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<ConstructSpecialModelRenderer.Unbaked> MAP_CODEC =
                 MapCodec.unit(ConstructSpecialModelRenderer.Unbaked::new);
 
@@ -37,7 +40,27 @@ public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Constru
         @Override
         @Nonnull
         public SpecialModelRenderer<?> bake(@Nonnull BakingContext context) {
-            return new ConstructSpecialModelRenderer(new VoxelsBaker(context.sprites()), new WeakHashMap<>());
+            return new ConstructSpecialModelRenderer(
+                    new VoxelsBaker(context.sprites()),
+                    MasterworksReloadListeners.CONSTRUCT_SPECIAL_MODEL_RENDERER_CACHE.get());
+        }
+    }
+
+    public static final class QuadCollectionCache implements ResourceManagerReloadListener {
+        private final Map<Construct, QuadCollection> values = new WeakHashMap<>();
+
+        @Override
+        public void onResourceManagerReload(ResourceManager resourceManager) {
+            values.clear();
+        }
+
+        public void put(Construct construct, QuadCollection quads) {
+            values.put(construct, quads);
+        }
+
+        @Nullable
+        public QuadCollection get(Construct construct) {
+            return values.get(construct);
         }
     }
 
@@ -71,11 +94,8 @@ public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Constru
             return;
         }
 
-        QuadCollection quads;
-
-        if (cache.containsKey(argument)) {
-            quads = cache.get(argument);
-        } else {
+        QuadCollection quads = cache.get(argument);
+        if (quads == null) {
             try {
                 Voxels voxels = argument.composition()
                         .value()
@@ -85,12 +105,14 @@ public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Constru
                         .reduce(Voxels::overlay)
                         .orElseThrow();
 
-                quads = voxelsBaker.bake(voxels);
+                quads = baker.bake(voxels);
                 cache.put(argument, quads);
+
+                MasterworksMod.LOGGER.debug("Baked quads for construct with composition: {}", argument.composition());
 
             } catch (Exception e) {
                 MasterworksMod.LOGGER.error(
-                        "Failed to produce baked quads for construct with composition: {}", argument.composition(), e);
+                        "Failed to bake quads for construct with composition: {}", argument.composition(), e);
                 return;
             }
         }
@@ -106,6 +128,5 @@ public record ConstructSpecialModelRenderer(VoxelsBaker voxelsBaker, Map<Constru
                 hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
     }
 
-    // TODO: add a way to get an instance for a client side reload
     // TODO: add a custom packet for a server side reload
 }
