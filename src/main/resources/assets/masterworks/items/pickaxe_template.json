@@ -5,11 +5,7 @@
         "model": {
             "type": "masterworks:template",
             "tier": "masterworks:basic",
-            "shape": [
-                "masterworks:pickaxe/handle",
-                "masterworks:pickaxe/binding",
-                "masterworks:pickaxe/head"
-            ]
+            "etching": "masterworks:pickaxe"
         }
     }
 }

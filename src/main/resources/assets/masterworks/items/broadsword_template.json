@@ -5,11 +5,7 @@
         "model": {
             "type": "masterworks:template",
             "tier": "masterworks:basic",
-            "shape": [
-                "masterworks:sword/broad/handle",
-                "masterworks:sword/broad/guard",
-                "masterworks:sword/broad/blade"
-            ]
+            "etching": "masterworks:sword/broad"
         }
     }
 }

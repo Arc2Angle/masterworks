@@ -5,7 +5,7 @@
         "model": {
             "type": "masterworks:template",
             "tier": "masterworks:advanced",
-            "shape": "masterworks:blade/broad"
+            "etching": "masterworks:blade/broad"
         }
     }
 }
