@@ -1,10 +1,10 @@
 package com.masterworks.masterworks.data.role;
 
 import com.masterworks.masterworks.MasterworksRoleTypes;
+import com.masterworks.masterworks.client.vox.VoxAsset;
 import com.masterworks.masterworks.data.Composition;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.util.codec.FlatMapCodec;
-import com.masterworks.masterworks.util.vox.Voxels;
 import com.mojang.serialization.MapCodec;
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public record CompositorRole(Map<Construct.Component.Key, Role.Key> arguments) i
     }
 
     @Override
-    public Stream<Voxels> render(Map<Construct.Component.Key, Construct.Component> components) {
+    public Stream<VoxAsset> render(Map<Construct.Component.Key, Construct.Component> components) {
         return components.entrySet().stream().flatMap(entry -> {
             Construct.Component.Key componentKey = entry.getKey();
             Role.Key roleKey = Optional.ofNullable(arguments.get(componentKey))

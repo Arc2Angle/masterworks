@@ -56,6 +56,7 @@ public class ConstructItem extends Item {
         private static final ResourceKey<Composition> bladeBroadDual = composition("blade/broad/dual");
         private static final ResourceKey<Composition> edgeBroadStraight = composition("edge/broad/straight");
         private static final ResourceKey<Composition> edgeBroadSirrated = composition("edge/broad/sirrated");
+        private static final ResourceKey<Composition> chestplate = composition("chestplate");
 
         private static final ResourceKey<Material> wood = material("wood");
         private static final ResourceKey<Material> stone = material("stone");
@@ -108,6 +109,9 @@ public class ConstructItem extends Item {
                     compositions.getOrThrow(bladeBroadDual),
                     Map.of("left", diamondEdgeBroadSirrated, "right", emeraldEdgeBroadStraight));
 
+            Construct ironChestplate = simple(compositions.getOrThrow(chestplate), materials.getOrThrow(iron));
+            Construct goldChestplate = simple(compositions.getOrThrow(chestplate), materials.getOrThrow(gold));
+
             output.accept(stack(stonePickaxeHead));
             output.accept(stack(ironRod));
             output.accept(stack(emeraldBinding));
@@ -130,6 +134,9 @@ public class ConstructItem extends Item {
             output.accept(stack(complex(
                     compositions.getOrThrow(swordBroad),
                     Map.of("blade", diamondEmeraldBladeBroad, "handle", woodRod, "guard", ironBinding))));
+
+            output.accept(stack(ironChestplate));
+            output.accept(stack(goldChestplate));
         }
     }
 }

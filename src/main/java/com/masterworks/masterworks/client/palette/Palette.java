@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.util.palette;
+package com.masterworks.masterworks.client.palette;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import javax.annotation.Nonnull;
@@ -30,9 +30,5 @@ public record Palette(int[] colors) {
 
     public int getColorByIndex(int index) {
         return colors[index];
-    }
-
-    public int getColorByVoxIndex(int index) {
-        return colors[index - 1];
     }
 }

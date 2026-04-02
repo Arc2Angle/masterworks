@@ -1,6 +1,6 @@
 package com.masterworks.masterworks.typed.identifier;
 
-import com.masterworks.masterworks.util.palette.Palette;
+import com.masterworks.masterworks.client.palette.Palette;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.Identifier;
 

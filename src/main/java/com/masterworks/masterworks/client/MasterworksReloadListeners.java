@@ -1,8 +1,9 @@
 package com.masterworks.masterworks.client;
 
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.client.asset.manager.EtchingManager;
 import com.masterworks.masterworks.client.asset.manager.PaletteManager;
-import com.masterworks.masterworks.client.asset.manager.VoxFileManager;
+import com.masterworks.masterworks.client.asset.manager.VoxModelManager;
 import com.masterworks.masterworks.client.renderer.model.ConstructSpecialModelRenderer;
 import com.masterworks.masterworks.util.Registrar;
 import java.util.List;
@@ -42,13 +43,14 @@ public class MasterworksReloadListeners {
         });
     }
 
-    public static final Supplier<VoxFileManager> VOX_FILE_MANAGER = register("voxels", new VoxFileManager.Type());
+    public static final Supplier<VoxModelManager> VOX_MODEL_MANAGER = register("voxels", new VoxModelManager.Type());
 
-    public static final Supplier<PaletteManager> PALETTE_MANAGER =
-            register("textures/palette", new PaletteManager.Type());
+    public static final Supplier<PaletteManager> PALETTE_MANAGER = register("textures/palette", PaletteManager::new);
 
-    public static final Supplier<ConstructSpecialModelRenderer.QuadCollectionCache> CONSTRUCT_SPECIAL_MODEL_RENDERER_CACHE =
-            register("construct_special_model_renderer_cache", ConstructSpecialModelRenderer.QuadCollectionCache::new);
+    public static final Supplier<EtchingManager> ETCHING_MANAGER = register("textures/etching", EtchingManager::new);
+
+    public static final Supplier<ConstructSpecialModelRenderer.Cache> CONSTRUCT_SPECIAL_MODEL_RENDERER_CACHE =
+            register("construct_special_model_renderer_cache", ConstructSpecialModelRenderer.Cache::new);
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);
