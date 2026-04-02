@@ -79,7 +79,7 @@ public record VoxAsset(VoxModel model, Palette palette) {
             private static final int NO_SHAPE = -1;
 
             public String name;
-            public Vector3ic transform;
+            public Vector3ic translation;
             public int shapeId = NO_SHAPE;
             public List<Node> children = new ArrayList<>();
 
@@ -91,7 +91,7 @@ public record VoxAsset(VoxModel model, Palette palette) {
                     children.put(child.name, child.build(shapes));
                 }
 
-                return new VoxModel(transform, shape, children);
+                return new VoxModel(translation, shape, children);
             }
         }
 
@@ -105,9 +105,9 @@ public record VoxAsset(VoxModel model, Palette palette) {
             Node node = entry.getValue();
 
             switch (nodeChunks.remove(id)) {
-                case VoxChunk.Ntrn(int _, String name, int childNodeId, int _, Vector3ic transform) -> {
+                case VoxChunk.Ntrn(int _, String name, int childNodeId, int _, Vector3ic translation) -> {
                     node.name = name;
-                    node.transform = transform;
+                    node.translation = translation;
 
                     stack.push(Map.entry(childNodeId, node)); // merge with child
                 }

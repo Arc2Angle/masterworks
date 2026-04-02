@@ -31,7 +31,7 @@ public sealed interface VoxChunk
         int id();
     }
 
-    public record Ntrn(int id, String name, int childNodeId, int layerId, Vector3ic transform) implements Node {}
+    public record Ntrn(int id, String name, int childNodeId, int layerId, Vector3ic translation) implements Node {}
 
     public record Ngrp(int id, int[] childNodeIds) implements Node {}
 

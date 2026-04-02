@@ -75,9 +75,10 @@ public final class ConstructChestplateRenderLayer extends RenderLayer<AvatarRend
             }
         }
 
-        baked.submit((path, quadCollection) -> {
+        baked.submit((path, quadCollection, translation) -> {
             poseStack.pushPose();
             getPart(path).translateAndRotate(poseStack);
+            poseStack.translate(translation.x(), translation.y(), translation.z());
 
             collector.submitItem(
                     poseStack,

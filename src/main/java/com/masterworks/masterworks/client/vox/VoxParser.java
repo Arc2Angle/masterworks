@@ -183,9 +183,9 @@ public interface VoxParser<T extends VoxChunk> {
             int layerId = buffer.getInt();
 
             ParseException.expect(buffer.getInt(), 1, "nTRN keyframe count");
-            Vector3ic transform = parseDictionary(buffer).getTransform("_t").orElse(new Vector3i(0, 0, 0));
+            Vector3ic translation = parseDictionary(buffer).getVector3i("_t").orElse(new Vector3i(0, 0, 0));
 
-            return new VoxChunk.Ntrn(nodeId, name, childNodeId, layerId, transform);
+            return new VoxChunk.Ntrn(nodeId, name, childNodeId, layerId, translation);
         }
     }
 
@@ -322,7 +322,7 @@ public interface VoxParser<T extends VoxChunk> {
                 return Optional.ofNullable(values.get(key));
             }
 
-            public Optional<Vector3ic> getTransform(String key) throws ParseException {
+            public Optional<Vector3ic> getVector3i(String key) throws ParseException {
                 String value = values.get(key);
                 if (value == null) {
                     return Optional.empty();
@@ -330,7 +330,7 @@ public interface VoxParser<T extends VoxChunk> {
 
                 String[] parts = value.split(" ");
                 if (parts.length != 3) {
-                    throw new ParseException("Expected transform string to have 3 parts, but got " + parts.length);
+                    throw new ParseException("Expected vector string to have 3 parts, but got " + parts.length);
                 }
 
                 try {
@@ -339,7 +339,7 @@ public interface VoxParser<T extends VoxChunk> {
                     int z = Integer.parseInt(parts[2]);
                     return Optional.of(new Vector3i(x, y, z));
                 } catch (NumberFormatException e) {
-                    throw new ParseException("Expected transform string parts to be integers, but got: " + value, e);
+                    throw new ParseException("Expected vector parts to be integers, but got: " + value, e);
                 }
             }
         }

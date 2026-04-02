@@ -83,8 +83,7 @@ public class ConstructSpecialModelRenderer implements SpecialModelRenderer<Const
 
     @Override
     public void getExtents(@Nonnull Consumer<Vector3fc> output) {
-        Vector3fc extent = new PoseStack.Pose().pose().transformPosition(new Vector3f(0f, 0f, 0f));
-        output.accept(extent);
+        output.accept(new Vector3f());
     }
 
     @Override
@@ -123,15 +122,22 @@ public class ConstructSpecialModelRenderer implements SpecialModelRenderer<Const
             }
         }
 
-        baked.submit((path, quadCollection) -> collector.submitItem(
-                poseStack,
-                context,
-                packedLight,
-                packedOverlay,
-                outlineColor,
-                null,
-                quadCollection.getAll(),
-                hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE));
+        baked.submit((path, quadCollection, translation) -> {
+            poseStack.pushPose();
+            poseStack.translate(translation.x(), translation.y(), translation.z());
+
+            collector.submitItem(
+                    poseStack,
+                    context,
+                    packedLight,
+                    packedOverlay,
+                    outlineColor,
+                    null,
+                    quadCollection.getAll(),
+                    hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
+
+            poseStack.popPose();
+        });
     }
 
     // TODO: add a custom packet for a server side reload

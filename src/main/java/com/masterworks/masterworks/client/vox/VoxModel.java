@@ -19,12 +19,12 @@ import org.joml.Vector3i;
 import org.joml.Vector3ic;
 
 public class VoxModel implements Cloneable {
-    private final @Nonnull Vector3ic transform;
+    private final @Nonnull Vector3ic translation;
     private final @Nullable VoxShape shape;
     private final @Nonnull Map<String, VoxModel> children;
 
-    public VoxModel(Vector3ic transform, VoxShape shape, Map<String, VoxModel> children) {
-        this.transform = transform;
+    public VoxModel(Vector3ic translation, VoxShape shape, Map<String, VoxModel> children) {
+        this.translation = translation;
         this.shape = shape;
         this.children = children;
     }
@@ -40,7 +40,7 @@ public class VoxModel implements Cloneable {
     @Override
     public VoxModel clone() {
         return new VoxModel(
-                new Vector3i(transform),
+                new Vector3i(translation),
                 shape == null ? null : shape.clone(),
                 children.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()
                         .clone())));
@@ -48,17 +48,20 @@ public class VoxModel implements Cloneable {
 
     @FunctionalInterface
     public interface Submitter {
-        void submit(SequencedCollection<String> path, QuadCollection quads);
+        void submit(
+                SequencedCollection<String> path,
+                @Nonnull QuadCollection quadCollection,
+                @Nonnull Vector3fc translation);
     }
 
-    public record Baked(QuadCollection quads, Map<String, Baked> children) {
+    public record Baked(Vector3fc translation, @Nullable QuadCollection quads, Map<String, Baked> children) {
         public void submit(Submitter submitter) {
             submit(submitter, new ArrayDeque<>());
         }
 
         private void submit(Submitter submitter, Deque<String> path) {
             if (quads != null) {
-                submitter.submit(path, quads);
+                submitter.submit(path, quads, translation);
             }
 
             for (var entry : children.entrySet()) {
@@ -75,7 +78,7 @@ public class VoxModel implements Cloneable {
     private static final Vector3fc VOXEL_SIZE = new Vector3f(1 / 16f, 1 / 16f, 1 / 16f);
 
     public Baked bake(Palette palette, VoxQuads.Builder.Factory quadsBuilderFactory) {
-        Baked baked = new Baked(shallowBake(palette, quadsBuilderFactory), new HashMap<>());
+        Baked baked = shallowBake(palette, quadsBuilderFactory);
 
         for (var entry : children.entrySet()) {
             String name = entry.getKey();
@@ -86,9 +89,9 @@ public class VoxModel implements Cloneable {
         return baked;
     }
 
-    private QuadCollection shallowBake(Palette palette, VoxQuads.Builder.Factory quadsBuilderFactory) {
+    private Baked shallowBake(Palette palette, VoxQuads.Builder.Factory quadsBuilderFactory) {
         if (shape == null) {
-            return null;
+            return new Baked(new Vector3f(translation).mul(VOXEL_SIZE), null, new HashMap<>());
         }
 
         Vector3ic count = shape.count();
@@ -105,9 +108,9 @@ public class VoxModel implements Cloneable {
             colors[i] = palette.getColorByIndex(colorIndex - 1);
         }
 
-        VoxQuads.Mesh mesh = new VoxQuads.Mesh(
-                colors, count, new Vector3f(count).mul(VOXEL_SIZE), new Vector3f(transform).mul(VOXEL_SIZE));
-        return mesh.bake(quadsBuilderFactory.create());
+        VoxQuads.Mesh mesh = new VoxQuads.Mesh(colors, count, VOXEL_SIZE);
+        return new Baked(
+                new Vector3f(translation).mul(VOXEL_SIZE), mesh.bake(quadsBuilderFactory.create()), new HashMap<>());
     }
 
     public static Baked bake(List<VoxAsset> layers, VoxQuads.Builder.Factory quadsBuilderFactory) {
@@ -117,7 +120,7 @@ public class VoxModel implements Cloneable {
             return layers.get(0).model().bake(layers.get(0).palette(), quadsBuilderFactory);
         }
 
-        Baked baked = new Baked(shallowBake(layers, quadsBuilderFactory), new HashMap<>());
+        Baked baked = shallowBake(layers, quadsBuilderFactory);
 
         for (String name : layers.get(0).model().children.keySet()) {
             List<VoxAsset> childLayers = layers.stream()
@@ -131,22 +134,19 @@ public class VoxModel implements Cloneable {
         return baked;
     }
 
-    private static QuadCollection shallowBake(List<VoxAsset> layers, VoxQuads.Builder.Factory quadsBuilderFactory) {
-        VoxModel top = null;
+    private static Baked shallowBake(List<VoxAsset> layers, VoxQuads.Builder.Factory quadsBuilderFactory) {
+        VoxModel top = layers.stream()
+                .map(VoxAsset::model)
+                .filter(model -> model.shape != null)
+                .findFirst()
+                .orElse(null);
 
-        for (VoxAsset layer : layers) {
-            top = layer.model();
-            if (top.shape != null) {
-                break;
-            }
-        }
-
-        if (top.shape == null) {
-            return null;
+        if (top == null) {
+            return new Baked(new Vector3f(layers.get(0).model().translation).mul(VOXEL_SIZE), null, new HashMap<>());
         }
 
         Vector3ic count = top.shape.count();
-        Vector3ic transform = top.transform;
+        Vector3ic translation = top.translation;
 
         for (VoxAsset layer : layers) {
             VoxModel model = layer.model();
@@ -155,7 +155,7 @@ public class VoxModel implements Cloneable {
                 throw new IllegalArgumentException("All layers must have the same dimensions");
             }
 
-            if (!model.transform.equals(transform)) {
+            if (!model.translation.equals(translation)) {
                 throw new IllegalArgumentException("All layers must have the same transform");
             }
         }
@@ -175,8 +175,8 @@ public class VoxModel implements Cloneable {
             }
         }
 
-        VoxQuads.Mesh mesh = new VoxQuads.Mesh(
-                colors, count, new Vector3f(count).mul(VOXEL_SIZE), new Vector3f(transform).mul(VOXEL_SIZE));
-        return mesh.bake(quadsBuilderFactory.create());
+        VoxQuads.Mesh mesh = new VoxQuads.Mesh(colors, count, VOXEL_SIZE);
+        return new Baked(
+                new Vector3f(translation).mul(VOXEL_SIZE), mesh.bake(quadsBuilderFactory.create()), new HashMap<>());
     }
 }

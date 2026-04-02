@@ -33,15 +33,13 @@ public final class VoxQuads {
      * @param colors A dense array of ARGB color values for each voxel in the model.
      *     Invisible voxels (alpha = 0) are considered empty, even if they have
      *     non-zero RGB values.
-     * @param count  Represents the number of voxels along each axis (x, y, z).
-     * @param size   Represents the overall size of the voxel model in each
-     *     dimension (x, y, z).
-     * @param offset Represents the offset position of the voxel model (x, y, z).
+     * @param count  Represents the number of voxels along each axis.
+     * @param size   Represents the size of each voxel in the mesh.
      *
      * @apiNote Sizes and offsets are in minecraft blocks.
      */
-    public record Mesh(int[] colors, Vector3ic count, Vector3fc size, Vector3fc offset) {
-        public static final Mesh EMPTY = new Mesh(new int[0], new Vector3i(), new Vector3f(), new Vector3f());
+    public record Mesh(int[] colors, Vector3ic count, Vector3fc size) {
+        public static final Mesh EMPTY = new Mesh(new int[0], new Vector3i(), new Vector3f());
 
         public QuadCollection bake(Builder builder) {
             int countX = count.x();
@@ -52,10 +50,6 @@ public final class VoxQuads {
             float sizeX = size.x();
             float sizeY = size.y();
             float sizeZ = size.z();
-
-            float offsetX = offset.x();
-            float offsetY = offset.y();
-            float offsetZ = offset.z();
 
             for (int i = 0; i < colors.length; i++) {
                 if (ARGB.alpha(colors[i]) == 0) {
@@ -68,13 +62,13 @@ public final class VoxQuads {
                 float yi = (i % countXY) / countX;
                 float zi = i / countXY;
 
-                float x0 = sizeX * xi / countX + offsetX;
-                float y0 = sizeY * yi / countY + offsetY;
-                float z0 = sizeZ * zi / countZ + offsetZ;
+                float x0 = sizeX * xi;
+                float y0 = sizeY * yi;
+                float z0 = sizeZ * zi;
 
-                float x1 = sizeX * (xi + 1) / countX + offsetX;
-                float y1 = sizeY * (yi + 1) / countY + offsetY;
-                float z1 = sizeZ * (zi + 1) / countZ + offsetZ;
+                float x1 = sizeX * (xi + 1);
+                float y1 = sizeY * (yi + 1);
+                float z1 = sizeZ * (zi + 1);
 
                 if (yi == 0 || ARGB.alpha(colors[i - countX]) != 0xFF) {
                     builder.addFace(

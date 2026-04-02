@@ -53,8 +53,8 @@ public record TemplateSpecialModelRenderer(Supplier<VoxModel.Baked> baked) imple
 
                 VoxModel model = tierAsset.model().clone();
                 VoxShape shape = model.single().orElseThrow();
-                shape.etched(etchingAsset, 8, (byte) 0);
-                shape.etched(etchingAsset, 7, (byte) 1);
+                shape.etched(etchingAsset, 2, (byte) 0);
+                shape.etched(etchingAsset, 1, (byte) 1);
 
                 return model.bake(tierAsset.palette(), VoxQuads.Builder.Factory.ofWhitePixel(context.sprites()));
             }));
@@ -69,8 +69,7 @@ public record TemplateSpecialModelRenderer(Supplier<VoxModel.Baked> baked) imple
 
     @Override
     public void getExtents(@Nonnull Consumer<Vector3fc> output) {
-        Vector3fc extent = new PoseStack.Pose().pose().transformPosition(new Vector3f(0f, 0f, 0f));
-        output.accept(extent);
+        output.accept(new Vector3f());
     }
 
     @Override
@@ -84,15 +83,21 @@ public record TemplateSpecialModelRenderer(Supplier<VoxModel.Baked> baked) imple
             boolean hasFoil,
             int outlineColor) {
 
-        baked.get()
-                .submit((path, quadCollection) -> collector.submitItem(
-                        poseStack,
-                        context,
-                        packedLight,
-                        packedOverlay,
-                        outlineColor,
-                        null,
-                        quadCollection.getAll(),
-                        hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE));
+        baked.get().submit((path, quadCollection, translation) -> {
+            poseStack.pushPose();
+            poseStack.translate(translation.x(), translation.y(), translation.z());
+
+            collector.submitItem(
+                    poseStack,
+                    context,
+                    packedLight,
+                    packedOverlay,
+                    outlineColor,
+                    null,
+                    quadCollection.getAll(),
+                    hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
+
+            poseStack.popPose();
+        });
     }
 }
