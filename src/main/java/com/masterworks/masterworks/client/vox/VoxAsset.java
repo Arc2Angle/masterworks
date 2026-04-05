@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.client.vox;
 
 import com.masterworks.masterworks.client.palette.Palette;
+import com.masterworks.masterworks.util.math.Vector3bc;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -80,11 +81,13 @@ public record VoxAsset(VoxModel model, Palette palette) {
 
             public String name;
             public Vector3ic translation;
+            public Vector3bc mirrors;
             public int shapeId = NO_SHAPE;
             public List<Node> children = new ArrayList<>();
 
             public VoxModel build(List<VoxShape> shapes) {
                 VoxShape shape = shapeId != NO_SHAPE ? shapes.get(shapeId) : null;
+                shape = mirrors.any() ? shape.clone(mirrors) : shape;
 
                 Map<String, VoxModel> children = new HashMap<>(this.children.size());
                 for (Node child : this.children) {
@@ -105,9 +108,16 @@ public record VoxAsset(VoxModel model, Palette palette) {
             Node node = entry.getValue();
 
             switch (nodeChunks.remove(id)) {
-                case VoxChunk.Ntrn(int _, String name, int childNodeId, int _, Vector3ic translation) -> {
+                case VoxChunk.Ntrn(
+                        int _,
+                        String name,
+                        int childNodeId,
+                        int _,
+                        Vector3ic translation,
+                        Vector3bc mirrors) -> {
                     node.name = name;
                     node.translation = translation;
+                    node.mirrors = mirrors;
 
                     stack.push(Map.entry(childNodeId, node)); // merge with child
                 }

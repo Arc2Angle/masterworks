@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.client.vox;
 
 import com.masterworks.masterworks.MasterworksMod;
+import com.masterworks.masterworks.util.math.Vector3bc;
 import org.joml.Vector3ic;
 
 public sealed interface VoxChunk
@@ -31,7 +32,8 @@ public sealed interface VoxChunk
         int id();
     }
 
-    public record Ntrn(int id, String name, int childNodeId, int layerId, Vector3ic translation) implements Node {}
+    public record Ntrn(int id, String name, int childNodeId, int layerId, Vector3ic translation, Vector3bc mirrors)
+            implements Node {}
 
     public record Ngrp(int id, int[] childNodeIds) implements Node {}
 

@@ -1,5 +1,7 @@
 package com.masterworks.masterworks.client.vox;
 
+import com.masterworks.masterworks.util.math.Vector3b;
+import com.masterworks.masterworks.util.math.Vector3bc;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -183,9 +185,11 @@ public interface VoxParser<T extends VoxChunk> {
             int layerId = buffer.getInt();
 
             ParseException.expect(buffer.getInt(), 1, "nTRN keyframe count");
-            Vector3ic translation = parseDictionary(buffer).getVector3i("_t").orElse(new Vector3i(0, 0, 0));
+            Private.Dictionary properties = parseDictionary(buffer);
+            Vector3ic translation = properties.getTranslation("_t").orElse(new Vector3i());
+            Vector3bc rotation = properties.getRotation("_r").orElse(new Vector3b());
 
-            return new VoxChunk.Ntrn(nodeId, name, childNodeId, layerId, translation);
+            return new VoxChunk.Ntrn(nodeId, name, childNodeId, layerId, translation, rotation);
         }
     }
 
@@ -322,7 +326,7 @@ public interface VoxParser<T extends VoxChunk> {
                 return Optional.ofNullable(values.get(key));
             }
 
-            public Optional<Vector3ic> getVector3i(String key) throws ParseException {
+            public Optional<Vector3ic> getTranslation(String key) throws ParseException {
                 String value = values.get(key);
                 if (value == null) {
                     return Optional.empty();
@@ -341,6 +345,34 @@ public interface VoxParser<T extends VoxChunk> {
                 } catch (NumberFormatException e) {
                     throw new ParseException("Expected vector parts to be integers, but got: " + value, e);
                 }
+            }
+
+            public Optional<Vector3bc> getRotation(String key) throws ParseException {
+                String value = values.get(key);
+                if (value == null) {
+                    return Optional.empty();
+                }
+
+                int packed;
+                try {
+                    packed = Integer.parseInt(value);
+                } catch (NumberFormatException e) {
+                    throw new ParseException("Expected packed rotation value to be an integer, but got: " + value, e);
+                }
+
+                int axis0 = (packed >> 0) & 0b11;
+                int axis1 = (packed >> 2) & 0b11;
+                int axis2 = 3 - (axis0 + axis1);
+
+                int flip0 = (packed >> 4) & 0b1;
+                int flip1 = (packed >> 5) & 0b1;
+                int flip2 = (packed >> 6) & 0b1;
+
+                boolean x = (axis0 == 0 && flip0 == 1) || (axis1 == 0 && flip1 == 1) || (axis2 == 0 && flip2 == 1);
+                boolean y = (axis0 == 1 && flip0 == 1) || (axis1 == 1 && flip1 == 1) || (axis2 == 1 && flip2 == 1);
+                boolean z = (axis0 == 2 && flip0 == 1) || (axis1 == 2 && flip1 == 1) || (axis2 == 2 && flip2 == 1);
+
+                return Optional.of(new Vector3b(x, y, z));
             }
         }
     }
