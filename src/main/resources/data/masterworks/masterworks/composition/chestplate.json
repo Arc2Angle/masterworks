@@ -4,7 +4,8 @@
     ],
     "roles": {
         "masterworks:item": {
-            "type": "masterworks:materializer"
+            "type": "masterworks:materializer",
+            "main": "masterworks:chestplate"
         }
     },
     "properties": {

@@ -24,6 +24,8 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 public final class ConstructChestplateRenderLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
     private final Map<Construct, VoxModel.Baked> cache = new WeakHashMap<>();
@@ -77,7 +79,7 @@ public final class ConstructChestplateRenderLayer extends RenderLayer<AvatarRend
 
         baked.submit((path, quadCollection, translation) -> {
             poseStack.pushPose();
-            getPart(path).translateAndRotate(poseStack);
+            translateAndRotate(path, poseStack);
             poseStack.translate(translation.x(), translation.y(), translation.z());
 
             collector.submitItem(
@@ -94,13 +96,34 @@ public final class ConstructChestplateRenderLayer extends RenderLayer<AvatarRend
         });
     }
 
-    private ModelPart getPart(SequencedCollection<String> path) {
+    private void translateAndRotate(SequencedCollection<String> path, PoseStack poseStack) {
         ModelPart part = getParentModel().root();
+        SegmentOffset segmentOffset = SEGMENT_OFFSET_ROOT;
 
         for (String partName : path) {
             part = part.getChild(partName);
+            segmentOffset = segmentOffset == null ? null : segmentOffset.children.get(partName);
         }
 
-        return part;
+        part.translateAndRotate(poseStack);
+        if (segmentOffset != null) {
+            poseStack.translate(segmentOffset.value.x(), segmentOffset.value.y(), segmentOffset.value.z());
+        }
     }
+
+    private record SegmentOffset(Vector3fc value, Map<String, SegmentOffset> children) {
+        public SegmentOffset(int xPixels, int yPixels, int zPixels) {
+            this(new Vector3f(xPixels / 16.0f, yPixels / 16.0f, zPixels / 16.0f), Map.of());
+        }
+    }
+
+    private static final SegmentOffset SEGMENT_OFFSET_ROOT = new SegmentOffset(
+            new Vector3f(),
+            Map.of(
+                    "body",
+                    new SegmentOffset(-6, -2, -4),
+                    "left_arm",
+                    new SegmentOffset(-13, -1, -4),
+                    "right_arm",
+                    new SegmentOffset(5, -1, -4)));
 }
