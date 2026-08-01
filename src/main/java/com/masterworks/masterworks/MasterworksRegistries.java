@@ -1,7 +1,8 @@
 package com.masterworks.masterworks;
 
+import com.masterworks.masterworks.client.part.PartDefinition;
+import com.masterworks.masterworks.data.composition.Composition;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.data.role.Role;
 import com.masterworks.masterworks.util.Registrar;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -39,5 +40,7 @@ public class MasterworksRegistries {
 
     public static final Registry<Property.Applier> PROPERTY_APPLIER = register("property_applier");
 
-    public static final Registry<Role.Type<?>> ROLE_TYPE = register("role_type");
+    public static final Registry<Composition.Type<?>> COMPOSITION_TYPE = register("composition_type");
+
+    public static final Registry<PartDefinition.Type<?>> PART_DEFINITION_TYPE = register("part_definition_type");
 }

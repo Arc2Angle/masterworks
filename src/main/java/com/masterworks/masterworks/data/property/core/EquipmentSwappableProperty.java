@@ -5,7 +5,6 @@ import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.property.base.EquippableProperty;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Decoder;
-import java.util.Set;
 import net.minecraft.world.item.equipment.Equippable.Builder;
 
 public record EquipmentSwappableProperty(boolean value) implements EquippableProperty {
@@ -21,7 +20,7 @@ public record EquipmentSwappableProperty(boolean value) implements EquippablePro
 
     public static final class Type implements EquippableProperty.Type<EquipmentSwappableProperty> {
         @Override
-        public Decoder<EquipmentSwappableProperty> decoder(Set<Construct.Component.Key> components) {
+        public Decoder<EquipmentSwappableProperty> decoder(Dependencies dependencies) {
             return Codec.BOOL.xmap(EquipmentSwappableProperty::new, EquipmentSwappableProperty::value);
         }
     }

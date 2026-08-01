@@ -10,7 +10,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Set;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -48,11 +47,12 @@ public record MiningSpeedProperty(TagKey<Block> blocks, Expression expression)
         }
 
         @Override
-        public Decoder<MiningSpeedProperty> decoder(Set<Construct.Component.Key> components) {
+        public Decoder<MiningSpeedProperty> decoder(Dependencies dependencies) {
             return Decoder.ofSimple(new Decoder.Simple<>() {
                 @Override
                 public <T> DataResult<MiningSpeedProperty> decode(Dynamic<T> input) {
-                    return Data.CODEC.parse(input).flatMap(data -> decodeExpression(data.value(), components)
+                    return Data.CODEC.parse(input).flatMap(data -> decodeExpression(
+                                    data.value(), dependencies.components())
                             .map(expression -> new MiningSpeedProperty(data.blockTag(), expression)));
                 }
             });

@@ -7,7 +7,6 @@ import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Decoder;
-import java.util.Set;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -34,8 +33,8 @@ public record ArmorProperty(Expression expression) implements ExpressionProperty
     public static class Type extends ExpressionProperty.Type<ArmorProperty>
             implements ItemAttributeModifierProperty.Type<ArmorProperty> {
         @Override
-        public Decoder<ArmorProperty> decoder(Set<Construct.Component.Key> components) {
-            return decoder(ArmorProperty::new, components);
+        public Decoder<ArmorProperty> decoder(Dependencies dependencies) {
+            return decoder(ArmorProperty::new, dependencies);
         }
     }
 }

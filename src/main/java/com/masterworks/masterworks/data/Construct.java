@@ -1,6 +1,7 @@
 package com.masterworks.masterworks.data;
 
 import com.masterworks.masterworks.MasterworksDataPackRegistries;
+import com.masterworks.masterworks.data.composition.Composition;
 import com.masterworks.masterworks.data.property.Property;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -8,6 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
@@ -61,12 +63,12 @@ public record Construct(Holder<Composition> composition, Map<Component.Key, Comp
             }
         }
 
-        public Holder<Material> materialOrThrow() {
-            return value.left().orElseThrow(() -> new RuntimeException("Component is not a material"));
+        public Optional<Holder<Material>> material() {
+            return value.left();
         }
 
-        public Construct constructOrThrow() {
-            return value.right().orElseThrow(() -> new RuntimeException("Component is not a construct"));
+        public Optional<Construct> construct() {
+            return value.right();
         }
 
         public Property.Container properties() {

@@ -9,7 +9,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Dynamic;
 import java.util.Map;
-import java.util.Set;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -17,8 +16,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 
-public sealed interface MiningDeniedProperty extends ToolRuleProperty
-        permits MiningDeniedProperty.Direct, MiningDeniedProperty.Reference {
+public sealed interface MiningDeniedProperty extends ToolRuleProperty {
     TagKey<Block> blocks(Map<Construct.Component.Key, Construct.Component> components);
 
     @Override
@@ -37,7 +35,7 @@ public sealed interface MiningDeniedProperty extends ToolRuleProperty
 
     public static final class Type implements ToolRuleProperty.Type<MiningDeniedProperty> {
         @Override
-        public Decoder<MiningDeniedProperty> decoder(Set<Construct.Component.Key> components) {
+        public Decoder<MiningDeniedProperty> decoder(Dependencies dependencies) {
             return Decoder.ofSimple(new Decoder.Simple<>() {
                 @Override
                 public <T> DataResult<MiningDeniedProperty> decode(Dynamic<T> input) {
@@ -56,7 +54,7 @@ public sealed interface MiningDeniedProperty extends ToolRuleProperty
                             })
                             .mapOrElse(
                                     key -> {
-                                        if (!components.contains(key)) {
+                                        if (!dependencies.components().contains(key)) {
                                             return DataResult.error(() -> "Missing component: " + key);
                                         }
 

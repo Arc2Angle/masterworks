@@ -6,7 +6,6 @@ import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Decoder;
-import java.util.Set;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -33,8 +32,8 @@ public record AttackDamageProperty(Expression expression) implements ExpressionP
     public static class Type extends ExpressionProperty.Type<AttackDamageProperty>
             implements ItemAttributeModifierProperty.Type<AttackDamageProperty> {
         @Override
-        public Decoder<AttackDamageProperty> decoder(Set<Construct.Component.Key> components) {
-            return decoder(AttackDamageProperty::new, components);
+        public Decoder<AttackDamageProperty> decoder(Dependencies dependencies) {
+            return decoder(AttackDamageProperty::new, dependencies);
         }
     }
 }

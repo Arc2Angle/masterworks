@@ -42,11 +42,12 @@ public interface ExpressionProperty extends Property {
     Type<?> type();
 
     public abstract static class Type<P extends ExpressionProperty> implements Property.Type<P> {
-        protected Decoder<P> decoder(Function<Expression, P> constructor, Set<Construct.Component.Key> components) {
+        protected Decoder<P> decoder(Function<Expression, P> constructor, Dependencies dependencies) {
             return Decoder.ofSimple(new Decoder.Simple<P>() {
                 @Override
                 public <T> DataResult<P> decode(Dynamic<T> input) {
-                    return decodeExpression(input, components).map(expression -> constructor.apply(expression));
+                    return decodeExpression(input, dependencies.components())
+                            .map(expression -> constructor.apply(expression));
                 }
             });
         }

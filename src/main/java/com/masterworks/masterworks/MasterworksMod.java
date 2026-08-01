@@ -35,8 +35,21 @@ public class MasterworksMod {
 
         MasterworksPropertyTypes.register(bus);
         MasterworksPropertyAppliers.register(bus);
-        MasterworksRoleTypes.register(bus);
+        MasterworksCompositionTypes.register(bus);
 
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
+
+    /* Possible significant rework:
+    Custom macro system for JSONs, allowing defining objects through interpreted strings. For example:
+    {
+        "a": "something/a",
+        "b": "something/b",
+        "c": "something/c",
+    }
+    Becomes:
+    {
+        "$foreach @x in a, b, c": "something/@x"
+    }
+    */
 }

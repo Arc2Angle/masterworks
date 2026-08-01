@@ -1,22 +1,22 @@
 package com.masterworks.masterworks.data.property;
 
 import com.masterworks.masterworks.data.Construct;
-import com.masterworks.masterworks.data.property.util.BasicPropertyContainer;
 import com.masterworks.masterworks.typed.tag.TypedTagKey;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import net.minecraft.world.item.ItemStack;
 
 public interface Property {
     Type<?> type();
 
+    record Dependencies(Set<Construct.Component.Key> components) {
+        public static final Dependencies EMPTY = new Dependencies(Set.of());
+    }
+
     interface Type<T extends Property> {
-        Decoder<T> decoder(Set<Construct.Component.Key> components);
+        Decoder<T> decoder(Dependencies dependencies);
     }
 
     interface Container {
@@ -27,15 +27,6 @@ public interface Property {
          *         demand.
          */
         <T extends Property> Optional<T> get(Property.Type<T> type);
-
-        static Codec<Container> basicCodec(Set<Construct.Component.Key> components) {
-            return BasicPropertyContainer.codec(components)
-                    .flatComapMap(
-                            Function.identity(),
-                            container -> container instanceof BasicPropertyContainer basic
-                                    ? DataResult.success(basic)
-                                    : DataResult.error(() -> "Expected BasicPropertyContainer"));
-        }
     }
 
     abstract class Applier {

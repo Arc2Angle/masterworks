@@ -7,7 +7,6 @@ import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.LoreComponentProperty;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Decoder;
-import java.util.Set;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.network.chat.Component;
@@ -35,8 +34,8 @@ public record DurabilityProperty(Expression expression)
     public static class Type extends ExpressionProperty.Type<DurabilityProperty>
             implements DataComponentProperty.Type<DurabilityProperty>, LoreComponentProperty.Type<DurabilityProperty> {
         @Override
-        public Decoder<DurabilityProperty> decoder(Set<Construct.Component.Key> components) {
-            return decoder(DurabilityProperty::new, components);
+        public Decoder<DurabilityProperty> decoder(Dependencies dependencies) {
+            return decoder(DurabilityProperty::new, dependencies);
         }
     }
 }

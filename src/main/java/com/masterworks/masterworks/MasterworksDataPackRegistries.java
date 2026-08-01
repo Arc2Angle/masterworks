@@ -1,7 +1,7 @@
 package com.masterworks.masterworks;
 
-import com.masterworks.masterworks.data.Composition;
 import com.masterworks.masterworks.data.Material;
+import com.masterworks.masterworks.data.composition.Composition;
 import com.masterworks.masterworks.util.Registrar;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;

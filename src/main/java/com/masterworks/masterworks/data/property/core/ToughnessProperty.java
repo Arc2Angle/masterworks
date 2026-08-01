@@ -7,7 +7,6 @@ import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Decoder;
-import java.util.Set;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -34,8 +33,8 @@ public record ToughnessProperty(Expression expression) implements ExpressionProp
     public static class Type extends ExpressionProperty.Type<ToughnessProperty>
             implements ItemAttributeModifierProperty.Type<ToughnessProperty> {
         @Override
-        public Decoder<ToughnessProperty> decoder(Set<Construct.Component.Key> components) {
-            return decoder(ToughnessProperty::new, components);
+        public Decoder<ToughnessProperty> decoder(Dependencies dependencies) {
+            return decoder(ToughnessProperty::new, dependencies);
         }
     }
 }

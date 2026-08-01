@@ -6,7 +6,6 @@ import com.masterworks.masterworks.data.property.base.ExpressionProperty;
 import com.masterworks.masterworks.data.property.base.ItemAttributeModifierProperty;
 import com.masterworks.masterworks.util.Expression;
 import com.mojang.serialization.Decoder;
-import java.util.Set;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -32,8 +31,8 @@ public record AttackSpeedProperty(Expression expression) implements ExpressionPr
     public static class Type extends ExpressionProperty.Type<AttackSpeedProperty>
             implements ItemAttributeModifierProperty.Type<AttackSpeedProperty> {
         @Override
-        public Decoder<AttackSpeedProperty> decoder(Set<Construct.Component.Key> components) {
-            return decoder(AttackSpeedProperty::new, components);
+        public Decoder<AttackSpeedProperty> decoder(Dependencies dependencies) {
+            return decoder(AttackSpeedProperty::new, dependencies);
         }
     }
 }

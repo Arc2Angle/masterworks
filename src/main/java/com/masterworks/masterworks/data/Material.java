@@ -1,21 +1,24 @@
 package com.masterworks.masterworks.data;
 
+import com.masterworks.masterworks.asset.AssetHolder;
+import com.masterworks.masterworks.client.palette.Palette;
 import com.masterworks.masterworks.data.property.Property;
-import com.masterworks.masterworks.typed.identifier.PaletteIdentifier;
+import com.masterworks.masterworks.data.property.util.DecodablePropertyContainer;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Encoder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Set;
 
-public record Material(String name, PaletteIdentifier palette, Color color, Property.Container properties) {
-    public static final Codec<Material> CODEC =
-            Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-                            Codec.STRING.fieldOf("name").forGetter(Material::name),
-                            PaletteIdentifier.CODEC.fieldOf("palette").forGetter(Material::palette),
-                            Color.CODEC.fieldOf("color").forGetter(Material::color),
-                            Property.Container.basicCodec(Set.of())
-                                    .fieldOf("properties")
-                                    .forGetter(Material::properties))
-                    .apply(instance, Material::new)));
+public record Material(String name, AssetHolder<Palette> palette, Color color, Property.Container properties) {
+    public static final Codec<Material> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                    Codec.STRING.fieldOf("name").forGetter(Material::name),
+                    AssetHolder.<Palette>codec().fieldOf("palette").forGetter(Material::palette),
+                    Color.CODEC.fieldOf("color").forGetter(Material::color),
+                    Codec.of(
+                                    Encoder.error("Materials cannot be encoded"),
+                                    DecodablePropertyContainer.decoder(Property.Dependencies.EMPTY))
+                            .fieldOf("properties")
+                            .forGetter(Material::properties))
+            .apply(instance, Material::new));
 
     public record Color(int argb) {
         public static final Codec<Color> CODEC = Codec.STRING.xmap(Color::parse, Color::format);
