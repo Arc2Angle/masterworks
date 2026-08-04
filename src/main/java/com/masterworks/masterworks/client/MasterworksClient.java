@@ -19,6 +19,7 @@ public class MasterworksClient {
 
     public MasterworksClient(ModContainer container, IEventBus bus) {
         MasterworksPreparableReloadListeners.register(bus);
+        MasterworksRenderPipelines.register(bus);
         MasterworksRenderLayers.register(bus);
         MasterworksSpecialModelRenderers.register(bus);
 
@@ -27,7 +28,8 @@ public class MasterworksClient {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
-    // TODO: move to dedicated registrar
+    // TODO: move to dedicated registrars
+
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
         event.getItemStack()

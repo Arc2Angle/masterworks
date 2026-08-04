@@ -19,13 +19,12 @@ public interface ExpressionProperty extends Property {
     Expression expression();
 
     default Double evaluate(Map<Construct.Component.Key, Construct.Component> components) {
-
         Map<String, Double> arguments = components.entrySet().stream()
                 .flatMap(entry -> {
                     Construct.Component.Key key = entry.getKey();
                     Construct.Component component = entry.getValue();
 
-                    String argumentKey = "$" + key.value();
+                    String argumentKey = ARGUMENT_PREFIX + key.value();
                     Optional<Double> argumentValue = component
                             .properties()
                             .get(type())

@@ -1,19 +1,18 @@
 package com.masterworks.masterworks.client.palette;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.resources.Identifier;
+
 /**
  * Represents a color palette, mapping indices to ARGB colors.
  */
-public record Palette(int[] colors) {
-    public static final Palette NO_COLOR8 = new Palette(
-            new int[] {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF});
+public record Palette(Identifier id) {
+    public static final Codec<Palette> CODEC = Identifier.CODEC.xmap(Palette::new, Palette::id);
 
-    public static Palette fromRGBA(int[] rgba) {
-        int[] argb = new int[rgba.length];
+    private static final FileToIdConverter CONVERTER = new FileToIdConverter("textures/palette", ".png");
 
-        for (int i = 0; i < rgba.length; i++) {
-            argb[i] = Integer.rotateRight(rgba[i], 8);
-        }
-
-        return new Palette(argb);
+    public Identifier location() {
+        return CONVERTER.idToFile(id);
     }
 }

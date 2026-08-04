@@ -31,7 +31,6 @@ public record MaterialRendererBuilder(AssetHolder<PartGeometry> geometry) implem
                 .orElseThrow(() -> new IllegalArgumentException("MaterialRenderer expects a material component"))
                 .value();
 
-        return geometry.valueOrThrow(MasterworksPreparableReloadListeners.PART)
-                .bake(material.palette().valueOrThrow(MasterworksPreparableReloadListeners.PALETTE));
+        return geometry.valueOrThrow(MasterworksPreparableReloadListeners.PART).colorize(material.palette());
     }
 }

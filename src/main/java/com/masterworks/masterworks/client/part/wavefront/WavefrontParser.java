@@ -5,49 +5,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.ResourceManager;
 
-public class WavefrontParser<T, B extends WavefrontParser.Builder<T>> {
+public class WavefrontParser<T, P, B extends WavefrontParser.Builder<T>> {
     private final Supplier<B> builderFactory;
-    private final Map<String, Builder.Parselet<T, B>> parselets;
+    private final Map<String, Parselet<T, P, B>> parselets;
 
-    public WavefrontParser(Supplier<B> builderFactory, Map<String, Builder.Parselet<T, B>> parselets) {
+    public WavefrontParser(Supplier<B> builderFactory, Map<String, Parselet<T, P, B>> parselets) {
         this.builderFactory = builderFactory;
         this.parselets = parselets;
     }
 
     public interface Builder<T> {
         T build();
-
-        public record Context(ResourceManager resourceManager, String namespace, Path prefix) {
-            public Context enter(@Nullable Path path) {
-                if (path == null) {
-                    // `.getParent()` returns null when the path is just a filename.
-                    return this;
-                }
-
-                return new Context(resourceManager(), namespace(), prefix.resolve(path));
-            }
-
-            public InputStream open(Path path) throws IOException {
-                return resourceManager()
-                        .open(Identifier.fromNamespaceAndPath(
-                                namespace(), prefix.resolve(path).toString()));
-            }
-        }
-
-        @FunctionalInterface
-        public interface Parselet<T, B extends Builder<T>> {
-            void parse(B builder, Context ctx, String content);
-        }
     }
 
-    public T parse(Builder.Context ctx, InputStream input) throws IOException {
+    @FunctionalInterface
+    public interface Parselet<T, P, B extends Builder<T>> {
+        void parse(B builder, String content, P params);
+    }
+
+    public T parse(InputStream input, P params) throws IOException {
         B builder = builderFactory.get();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
@@ -81,12 +60,12 @@ public class WavefrontParser<T, B extends WavefrontParser.Builder<T>> {
                 String name = parts[0];
                 String content = parts[1];
 
-                Builder.Parselet<T, B> parselet = parselets.get(name);
+                Parselet<T, P, B> parselet = parselets.get(name);
                 if (parselet == null) {
                     throw new IOException("Unknown first token: " + name);
                 }
 
-                parselet.parse(builder, ctx, content);
+                parselet.parse(builder, content, params);
             }
         }
 

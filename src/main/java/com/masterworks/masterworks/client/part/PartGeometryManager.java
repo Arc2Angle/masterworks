@@ -24,7 +24,7 @@ public final class PartGeometryManager extends SimpleJsonResourceReloadListener<
             Map<Identifier, PartDefinition> prepared, ResourceManager resourceManager, ProfilerFiller profiler) {
         values = prepared.entrySet().stream()
                 .collect(Collectors.toMap(
-                        entry -> entry.getKey(), entry -> entry.getValue().geometry(resourceManager)));
+                        entry -> entry.getKey(), entry -> entry.getValue().bake(resourceManager)));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.masterworks.masterworks.client.part.wavefront;
 import com.masterworks.masterworks.client.MasterworksPartDefinitionTypes;
 import com.masterworks.masterworks.client.part.PartDefinition;
 import com.masterworks.masterworks.client.part.PartGeometry;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.io.FileNotFoundException;
@@ -13,9 +14,11 @@ import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-public record WavefrontPartDefinition(Identifier model) implements PartDefinition {
-    public static final MapCodec<WavefrontPartDefinition> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(Identifier.CODEC.fieldOf("model").forGetter(WavefrontPartDefinition::model))
+public record WavefrontPartDefinition(Identifier model, boolean flipV) implements PartDefinition {
+    public static final MapCodec<WavefrontPartDefinition> CODEC =
+            RecordCodecBuilder.mapCodec(instance -> instance.group(
+                            Identifier.CODEC.fieldOf("model").forGetter(WavefrontPartDefinition::model),
+                            Codec.BOOL.optionalFieldOf("flipV", true).forGetter(WavefrontPartDefinition::flipV))
                     .apply(instance, WavefrontPartDefinition::new));
 
     private static final FileToIdConverter MODELS = new FileToIdConverter("parts/object", ".obj");
@@ -26,15 +29,16 @@ public record WavefrontPartDefinition(Identifier model) implements PartDefinitio
     }
 
     @Override
-    public PartGeometry geometry(ResourceManager resourceManager) {
+    public PartGeometry bake(ResourceManager resourceManager) {
         Identifier location = MODELS.idToFile(model);
-        String namespace = model.getNamespace();
-        Path prefix = Path.of(location.getPath()).getParent();
+        var params = new WavefrontObject.Params(
+                resourceManager,
+                location.getNamespace(),
+                Path.of(location.getPath()).getParent(),
+                flipV);
 
         try (InputStream stream = resourceManager.open(location)) {
-            WavefrontObject object = WavefrontObject.PARSER.parse(
-                    new WavefrontParser.Builder.Context(resourceManager, namespace, prefix), stream);
-            return new WavefrontPartGeometry(object);
+            return WavefrontObject.PARSER.parse(stream, params);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Failed to load object or texture", e);
         } catch (IOException e) {

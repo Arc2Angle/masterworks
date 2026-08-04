@@ -13,10 +13,6 @@ public class MasterworksPartDefinitionTypes {
     private static final DeferredRegister<PartDefinition.Type<?>> REGISTRAR =
             DeferredRegister.create(MasterworksRegistries.PART_DEFINITION_TYPE, MasterworksMod.ID);
 
-    public static void register(IEventBus bus) {
-        REGISTRAR.register(bus);
-    }
-
     private static <T extends PartDefinition> Supplier<PartDefinition.Type<T>> register(
             String name, MapCodec<T> codec) {
         return REGISTRAR.register(name, () -> new PartDefinition.Type<>(codec));
@@ -24,4 +20,8 @@ public class MasterworksPartDefinitionTypes {
 
     public static final Supplier<PartDefinition.Type<WavefrontPartDefinition>> WAVEFRONT =
             register("wavefront", WavefrontPartDefinition.CODEC);
+
+    public static void register(IEventBus bus) {
+        REGISTRAR.register(bus);
+    }
 }

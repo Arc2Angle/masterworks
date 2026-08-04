@@ -11,7 +11,7 @@ public interface PartDefinition {
 
     Type<?> type();
 
-    PartGeometry geometry(ResourceManager resourceManager);
+    PartGeometry bake(ResourceManager resourceManager);
 
     record Type<T extends PartDefinition>(MapCodec<T> codec) {}
 }

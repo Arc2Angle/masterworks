@@ -14,7 +14,7 @@ public record CompositeRendererBuilder(Map<Construct.Component.Key, Role> compon
 
     @Override
     public PartSubmitter build(Map<Construct.Component.Key, Construct.Component> components) {
-        return new CompositePartSubmitter(components.entrySet().stream()
+        return CompositePartSubmitter.of(components.entrySet().stream()
                 .map(entry -> {
                     Construct.Component.Key key = entry.getKey();
                     Construct construct = entry.getValue()

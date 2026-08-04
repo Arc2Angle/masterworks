@@ -41,8 +41,10 @@ public final class ConstructChestplateRenderLayer extends RenderLayer<AvatarRend
         PartSubmitter submitter =
                 argument.composition().value().roles().get(Role.LAYER).build(argument.components());
 
+        poseStack.pushPose();
         submitter.submit(
                 collector, new Poser(getParentModel().root()), poseStack, lightCoords, OverlayTexture.NO_OVERLAY);
+        poseStack.popPose();
     }
 
     private record Poser(ModelPart model) implements PartSubmitter.Poser {

@@ -1,7 +1,6 @@
 package com.masterworks.masterworks.client;
 
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.client.palette.PaletteManager;
 import com.masterworks.masterworks.client.part.PartGeometryManager;
 import com.masterworks.masterworks.util.Registrar;
 import java.util.List;
@@ -36,8 +35,6 @@ public class MasterworksPreparableReloadListeners {
     private static <T extends PreparableReloadListener> T register(String path, T listener) {
         return register(path, listener, List.of(), List.of());
     }
-
-    public static final PaletteManager PALETTE = register("palette", new PaletteManager());
 
     public static final PartGeometryManager PART = register("part_geometry", new PartGeometryManager());
 
