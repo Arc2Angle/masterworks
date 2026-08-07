@@ -1,7 +1,8 @@
-package com.masterworks.masterworks.client.renderer.layer;
+package com.masterworks.masterworks.client.renderer.entity.layers;
 
 import com.masterworks.masterworks.MasterworksDataComponents;
-import com.masterworks.masterworks.client.part.PartSubmitter;
+import com.masterworks.masterworks.client.mesh.MeshPoser;
+import com.masterworks.masterworks.client.submitter.Submitter;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Role;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -38,21 +39,25 @@ public final class ConstructChestplateRenderLayer extends RenderLayer<AvatarRend
             return;
         }
 
-        PartSubmitter submitter =
+        Submitter submitter =
                 argument.composition().value().roles().get(Role.LAYER).build(argument.components());
 
         poseStack.pushPose();
         submitter.submit(
-                collector, new Poser(getParentModel().root()), poseStack, lightCoords, OverlayTexture.NO_OVERLAY);
+                collector,
+                new ModelPartMeshPoser(getParentModel().root()),
+                poseStack,
+                lightCoords,
+                OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 
-    private record Poser(ModelPart model) implements PartSubmitter.Poser {
+    private record ModelPartMeshPoser(ModelPart modelPart) implements MeshPoser {
         @Override
-        public Poser enter(String name, PoseStack stack) {
-            ModelPart child = model.getChild(name);
+        public MeshPoser enter(String name, PoseStack stack) {
+            ModelPart child = modelPart.getChild(name);
             child.translateAndRotate(stack);
-            return new Poser(child);
+            return new ModelPartMeshPoser(child);
         }
     }
 }

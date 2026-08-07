@@ -23,7 +23,7 @@ public class MasterworksClient {
         MasterworksRenderLayers.register(bus);
         MasterworksSpecialModelRenderers.register(bus);
 
-        MasterworksPartDefinitionTypes.register(bus);
+        MasterworksMeshDefinitionTypes.register(bus);
 
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }

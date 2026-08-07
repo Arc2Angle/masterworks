@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.data.composition;
 
 import com.masterworks.masterworks.MasterworksCompositionTypes;
-import com.masterworks.masterworks.client.renderer.builder.CompositeRendererBuilder;
+import com.masterworks.masterworks.client.renderlet.CompositeRenderlet;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Role;
 import com.masterworks.masterworks.data.property.Property;
@@ -17,9 +17,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public record AbstractComposition(
-        List<Construct.Component.Key> components,
-        Map<Role, CompositeRendererBuilder> roles,
-        Property.Container properties)
+        List<Construct.Component.Key> components, Map<Role, CompositeRenderlet> roles, Property.Container properties)
         implements Composition {
 
     @Override
@@ -47,9 +45,8 @@ public record AbstractComposition(
     private static final MapDecoder<List<Construct.Component.Key>> COMPONENTS_DECODER =
             Codec.list(Construct.Component.Key.CODEC).fieldOf(COMPONENTS_KEY);
 
-    private static MapDecoder<Map<Role, CompositeRendererBuilder>> rolesDecoder(
-            List<Construct.Component.Key> components) {
-        return Codec.unboundedMap(Role.CODEC, CompositeRendererBuilder.CODEC).fieldOf(ROLES_KEY);
+    private static MapDecoder<Map<Role, CompositeRenderlet>> rolesDecoder(List<Construct.Component.Key> components) {
+        return Codec.unboundedMap(Role.CODEC, CompositeRenderlet.CODEC).fieldOf(ROLES_KEY);
     }
 
     private static MapDecoder<Property.Container> propertiesDecoder(List<Construct.Component.Key> components) {

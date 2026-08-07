@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.client;
 
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.client.part.PartGeometryManager;
+import com.masterworks.masterworks.client.mesh.MeshManager;
 import com.masterworks.masterworks.util.Registrar;
 import java.util.List;
 import net.minecraft.resources.Identifier;
@@ -36,7 +36,7 @@ public class MasterworksPreparableReloadListeners {
         return register(path, listener, List.of(), List.of());
     }
 
-    public static final PartGeometryManager PART = register("part_geometry", new PartGeometryManager());
+    public static final MeshManager MESH = register("mesh", new MeshManager());
 
     public static void register(IEventBus bus) {
         REGISTRAR.register(bus);

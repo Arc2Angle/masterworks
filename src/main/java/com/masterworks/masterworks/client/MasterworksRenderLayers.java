@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.client;
 
 import com.masterworks.masterworks.MasterworksMod;
-import com.masterworks.masterworks.client.renderer.layer.ConstructChestplateRenderLayer;
+import com.masterworks.masterworks.client.renderer.entity.layers.ConstructChestplateRenderLayer;
 import com.masterworks.masterworks.util.Registrar;
 import com.mojang.datafixers.util.Unit;
 import java.util.function.Function;

@@ -1,13 +1,13 @@
-package com.masterworks.masterworks.client.part.submit;
+package com.masterworks.masterworks.client.submitter;
 
-import com.masterworks.masterworks.client.part.PartSubmitter;
+import com.masterworks.masterworks.client.mesh.MeshPoser;
 import com.masterworks.masterworks.util.Vertex;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
-public record CustomGeometryPartSubmitter(RenderType renderType, Vertex[] vertices) implements PartSubmitter {
+public record CustomGeometrySubmitter(RenderType renderType, Vertex[] vertices) implements Submitter {
 
     private static final int UNTINTED = 0xFFFFFFFF;
 
@@ -28,7 +28,7 @@ public record CustomGeometryPartSubmitter(RenderType renderType, Vertex[] vertic
 
     @Override
     public void submit(
-            SubmitNodeCollector collector, Poser poser, PoseStack stack, int packedLight, int packedOverlay) {
+            SubmitNodeCollector collector, MeshPoser poser, PoseStack stack, int packedLight, int packedOverlay) {
         collector.submitCustomGeometry(stack, renderType, new Renderer(vertices, packedLight, packedOverlay));
     }
 }

@@ -1,8 +1,8 @@
-package com.masterworks.masterworks.client.part.wavefront;
+package com.masterworks.masterworks.client.mesh.wavefront;
 
-import com.masterworks.masterworks.client.MasterworksPartDefinitionTypes;
-import com.masterworks.masterworks.client.part.PartDefinition;
-import com.masterworks.masterworks.client.part.PartGeometry;
+import com.masterworks.masterworks.client.MasterworksMeshDefinitionTypes;
+import com.masterworks.masterworks.client.mesh.Mesh;
+import com.masterworks.masterworks.client.mesh.MeshDefinition;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,22 +14,22 @@ import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-public record WavefrontPartDefinition(Identifier model, boolean flipV) implements PartDefinition {
-    public static final MapCodec<WavefrontPartDefinition> CODEC =
+public record WavefrontMeshDefinition(Identifier model, boolean flipV) implements MeshDefinition {
+    public static final MapCodec<WavefrontMeshDefinition> CODEC =
             RecordCodecBuilder.mapCodec(instance -> instance.group(
-                            Identifier.CODEC.fieldOf("model").forGetter(WavefrontPartDefinition::model),
-                            Codec.BOOL.optionalFieldOf("flipV", true).forGetter(WavefrontPartDefinition::flipV))
-                    .apply(instance, WavefrontPartDefinition::new));
+                            Identifier.CODEC.fieldOf("model").forGetter(WavefrontMeshDefinition::model),
+                            Codec.BOOL.optionalFieldOf("flip_v", true).forGetter(WavefrontMeshDefinition::flipV))
+                    .apply(instance, WavefrontMeshDefinition::new));
 
-    private static final FileToIdConverter MODELS = new FileToIdConverter("parts/object", ".obj");
+    private static final FileToIdConverter MODELS = new FileToIdConverter("wavefront", ".obj");
 
     @Override
     public Type<?> type() {
-        return MasterworksPartDefinitionTypes.WAVEFRONT.get();
+        return MasterworksMeshDefinitionTypes.WAVEFRONT.get();
     }
 
     @Override
-    public PartGeometry bake(ResourceManager resourceManager) {
+    public Mesh bake(ResourceManager resourceManager) {
         Identifier location = MODELS.idToFile(model);
         var params = new WavefrontObject.Params(
                 resourceManager,

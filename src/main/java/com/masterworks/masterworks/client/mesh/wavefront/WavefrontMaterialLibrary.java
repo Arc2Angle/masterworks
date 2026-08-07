@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.client.part.wavefront;
+package com.masterworks.masterworks.client.mesh.wavefront;
 
 import java.nio.file.Path;
 import java.util.HashMap;

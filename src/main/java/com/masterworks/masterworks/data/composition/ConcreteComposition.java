@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.data.composition;
 
 import com.masterworks.masterworks.MasterworksCompositionTypes;
-import com.masterworks.masterworks.client.renderer.builder.MaterialRendererBuilder;
+import com.masterworks.masterworks.client.renderlet.MaterialRenderlet;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Role;
 import com.masterworks.masterworks.data.property.Property;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public record ConcreteComposition(Map<Role, MaterialRendererBuilder> roles, Property.Container properties)
+public record ConcreteComposition(Map<Role, MaterialRenderlet> roles, Property.Container properties)
         implements Composition {
 
     @Override
@@ -24,7 +24,7 @@ public record ConcreteComposition(Map<Role, MaterialRendererBuilder> roles, Prop
         return MasterworksCompositionTypes.CONCRETE.get();
     }
 
-    public static final List<Construct.Component.Key> COMPONENTS = List.of(MaterialRendererBuilder.COMPONENT_KEY);
+    public static final List<Construct.Component.Key> COMPONENTS = List.of(MaterialRenderlet.COMPONENT_KEY);
 
     @Override
     public List<Construct.Component.Key> components() {
@@ -45,10 +45,10 @@ public record ConcreteComposition(Map<Role, MaterialRendererBuilder> roles, Prop
         }
     };
 
-    private static final MapDecoder<Map<Role, MaterialRendererBuilder>> ROLES_DECODER =
-            Codec.unboundedMap(Role.CODEC, MaterialRendererBuilder.CODEC).fieldOf(ROLES_KEY);
+    private static final MapDecoder<Map<Role, MaterialRenderlet>> ROLES_DECODER =
+            Codec.unboundedMap(Role.CODEC, MaterialRenderlet.CODEC).fieldOf(ROLES_KEY);
 
     private static final MapDecoder<Property.Container> PROPERTIES_DECODER = DecodablePropertyContainer.decoder(
-                    new Property.Dependencies(Set.of(MaterialRendererBuilder.COMPONENT_KEY)))
+                    new Property.Dependencies(Set.of(MaterialRenderlet.COMPONENT_KEY)))
             .fieldOf(PROPERTIES_KEY);
 }

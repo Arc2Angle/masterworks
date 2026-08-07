@@ -1,6 +1,6 @@
 package com.masterworks.masterworks;
 
-import com.masterworks.masterworks.client.part.PartDefinition;
+import com.masterworks.masterworks.client.mesh.MeshDefinition;
 import com.masterworks.masterworks.data.composition.Composition;
 import com.masterworks.masterworks.data.property.Property;
 import com.masterworks.masterworks.util.Registrar;
@@ -42,5 +42,5 @@ public class MasterworksRegistries {
 
     public static final Registry<Composition.Type<?>> COMPOSITION_TYPE = register("composition_type");
 
-    public static final Registry<PartDefinition.Type<?>> PART_DEFINITION_TYPE = register("part_definition_type");
+    public static final Registry<MeshDefinition.Type<?>> MESH_DEFINITION_TYPE = register("mesh_definition_type");
 }

@@ -1,4 +1,4 @@
-package com.masterworks.masterworks.client.part.wavefront;
+package com.masterworks.masterworks.client.mesh.wavefront;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,13 +1,12 @@
-package com.masterworks.masterworks.client.renderer.item;
+package com.masterworks.masterworks.client.renderer.special;
 
 import com.masterworks.masterworks.MasterworksDataComponents;
-import com.masterworks.masterworks.client.part.PartSubmitter;
-import com.masterworks.masterworks.client.part.submit.NullPoser;
+import com.masterworks.masterworks.client.mesh.poser.TrivialMeshPoser;
+import com.masterworks.masterworks.client.submitter.Submitter;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Role;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
-import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,23 +62,13 @@ public class ConstructSpecialModelRenderer implements SpecialModelRenderer<Const
             return;
         }
 
-        PartSubmitter submitter =
+        Submitter submitter =
                 argument.composition().value().roles().get(Role.ITEM).build(argument.components());
 
-        submitter.submit(collector, new Poser(), poseStack, packedLight, packedOverlay);
-    }
-
-    private record Poser() implements PartSubmitter.Poser {
-        @Override
-        public PartSubmitter.Poser enter(String name, PoseStack stack) {
-            if (!name.equals("item")) {
-                throw new NoSuchElementException("ConstructSpecialModelRenderer.Poser missing child: " + name);
-            }
-
-            stack.translate(0.5, 0, 0.5);
-            stack.scale(-1, 1, 1);
-
-            return new NullPoser();
-        }
+        poseStack.pushPose();
+        poseStack.translate(0, 0, 0.5);
+        // poseStack.scale(-1, 1, 1);
+        submitter.submit(collector, new TrivialMeshPoser(), poseStack, packedLight, packedOverlay);
+        poseStack.popPose();
     }
 }

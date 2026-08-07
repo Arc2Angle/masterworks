@@ -1,12 +1,13 @@
-package com.masterworks.masterworks.client.part.wavefront;
+package com.masterworks.masterworks.client.mesh.wavefront;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.masterworks.masterworks.client.mesh.Mesh;
+import com.masterworks.masterworks.client.mesh.core.DiffuseMesh;
 import com.masterworks.masterworks.client.palette.Palette;
-import com.masterworks.masterworks.client.part.PartGeometry;
-import com.masterworks.masterworks.client.part.PartSubmitter;
-import com.masterworks.masterworks.client.part.submit.CompositePartSubmitter;
-import com.masterworks.masterworks.client.part.submit.NamedPosePartSubmitter;
+import com.masterworks.masterworks.client.submitter.CompositeSubmitter;
+import com.masterworks.masterworks.client.submitter.NamespaceSubmitter;
+import com.masterworks.masterworks.client.submitter.Submitter;
 import com.masterworks.masterworks.util.Vertex;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,15 +22,15 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public record WavefrontObject(Multimap<String, WavefrontMesh> meshes) implements PartGeometry {
+public record WavefrontObject(Multimap<String, Mesh> meshes) implements Mesh {
 
     @Override
-    public PartSubmitter colorize(Palette palette) {
-        return new NamedPosePartSubmitter(meshes.asMap().entrySet().stream()
+    public Submitter reify(Palette palette) {
+        return new NamespaceSubmitter(meshes.asMap().entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey(),
-                        entry -> CompositePartSubmitter.of(entry.getValue().stream()
-                                .map(mesh -> mesh.colorize(palette))
+                        entry -> CompositeSubmitter.of(entry.getValue().stream()
+                                .map(mesh -> mesh.reify(palette))
                                 .toList()))));
     }
 
@@ -58,7 +59,7 @@ public record WavefrontObject(Multimap<String, WavefrontMesh> meshes) implements
         final List<Vector2f> textures = new ArrayList<>();
         final List<Vector3f> normals = new ArrayList<>();
         final Map<String, WavefrontMaterial> materials = new HashMap<>();
-        final Multimap<String, WavefrontMesh> meshes = ArrayListMultimap.create();
+        final Multimap<String, Mesh> meshes = ArrayListMultimap.create();
 
         String currentMeshName = null;
         List<Vertex> currentVertices = new ArrayList<>();
@@ -179,7 +180,12 @@ public record WavefrontObject(Multimap<String, WavefrontMesh> meshes) implements
                 return;
             }
 
-            meshes.put(currentMeshName, new WavefrontMesh(currentVertices.toArray(new Vertex[0]), currentMaterial));
+            Identifier diffuseLocation =
+                    switch (currentMaterial) {
+                        case WavefrontMaterial.DiffuseTexture(Identifier location) -> location;
+                    };
+
+            meshes.put(currentMeshName, new DiffuseMesh(diffuseLocation, currentVertices.toArray(new Vertex[0])));
             currentVertices.clear();
         }
 

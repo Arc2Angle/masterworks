@@ -1,28 +1,28 @@
-package com.masterworks.masterworks.client.part.submit;
+package com.masterworks.masterworks.client.submitter;
 
-import com.masterworks.masterworks.client.part.PartSubmitter;
+import com.masterworks.masterworks.client.mesh.MeshPoser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collection;
 import java.util.SequencedCollection;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 
-public record CompositePartSubmitter(Collection<PartSubmitter> components) implements PartSubmitter {
+public record CompositeSubmitter(Collection<? extends Submitter> components) implements Submitter {
     @Override
     public void submit(
-            SubmitNodeCollector collector, Poser poser, PoseStack stack, int packedLight, int packedOverlay) {
-        for (PartSubmitter component : components) {
+            SubmitNodeCollector collector, MeshPoser poser, PoseStack stack, int packedLight, int packedOverlay) {
+        for (Submitter component : components) {
             component.submit(collector, poser, stack, packedLight, packedOverlay);
         }
     }
 
-    public static PartSubmitter of(SequencedCollection<PartSubmitter> components) {
+    public static Submitter of(SequencedCollection<? extends Submitter> components) {
         switch (components.size()) {
             case 0 -> throw new IllegalArgumentException("Cannot create a CompositePartSubmitter with no components");
             case 1 -> {
                 return components.getFirst();
             }
             default -> {
-                return new CompositePartSubmitter(components);
+                return new CompositeSubmitter(components);
             }
         }
     }

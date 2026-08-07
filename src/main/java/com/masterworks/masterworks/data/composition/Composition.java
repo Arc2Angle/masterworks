@@ -1,7 +1,7 @@
 package com.masterworks.masterworks.data.composition;
 
 import com.masterworks.masterworks.MasterworksRegistries;
-import com.masterworks.masterworks.client.renderer.builder.RendererBuilder;
+import com.masterworks.masterworks.client.renderlet.Renderlet;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Role;
 import com.masterworks.masterworks.data.property.Property;
@@ -19,7 +19,7 @@ public interface Composition {
 
     List<Construct.Component.Key> components();
 
-    Map<Role, ? extends RendererBuilder> roles();
+    Map<Role, ? extends Renderlet> roles();
 
     Property.Container properties();
 
