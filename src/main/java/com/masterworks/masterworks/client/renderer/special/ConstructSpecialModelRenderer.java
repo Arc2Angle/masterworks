@@ -67,7 +67,6 @@ public class ConstructSpecialModelRenderer implements SpecialModelRenderer<Const
 
         poseStack.pushPose();
         poseStack.translate(0, 0, 0.5);
-        // poseStack.scale(-1, 1, 1);
         submitter.submit(collector, new TrivialMeshPoser(), poseStack, packedLight, packedOverlay);
         poseStack.popPose();
     }
