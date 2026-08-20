@@ -1,0 +1,15 @@
+{
+    "type": "masterworks:concrete",
+    "roles": {
+        "masterworks:item": "masterworks:lining/fulleather",
+        "masterworks:malleable_lining/head": "masterworks:lining/fulleather/malleable/head",
+        "masterworks:malleable_lining/chest": "masterworks:lining/fulleather/malleable/chest",
+        "masterworks:head/malleable_lining": "masterworks:head/lining/fulleather/malleable",
+        "masterworks:chest/malleable_lining": "masterworks:chest/lining/fulleather/malleable"
+    },
+    "properties": {
+        "masterworks:durability": "$main",
+        "masterworks:armor": "$main",
+        "masterworks:toughness": "$main"
+    }
+}

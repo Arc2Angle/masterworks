@@ -1,0 +1,15 @@
+{
+    "type": "masterworks:concrete",
+    "roles": {
+        "masterworks:item": "masterworks:plate",
+        "masterworks:rigid_shell/head": "masterworks:plate/rigid_shell/head",
+        "masterworks:rigid_shell/chest": "masterworks:plate/rigid_shell/chest",
+        "masterworks:head/rigid_shell": "masterworks:head/plate/rigid_shell",
+        "masterworks:chest/rigid_shell": "masterworks:chest/plate/rigid_shell"
+    },
+    "properties": {
+        "masterworks:durability": "$main",
+        "masterworks:armor": "$main",
+        "masterworks:toughness": "$main"
+    }
+}

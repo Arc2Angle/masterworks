@@ -1,7 +1,6 @@
 package com.masterworks.masterworks;
 
 import com.masterworks.masterworks.item.ConstructItem;
-import com.masterworks.masterworks.item.TemplateItem;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -37,9 +36,6 @@ public class MasterworksCreativeModeTabs {
             String name, Supplier<? extends ItemLike> icon, Supplier<? extends ItemLike>... items) {
         return register(name, icon, new CollectionDisplayItemsGenerator(Arrays.asList(items)));
     }
-
-    public static final Supplier<CreativeModeTab> TEMPLATES =
-            register("templates", MasterworksItems.ROD_TEMPLATE, new TemplateItem.DisplayItemsGenerator());
 
     public static final Supplier<CreativeModeTab> CONSTRUCTS =
             register("constructs", MasterworksItems.CONSTRUCT, new ConstructItem.DisplayItemsGenerator());

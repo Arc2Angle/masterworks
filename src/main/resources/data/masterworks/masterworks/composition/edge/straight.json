@@ -1,0 +1,15 @@
+{
+    "type": "masterworks:concrete",
+    "roles": {
+        "masterworks:item": "masterworks:edge/straight",
+        "masterworks:blade/left_edge": "masterworks:blade/left_edge/straight",
+        "masterworks:blade/right_edge": "masterworks:blade/right_edge/straight",
+        "masterworks:sword/blade/left_edge": "masterworks:sword/blade/left_edge/straight",
+        "masterworks:sword/blade/right_edge": "masterworks:sword/blade/right_edge/straight"
+    },
+    "properties": {
+        "masterworks:durability": "$main * 0.25",
+        "masterworks:attack_damage": "$main * 0.5",
+        "masterworks:attack_speed": "$main * 0.5"
+    }
+}

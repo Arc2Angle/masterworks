@@ -1,0 +1,15 @@
+{
+    "type": "masterworks:concrete",
+    "roles": {
+        "masterworks:item": "masterworks:lining/foam",
+        "masterworks:malleable_lining/head": "masterworks:lining/foam/malleable/head",
+        "masterworks:malleable_lining/chest": "masterworks:lining/foam/malleable/chest",
+        "masterworks:head/malleable_lining": "masterworks:head/lining/foam/malleable",
+        "masterworks:chest/malleable_lining": "masterworks:chest/lining/foam/malleable"
+    },
+    "properties": {
+        "masterworks:durability": "$main",
+        "masterworks:armor": "$main",
+        "masterworks:toughness": "$main"
+    }
+}

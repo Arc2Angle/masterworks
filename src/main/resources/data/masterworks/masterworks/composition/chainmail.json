@@ -1,0 +1,15 @@
+{
+    "type": "masterworks:concrete",
+    "roles": {
+        "masterworks:item": "masterworks:chainmail",
+        "masterworks:rigid_shell/head": "masterworks:chainmail/rigid_shell/head",
+        "masterworks:rigid_shell/chest": "masterworks:chainmail/rigid_shell/chest",
+        "masterworks:head/rigid_shell": "masterworks:head/chainmail/rigid_shell",
+        "masterworks:chest/rigid_shell": "masterworks:chest/chainmail/rigid_shell"
+    },
+    "properties": {
+        "masterworks:durability": "$main * 1.1",
+        "masterworks:armor": "$main * 0.8",
+        "masterworks:toughness": "$main * 1.2"
+    }
+}

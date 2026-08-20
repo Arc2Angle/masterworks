@@ -1,0 +1,26 @@
+{
+    "type": "masterworks:abstract",
+    "components": [
+        "webbing",
+        "shell",
+        "lining"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "webbing": "masterworks:elastic_webbing/chest",
+            "shell": "masterworks:rigid_shell/chest",
+            "lining": "masterworks:malleable_lining/chest"
+        },
+        "masterworks:layer": {
+            "webbing": "masterworks:chest/elastic_webbing",
+            "shell": "masterworks:chest/rigid_shell",
+            "lining": "masterworks:chest/malleable_lining"
+        }
+    },
+    "properties": {
+        "masterworks:equipment_slot": "chest",
+        "masterworks:durability": "$webbing * 0.6 + $shell * 0.3 + $lining * 0.1",
+        "masterworks:armor": "$webbing * 0.2 + $shell * 0.7 + $lining * 0.1",
+        "masterworks:toughness": "$webbing * 0.1 + $shell * 0.4 + $lining * 0.5"
+    }
+}

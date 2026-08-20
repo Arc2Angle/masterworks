@@ -1,20 +1,9 @@
 {
-    "components": [
-        "main"
-    ],
+    "type": "masterworks:concrete",
     "roles": {
-        "masterworks:item": {
-            "type": "masterworks:materializer",
-            "main": "masterworks:binding"
-        },
-        "masterworks:component/pickaxe/binding": {
-            "type": "masterworks:materializer",
-            "main": "masterworks:pickaxe/binding"
-        },
-        "masterworks:component/sword/broad/guard": {
-            "type": "masterworks:materializer",
-            "main": "masterworks:sword/broad/guard"
-        }
+        "masterworks:item": "masterworks:binding",
+        "masterworks:pickaxe/binding": "masterworks:pickaxe/binding",
+        "masterworks:sword/guard": "masterworks:sword/guard"
     },
     "properties": {
         "masterworks:durability": "$main * 0.3",

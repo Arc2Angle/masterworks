@@ -3,16 +3,19 @@ package com.masterworks.masterworks.item;
 import com.masterworks.masterworks.MasterworksDataComponents;
 import com.masterworks.masterworks.MasterworksDataPackRegistries;
 import com.masterworks.masterworks.MasterworksItems;
+import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.MasterworksRegistries;
-import com.masterworks.masterworks.data.Composition;
+import com.masterworks.masterworks.client.renderlet.MaterialRenderlet;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Material;
+import com.masterworks.masterworks.data.composition.Composition;
 import com.mojang.datafixers.util.Either;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -35,108 +38,152 @@ public class ConstructItem extends Item {
         return stack;
     }
 
+    private record ResourceResolver<T>(
+            String namespace,
+            HolderLookup.RegistryLookup<T> registryLookup,
+            ResourceKey<? extends Registry<T>> registryKey) {
+        public static <T> ResourceResolver<T> of(
+                HolderLookup.Provider lookupProvider, ResourceKey<? extends Registry<T>> registryKey) {
+            return new ResourceResolver<>(MasterworksMod.ID, lookupProvider.lookupOrThrow(registryKey), registryKey);
+        }
+
+        public Holder<T> resolve(String path) {
+            Identifier id = Identifier.fromNamespaceAndPath(namespace, path);
+            ResourceKey<T> key = ResourceKey.create(registryKey, id);
+            return registryLookup.getOrThrow(key);
+        }
+    }
+
     public static class DisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
 
-        private static ResourceKey<Composition> composition(String path) {
-            return ResourceKey.create(
-                    MasterworksDataPackRegistries.COMPOSITION, Identifier.fromNamespaceAndPath("masterworks", path));
-        }
-
-        private static ResourceKey<Material> material(String path) {
-            return ResourceKey.create(
-                    MasterworksDataPackRegistries.MATERIAL, Identifier.fromNamespaceAndPath("masterworks", path));
-        }
-
-        private static final ResourceKey<Composition> rod = composition("rod");
-        private static final ResourceKey<Composition> binding = composition("binding");
-        private static final ResourceKey<Composition> pickaxe = composition("pickaxe");
-        private static final ResourceKey<Composition> pickaxeHead = composition("pickaxe/head");
-        private static final ResourceKey<Composition> swordBroad = composition("sword/broad");
-        private static final ResourceKey<Composition> bladeBroad = composition("blade/broad");
-        private static final ResourceKey<Composition> bladeBroadDual = composition("blade/broad/dual");
-        private static final ResourceKey<Composition> edgeBroadStraight = composition("edge/broad/straight");
-        private static final ResourceKey<Composition> edgeBroadSirrated = composition("edge/broad/sirrated");
-        private static final ResourceKey<Composition> chestplate = composition("chestplate");
-
-        private static final ResourceKey<Material> wood = material("wood");
-        private static final ResourceKey<Material> stone = material("stone");
-        private static final ResourceKey<Material> iron = material("iron");
-        private static final ResourceKey<Material> gold = material("gold");
-        private static final ResourceKey<Material> diamond = material("diamond");
-        private static final ResourceKey<Material> emerald = material("emerald");
-
-        private static Construct simple(Holder<Composition> composition, Holder<Material> material) {
+        private static Construct construct(Holder<Composition> composition, Holder<Material> material) {
             return new Construct(
                     composition,
-                    Map.of(new Construct.Component.Key("main"), new Construct.Component(Either.left(material))));
+                    Map.of(MaterialRenderlet.COMPONENT_KEY, new Construct.Component(Either.left(material))));
         }
 
-        private static Construct complex(Holder<Composition> composition, Map<String, Construct> parts) {
+        private static Construct construct(Holder<Composition> composition, Map<String, Construct> components) {
             return new Construct(
                     composition,
-                    parts.entrySet().stream()
-                            .map(entry -> Map.entry(
-                                    new Construct.Component.Key(entry.getKey()),
-                                    new Construct.Component(Either.right(entry.getValue()))))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                    components.entrySet().stream()
+                            .collect(Collectors.toMap(
+                                    entry -> new Construct.Component.Key(entry.getKey()),
+                                    entry -> new Construct.Component(Either.right(entry.getValue())))));
         }
 
         @Override
         public void accept(
                 @Nonnull CreativeModeTab.ItemDisplayParameters params, @Nonnull CreativeModeTab.Output output) {
-            HolderLookup.RegistryLookup<Composition> compositions =
-                    params.holders().lookupOrThrow(MasterworksDataPackRegistries.COMPOSITION);
-            HolderLookup.RegistryLookup<Material> materials =
-                    params.holders().lookupOrThrow(MasterworksDataPackRegistries.MATERIAL);
+            final ResourceResolver<Material> materials =
+                    ResourceResolver.of(params.holders(), MasterworksDataPackRegistries.MATERIAL);
+            final Holder<Material>
+                    // vanilla materials
+                    wood = materials.resolve("wood"),
+                    stone = materials.resolve("stone"),
+                    iron = materials.resolve("iron"),
+                    gold = materials.resolve("gold"),
+                    diamond = materials.resolve("diamond"),
+                    emerald = materials.resolve("emerald");
 
-            Construct woodRod = simple(compositions.getOrThrow(rod), materials.getOrThrow(wood));
-            Construct ironRod = simple(compositions.getOrThrow(rod), materials.getOrThrow(iron));
-            Construct diamondRod = simple(compositions.getOrThrow(rod), materials.getOrThrow(diamond));
+            final ResourceResolver<Composition> compositions =
+                    ResourceResolver.of(params.holders(), MasterworksDataPackRegistries.COMPOSITION);
+            final Holder<Composition>
+                    // (generic)
+                    rod = compositions.resolve("rod"),
+                    binding = compositions.resolve("binding"),
 
-            Construct stoneBinding = simple(compositions.getOrThrow(binding), materials.getOrThrow(stone));
-            Construct ironBinding = simple(compositions.getOrThrow(binding), materials.getOrThrow(iron));
-            Construct emeraldBinding = simple(compositions.getOrThrow(binding), materials.getOrThrow(emerald));
+                    // pickaxe/head
+                    pickaxeHead = compositions.resolve("pickaxe_head"),
 
-            Construct stonePickaxeHead = simple(compositions.getOrThrow(pickaxeHead), materials.getOrThrow(stone));
-            Construct goldPickaxeHead = simple(compositions.getOrThrow(pickaxeHead), materials.getOrThrow(gold));
+                    // sword/blade
+                    blade = compositions.resolve("blade"),
+                    bladeDual = compositions.resolve("blade/dual"),
 
-            Construct ironBladeBroad = simple(compositions.getOrThrow(bladeBroad), materials.getOrThrow(iron));
-            Construct diamondEdgeBroadSirrated =
-                    simple(compositions.getOrThrow(edgeBroadSirrated), materials.getOrThrow(diamond));
-            Construct emeraldEdgeBroadStraight =
-                    simple(compositions.getOrThrow(edgeBroadStraight), materials.getOrThrow(emerald));
-            Construct diamondEmeraldBladeBroad = complex(
-                    compositions.getOrThrow(bladeBroadDual),
-                    Map.of("left", diamondEdgeBroadSirrated, "right", emeraldEdgeBroadStraight));
+                    // blade/left_edge, blade/right_edge, sword/blade/left_edge, sword/blade/right_edge
+                    edgeStraight = compositions.resolve("edge/straight"),
+                    edgeSerrated = compositions.resolve("edge/serrated"),
 
-            Construct ironChestplate = simple(compositions.getOrThrow(chestplate), materials.getOrThrow(iron));
-            Construct goldChestplate = simple(compositions.getOrThrow(chestplate), materials.getOrThrow(gold));
+                    // elastic_webbing (head)
+                    headTightcover = compositions.resolve("tightcover/head"),
 
-            output.accept(stack(stonePickaxeHead));
-            output.accept(stack(ironRod));
-            output.accept(stack(emeraldBinding));
-            output.accept(stack(complex(
-                    compositions.getOrThrow(pickaxe),
-                    Map.of("head", goldPickaxeHead, "handle", ironRod, "binding", emeraldBinding))));
+                    // elastic_webbing (chest)
+                    chestTightcover = compositions.resolve("tightcover/chest"),
 
-            output.accept(stack(ironBladeBroad));
-            output.accept(stack(diamondRod));
-            output.accept(stack(stoneBinding));
-            output.accept(stack(complex(
-                    compositions.getOrThrow(swordBroad),
-                    Map.of("blade", ironBladeBroad, "handle", diamondRod, "guard", stoneBinding))));
+                    // rigid_shell (head, chest, legs, feet)
+                    plate = compositions.resolve("plate"),
+                    chainmail = compositions.resolve("chainmail"),
 
-            output.accept(stack(diamondEdgeBroadSirrated));
-            output.accept(stack(emeraldEdgeBroadStraight));
-            output.accept(stack(diamondEmeraldBladeBroad));
+                    // malleable_lining (head, chest, legs, feet)
+                    fulleatherLining = compositions.resolve("lining/fulleather"),
+                    foamLining = compositions.resolve("lining/foam"),
+
+                    // item/layer
+                    pickaxe = compositions.resolve("pickaxe"),
+                    sword = compositions.resolve("sword"),
+                    hardhat = compositions.resolve("hardhat"),
+                    torsovest = compositions.resolve("torsovest");
+
+            Construct woodRod = construct(rod, wood);
+            Construct ironRod = construct(rod, iron);
+            Construct diamondRod = construct(rod, diamond);
             output.accept(stack(woodRod));
-            output.accept(stack(ironBinding));
-            output.accept(stack(complex(
-                    compositions.getOrThrow(swordBroad),
-                    Map.of("blade", diamondEmeraldBladeBroad, "handle", woodRod, "guard", ironBinding))));
+            output.accept(stack(ironRod));
+            output.accept(stack(diamondRod));
 
-            output.accept(stack(ironChestplate));
-            output.accept(stack(goldChestplate));
+            Construct stoneBinding = construct(binding, stone);
+            Construct ironBinding = construct(binding, iron);
+            Construct emeraldBinding = construct(binding, emerald);
+            output.accept(stack(stoneBinding));
+            output.accept(stack(ironBinding));
+            output.accept(stack(emeraldBinding));
+
+            // Construct woodFrame = construct(frame, wood);
+            // Construct ironFrame = construct(frame, iron);
+            // Construct emeraldFrame = construct(frame, emerald);
+            // output.accept(stack(woodFrame));
+            // output.accept(stack(ironFrame));
+            // output.accept(stack(emeraldFrame));
+
+            // Construct woodPlating = construct(plating, wood);
+            // Construct stonePlating = construct(plating, stone);
+            // Construct diamondPlating = construct(plating, diamond);
+            // output.accept(stack(woodPlating));
+            // output.accept(stack(stonePlating));
+            // output.accept(stack(diamondPlating));
+
+            // Construct woodLining = construct(lining, wood);
+            // Construct goldLining = construct(lining, gold);
+            // output.accept(stack(woodLining));
+            // output.accept(stack(goldLining));
+
+            Construct stonePickaxeHead = construct(pickaxeHead, stone);
+            Construct goldPickaxeHead = construct(pickaxeHead, gold);
+            output.accept(stack(stonePickaxeHead));
+            output.accept(stack(goldPickaxeHead));
+
+            Construct ironBlade = construct(blade, iron);
+            output.accept(stack(ironBlade));
+
+            Construct diamondEdgeSerrated = construct(edgeSerrated, diamond);
+            Construct emeraldEdgeStraight = construct(edgeStraight, emerald);
+            Construct diamondEmeraldBlade =
+                    construct(bladeDual, Map.of("left", diamondEdgeSerrated, "right", emeraldEdgeStraight));
+            output.accept(stack(diamondEdgeSerrated));
+            output.accept(stack(emeraldEdgeStraight));
+            output.accept(stack(diamondEmeraldBlade));
+
+            output.accept(stack(
+                    construct(pickaxe, Map.of("head", goldPickaxeHead, "handle", ironRod, "binding", emeraldBinding))));
+            output.accept(
+                    stack(construct(sword, Map.of("blade", ironBlade, "handle", diamondRod, "guard", stoneBinding))));
+            output.accept(stack(
+                    construct(sword, Map.of("blade", diamondEmeraldBlade, "handle", woodRod, "guard", ironBinding))));
+            // output.accept(stack(
+            //         construct(chestplate, Map.of("frame", ironFrame, "shell", stonePlating, "lining", goldLining))));
+            // output.accept(stack(
+            //         construct(chestplate, Map.of("frame", woodFrame, "shell", woodPlating, "lining", woodLining))));
+            // output.accept(stack(construct(
+            //         chestplate, Map.of("frame", emeraldFrame, "shell", diamondPlating, "lining", goldLining))));
         }
     }
 }

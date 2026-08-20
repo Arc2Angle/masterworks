@@ -1,4 +1,5 @@
 {
+    "type": "masterworks:abstract",
     "components": [
         "head",
         "binding",
@@ -6,10 +7,9 @@
     ],
     "roles": {
         "masterworks:item": {
-            "type": "masterworks:compositor",
-            "head": "masterworks:component/pickaxe/head",
-            "binding": "masterworks:component/pickaxe/binding",
-            "handle": "masterworks:component/pickaxe/handle"
+            "head": "masterworks:pickaxe/head",
+            "binding": "masterworks:pickaxe/binding",
+            "handle": "masterworks:pickaxe/handle"
         }
     },
     "properties": {

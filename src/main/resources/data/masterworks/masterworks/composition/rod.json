@@ -1,20 +1,9 @@
 {
-    "components": [
-        "main"
-    ],
+    "type": "masterworks:concrete",
     "roles": {
-        "masterworks:item": {
-            "type": "masterworks:materializer",
-            "main": "masterworks:rod"
-        },
-        "masterworks:component/pickaxe/handle": {
-            "type": "masterworks:materializer",
-            "main": "masterworks:pickaxe/handle"
-        },
-        "masterworks:component/sword/broad/handle": {
-            "type": "masterworks:materializer",
-            "main": "masterworks:sword/broad/handle"
-        }
+        "masterworks:item": "masterworks:rod",
+        "masterworks:pickaxe/handle": "masterworks:pickaxe/handle",
+        "masterworks:sword/handle": "masterworks:sword/handle"
     },
     "properties": {
         "masterworks:durability": "$main * 0.2",

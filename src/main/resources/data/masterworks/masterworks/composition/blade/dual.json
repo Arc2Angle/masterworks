@@ -1,0 +1,22 @@
+{
+    "type": "masterworks:abstract",
+    "components": [
+        "left",
+        "right"
+    ],
+    "roles": {
+        "masterworks:item": {
+            "left": "masterworks:blade/left_edge",
+            "right": "masterworks:blade/right_edge"
+        },
+        "masterworks:sword/blade": {
+            "left": "masterworks:sword/blade/left_edge",
+            "right": "masterworks:sword/blade/right_edge"
+        }
+    },
+    "properties": {
+        "masterworks:durability": "$left + $right",
+        "masterworks:attack_damage": "$left + $right",
+        "masterworks:attack_speed": "$left + $right"
+    }
+}

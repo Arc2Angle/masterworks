@@ -1,0 +1,5 @@
+{
+    "type": "masterworks:displace",
+    "diffuse": "masterworks:head/rigid_shell/plate",
+    "index": "masterworks:eight"
+}

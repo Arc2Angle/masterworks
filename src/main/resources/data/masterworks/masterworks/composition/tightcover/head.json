@@ -1,0 +1,13 @@
+{
+    "type": "masterworks:concrete",
+    "roles": {
+        "masterworks:item": "masterworks:tightcover/head",
+        "masterworks:elastic_webbing/head": "masterworks:tightcover/elastic_webbing/head",
+        "masterworks:head/elastic_webbing": "masterworks:head/tightcover/elastic_webbing"
+    },
+    "properties": {
+        "masterworks:durability": "$main",
+        "masterworks:armor": "$main",
+        "masterworks:toughness": "$main"
+    }
+}

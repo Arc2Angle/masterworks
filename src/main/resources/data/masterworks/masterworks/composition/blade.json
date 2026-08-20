@@ -1,0 +1,12 @@
+{
+    "type": "masterworks:concrete",
+    "roles": {
+        "masterworks:item": "masterworks:blade",
+        "masterworks:sword/blade": "masterworks:sword/blade"
+    },
+    "properties": {
+        "masterworks:durability": "$main * 0.5",
+        "masterworks:attack_damage": "$main",
+        "masterworks:attack_speed": "$main"
+    }
+}
