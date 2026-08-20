@@ -81,14 +81,14 @@ public record WavefrontObject(Multimap<String, Mesh> meshes) implements Mesh {
             }
 
             Path path = params.parent.resolve(Path.of(paths[0]));
-            Identifier libraryId = Identifier.fromNamespaceAndPath(params.namespace, path.toString());
+            Identifier location = Identifier.fromNamespaceAndPath(params.namespace, path.toString());
 
-            try (InputStream stream = params.resourceManager.open(libraryId)) {
+            try (InputStream stream = params.resourceManager.open(location)) {
                 materials.putAll(WavefrontMaterialLibrary.PARSER
                         .parse(stream, new WavefrontMaterialLibrary.Params(params.namespace, path.getParent()))
                         .materials());
             } catch (IOException e) {
-                throw new RuntimeException("Failed to read material library", e);
+                throw new RuntimeException("Failed to read material library " + location, e);
             }
         }
 

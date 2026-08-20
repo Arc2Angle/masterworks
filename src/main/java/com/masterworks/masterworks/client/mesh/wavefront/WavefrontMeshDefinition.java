@@ -6,7 +6,6 @@ import com.masterworks.masterworks.client.mesh.MeshDefinition;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -39,10 +38,8 @@ public record WavefrontMeshDefinition(Identifier model, boolean flipV) implement
 
         try (InputStream stream = resourceManager.open(location)) {
             return WavefrontObject.PARSER.parse(stream, params);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Failed to load object or texture", e);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to parse object " + location, e);
+            throw new RuntimeException("Failed to read object " + location, e);
         }
     }
 }

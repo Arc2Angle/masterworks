@@ -3,6 +3,7 @@ package com.masterworks.masterworks.client.renderlet;
 import com.masterworks.masterworks.asset.AssetHolder;
 import com.masterworks.masterworks.client.MasterworksPreparableReloadListeners;
 import com.masterworks.masterworks.client.mesh.Mesh;
+import com.masterworks.masterworks.client.mesh.core.EmptyMesh;
 import com.masterworks.masterworks.client.submitter.Submitter;
 import com.masterworks.masterworks.data.Construct;
 import com.masterworks.masterworks.data.Material;
@@ -31,6 +32,8 @@ public record MaterialRenderlet(AssetHolder<Mesh> geometry) implements Renderlet
                 .orElseThrow(() -> new IllegalArgumentException("MaterialRenderer expects a material component"))
                 .value();
 
-        return geometry.valueOrThrow(MasterworksPreparableReloadListeners.MESH).reify(material.palette());
+        return geometry.value(MasterworksPreparableReloadListeners.MESH)
+                .orElseGet(EmptyMesh::new)
+                .reify(material.palette());
     }
 }

@@ -46,23 +46,10 @@ public record ExtrudeMeshDefinition(Identifier diffuse, float depth) implements 
     public Mesh bake(ResourceManager resourceManager) {
         Identifier diffuseLocation = DIFFUSES.idToFile(diffuse);
 
-        int width;
-        int height;
-        int[] alphas;
-
-        try (InputStream stream = resourceManager.open(diffuseLocation);
-                NativeImage image = NativeImage.read(stream)) {
-            width = image.getWidth();
-            height = image.getHeight();
-            alphas = new int[width * height];
-
-            int[] pixels = image.getPixels();
-            for (int i = 0; i < pixels.length; i++) {
-                alphas[i] = ARGB.alpha(pixels[i]);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read diffuse", e);
-        }
+        AlphaMap alphaMap = readDiffuseAlpha(resourceManager, diffuseLocation);
+        int[] alphas = alphaMap.values;
+        int width = alphaMap.width;
+        int height = alphaMap.height;
 
         List<Vertex> vertices = new ArrayList<>();
 
@@ -145,4 +132,24 @@ public record ExtrudeMeshDefinition(Identifier diffuse, float depth) implements 
 
         return new DiffuseMesh(diffuseLocation, vertices.toArray(new Vertex[0]));
     }
+
+    AlphaMap readDiffuseAlpha(ResourceManager resourceManager, Identifier location) {
+        try (InputStream stream = resourceManager.open(location);
+                NativeImage image = NativeImage.read(stream)) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            int[] alphas = new int[width * height];
+
+            int[] pixels = image.getPixels();
+            for (int i = 0; i < pixels.length; i++) {
+                alphas[i] = ARGB.alpha(pixels[i]);
+            }
+
+            return new AlphaMap(alphas, width, height);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read diffuse " + location, e);
+        }
+    }
+
+    record AlphaMap(int[] values, int width, int height) {}
 }

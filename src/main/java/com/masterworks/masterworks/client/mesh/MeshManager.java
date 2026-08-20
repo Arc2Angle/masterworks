@@ -1,9 +1,10 @@
 package com.masterworks.masterworks.client.mesh;
 
+import com.masterworks.masterworks.MasterworksMod;
 import com.masterworks.masterworks.client.asset.AssetRegistry;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -21,9 +22,15 @@ public final class MeshManager extends SimpleJsonResourceReloadListener<MeshDefi
     @Override
     protected void apply(
             Map<Identifier, MeshDefinition> prepared, ResourceManager resourceManager, ProfilerFiller profiler) {
-        values = prepared.entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey(), entry -> entry.getValue().bake(resourceManager)));
+        values = HashMap.newHashMap(prepared.size());
+
+        for (var entry : prepared.entrySet()) {
+            try {
+                values.put(entry.getKey(), entry.getValue().bake(resourceManager));
+            } catch (Exception e) {
+                MasterworksMod.LOGGER.warn("Failed to bake {} due to {}", entry.getKey(), e);
+            }
+        }
     }
 
     @Override

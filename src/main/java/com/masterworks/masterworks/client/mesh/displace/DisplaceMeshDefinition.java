@@ -58,34 +58,11 @@ public record DisplaceMeshDefinition(Identifier diffuse, Optional<Identifier> di
         Identifier displaceLocation = DISPLACES.idToFile(displace.orElse(diffuse));
         Identifier indexLocation = INDICES.idToFile(index);
 
-        Map<Color, Float> index;
-        int width;
-        int height;
-        float[] depths;
-
-        try (InputStream displaceStream = resourceManager.open(displaceLocation);
-                NativeImage displace = NativeImage.read(displaceStream);
-                InputStream indexStream = resourceManager.open(indexLocation);
-                BufferedReader indexReader =
-                        new BufferedReader(new InputStreamReader(indexStream, StandardCharsets.UTF_8))) {
-            index = indexReader
-                    .lines()
-                    .map(line -> line.split(" "))
-                    .filter(parts -> parts.length == 2)
-                    .collect(Collectors.toMap(
-                            parts -> Color.parseARGB(parts[0].trim()), parts -> Float.parseFloat(parts[1].trim())));
-
-            width = displace.getWidth();
-            height = displace.getHeight();
-            depths = new float[width * height];
-            int[] pixels = displace.getPixelsABGR();
-
-            for (int i = 0; i < pixels.length; i++) {
-                depths[i] = index.getOrDefault(Color.fromABGR(pixels[i]), CUTOUT);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to open depthmap", e);
-        }
+        Map<Color, Float> index = readIndex(resourceManager, indexLocation);
+        DepthMap depthMap = readDisplace(resourceManager, displaceLocation, index);
+        float[] depths = depthMap.values;
+        int width = depthMap.width;
+        int height = depthMap.height;
 
         List<Vertex> vertices = new ArrayList<>();
 
@@ -167,4 +144,37 @@ public record DisplaceMeshDefinition(Identifier diffuse, Optional<Identifier> di
 
         return new DiffuseMesh(diffuseLocation, vertices.toArray(new Vertex[0]));
     }
+
+    Map<Color, Float> readIndex(ResourceManager resourceManager, Identifier location) {
+        try (InputStream stream = resourceManager.open(location);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+            return reader.lines()
+                    .map(line -> line.split(" "))
+                    .filter(parts -> parts.length == 2)
+                    .collect(Collectors.toMap(
+                            parts -> Color.parseARGB(parts[0].trim()), parts -> Float.parseFloat(parts[1].trim())));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read index " + location, e);
+        }
+    }
+
+    DepthMap readDisplace(ResourceManager resourceManager, Identifier location, Map<Color, Float> index) {
+        try (InputStream stream = resourceManager.open(location);
+                NativeImage image = NativeImage.read(stream)) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float[] depths = new float[width * height];
+            int[] pixels = image.getPixelsABGR();
+
+            for (int i = 0; i < pixels.length; i++) {
+                depths[i] = index.getOrDefault(Color.fromABGR(pixels[i]), CUTOUT);
+            }
+
+            return new DepthMap(depths, width, height);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read displace " + location, e);
+        }
+    }
+
+    record DepthMap(float[] values, int width, int height) {}
 }
