@@ -1,4 +1,16 @@
 {
     "type": "masterworks:wavefront",
-    "model": "masterworks:head/rigid_shell/plate"
+    "model": "masterworks:head/rigid_shell/plate",
+    "transform": {
+        "rotation": [
+            0,
+            0,
+            180
+        ],
+        "translation": [
+            0,
+            24,
+            0
+        ]
+    }
 }

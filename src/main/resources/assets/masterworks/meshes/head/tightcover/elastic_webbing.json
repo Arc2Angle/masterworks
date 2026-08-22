@@ -1,4 +1,16 @@
 {
     "type": "masterworks:wavefront",
-    "model": "masterworks:head/elastic_webbing/tightcover"
+    "model": "masterworks:head/elastic_webbing/tightcover",
+    "transform": {
+        "rotation": [
+            0,
+            0,
+            180
+        ],
+        "translation": [
+            0,
+            24,
+            0
+        ]
+    }
 }

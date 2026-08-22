@@ -9,6 +9,7 @@ import com.masterworks.masterworks.client.submitter.CompositeSubmitter;
 import com.masterworks.masterworks.client.submitter.NamespaceSubmitter;
 import com.masterworks.masterworks.client.submitter.Submitter;
 import com.masterworks.masterworks.util.Vertex;
+import com.mojang.math.Transformation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -34,7 +35,8 @@ public record WavefrontObject(Multimap<String, Mesh> meshes) implements Mesh {
                                 .toList()))));
     }
 
-    public record Params(ResourceManager resourceManager, String namespace, Path parent, boolean flipV) {}
+    public record Params(
+            ResourceManager resourceManager, String namespace, Path parent, Transformation transform, boolean flipV) {}
 
     public static final WavefrontParser<WavefrontObject, Params, ?> PARSER = new WavefrontParser<>(
             Builder::new,
@@ -109,8 +111,10 @@ public record WavefrontObject(Multimap<String, Mesh> meshes) implements Mesh {
                 throw new IllegalArgumentException("Invalid vector3: " + content);
             }
 
-            positions.add(new Vector3f(
-                    Float.parseFloat(values[0]), Float.parseFloat(values[1]), Float.parseFloat(values[2])));
+            Vector3f position =
+                    new Vector3f(Float.parseFloat(values[0]), Float.parseFloat(values[1]), Float.parseFloat(values[2]));
+            position.mulPosition(params.transform.getMatrix());
+            positions.add(position);
         }
 
         /** Parses {@code vt <u> <v>} statements, which define a texture coordinate. */
@@ -139,8 +143,10 @@ public record WavefrontObject(Multimap<String, Mesh> meshes) implements Mesh {
                 throw new IllegalArgumentException("Invalid vector3: " + content);
             }
 
-            normals.add(new Vector3f(
-                    Float.parseFloat(values[0]), Float.parseFloat(values[1]), Float.parseFloat(values[2])));
+            Vector3f normal =
+                    new Vector3f(Float.parseFloat(values[0]), Float.parseFloat(values[1]), Float.parseFloat(values[2]));
+            normal.mul(params.transform.getNormalMatrix()).normalize();
+            normals.add(normal);
         }
 
         /** Parses {@code usemtl <name>} statements, which specify the name of a material to use for subsequent faces. */

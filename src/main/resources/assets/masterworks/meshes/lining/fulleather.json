@@ -1,5 +1,4 @@
 {
-    "type": "masterworks:displace",
-    "diffuse": "masterworks:lining/fulleather",
-    "index": "masterworks:eight"
+    "type": "masterworks:extrude",
+    "diffuse": "masterworks:lining/fulleather"
 }

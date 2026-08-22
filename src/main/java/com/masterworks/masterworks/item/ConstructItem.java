@@ -103,6 +103,9 @@ public class ConstructItem extends Item {
                     edgeStraight = compositions.resolve("edge/straight"),
                     edgeSerrated = compositions.resolve("edge/serrated"),
 
+                    // Possible refactor: remove edge/, have blade/broad (concrete), blade/broad/dual (abstract),
+                    // blade/serrated (concrete), blade/straight (concrete)
+
                     // elastic_webbing (head)
                     headTightcover = compositions.resolve("tightcover/head"),
 
@@ -137,24 +140,20 @@ public class ConstructItem extends Item {
             output.accept(stack(ironBinding));
             output.accept(stack(emeraldBinding));
 
-            // Construct woodFrame = construct(frame, wood);
-            // Construct ironFrame = construct(frame, iron);
-            // Construct emeraldFrame = construct(frame, emerald);
-            // output.accept(stack(woodFrame));
-            // output.accept(stack(ironFrame));
-            // output.accept(stack(emeraldFrame));
+            Construct woodHeadTightcover = construct(headTightcover, wood);
+            output.accept(stack(woodHeadTightcover));
 
-            // Construct woodPlating = construct(plating, wood);
-            // Construct stonePlating = construct(plating, stone);
-            // Construct diamondPlating = construct(plating, diamond);
-            // output.accept(stack(woodPlating));
-            // output.accept(stack(stonePlating));
-            // output.accept(stack(diamondPlating));
+            Construct woodPlate = construct(plate, wood);
+            Construct stonePlate = construct(plate, iron);
+            Construct diamondPlate = construct(plate, diamond);
+            output.accept(stack(woodPlate));
+            output.accept(stack(stonePlate));
+            output.accept(stack(diamondPlate));
 
-            // Construct woodLining = construct(lining, wood);
-            // Construct goldLining = construct(lining, gold);
-            // output.accept(stack(woodLining));
-            // output.accept(stack(goldLining));
+            Construct woodFulleatherLining = construct(fulleatherLining, wood);
+            Construct goldFulleatherLining = construct(fulleatherLining, gold);
+            output.accept(stack(woodFulleatherLining));
+            output.accept(stack(goldFulleatherLining));
 
             Construct stonePickaxeHead = construct(pickaxeHead, stone);
             Construct goldPickaxeHead = construct(pickaxeHead, gold);
@@ -178,12 +177,9 @@ public class ConstructItem extends Item {
                     stack(construct(sword, Map.of("blade", ironBlade, "handle", diamondRod, "guard", stoneBinding))));
             output.accept(stack(
                     construct(sword, Map.of("blade", diamondEmeraldBlade, "handle", woodRod, "guard", ironBinding))));
-            // output.accept(stack(
-            //         construct(chestplate, Map.of("frame", ironFrame, "shell", stonePlating, "lining", goldLining))));
-            // output.accept(stack(
-            //         construct(chestplate, Map.of("frame", woodFrame, "shell", woodPlating, "lining", woodLining))));
-            // output.accept(stack(construct(
-            //         chestplate, Map.of("frame", emeraldFrame, "shell", diamondPlating, "lining", goldLining))));
+            output.accept(stack(construct(
+                    hardhat,
+                    Map.of("webbing", woodHeadTightcover, "shell", diamondPlate, "lining", goldFulleatherLining))));
         }
     }
 }

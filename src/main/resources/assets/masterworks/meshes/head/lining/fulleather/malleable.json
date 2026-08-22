@@ -1,4 +1,16 @@
 {
     "type": "masterworks:wavefront",
-    "model": "masterworks:head/lining/malleable/fulleather"
+    "model": "masterworks:head/lining/malleable/fulleather",
+    "transform": {
+        "rotation": [
+            0,
+            0,
+            180
+        ],
+        "translation": [
+            0,
+            24,
+            0
+        ]
+    }
 }

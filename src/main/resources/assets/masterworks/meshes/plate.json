@@ -1,5 +1,4 @@
 {
-    "type": "masterworks:displace",
-    "diffuse": "masterworks:plate",
-    "index": "masterworks:eight"
+    "type": "masterworks:extrude",
+    "diffuse": "masterworks:plate"
 }
